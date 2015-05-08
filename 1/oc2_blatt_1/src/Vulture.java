@@ -21,29 +21,27 @@ public class Vulture {
     public void step() {
         Unit target = getClosestEnemy();
 
-        kite(target);
-        System.out.println("kite");
-
         if (unit.getOrderID() != 10 && !unit.isAttackFrame() && !unit.isStartingAttack() && !unit.isAttacking() && target != null) {
-            if (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() > getDistance(target) - 20) {
+            if (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() > getDistance(target)) {
                bwapi.attack(unit.getID(), target.getID());
             }
-//            else if (getDistance(target) < 20) {
-//
-//            }
             else {
                 move(target);
-                System.out.println("move");
+                System.out.println("search");
             }
+        }
+        else if (getDistance(target) < bwapi.getWeaponType(WeaponType.WeaponTypes.Psi_Blades.getID()).getMaxRange() + 75) {
+            kite(target);
+            System.out.println("kite");
         }
     }
 
     private void kite(Unit target){
-        bwapi.move(unit.getID(), target.getX() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange()) / 2, target.getY() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange()) / 2);
+        bwapi.move(unit.getID(), target.getX() - bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange(), target.getY() - bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange());
     }
 
     private void move(Unit target){
-        bwapi.move(unit.getID(), target.getX(), target.getY());
+        bwapi.move(unit.getID(), target.getX() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() / 2), target.getY() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() / 2));
     }
 
     private Unit getClosestEnemy() {
