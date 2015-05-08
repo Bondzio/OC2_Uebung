@@ -21,17 +21,28 @@ public class Vulture {
     public void step() {
         Unit target = getClosestEnemy();
 
+        kite(target);
+        System.out.println("kite");
+
         if (unit.getOrderID() != 10 && !unit.isAttackFrame() && !unit.isStartingAttack() && !unit.isAttacking() && target != null) {
-            if (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() > getDistance(target) - 20.0) {
-                bwapi.attack(unit.getID(), target.getID());
-            } else {
+            if (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() > getDistance(target) - 20) {
+               bwapi.attack(unit.getID(), target.getID());
+            }
+//            else if (getDistance(target) < 20) {
+//
+//            }
+            else {
                 move(target);
+                System.out.println("move");
             }
         }
     }
 
+    private void kite(Unit target){
+        bwapi.move(unit.getID(), target.getX() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange()) / 2, target.getY() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange()) / 2);
+    }
+
     private void move(Unit target){
-        //TODO: Implement the flocking behavior in this method.
         bwapi.move(unit.getID(), target.getX(), target.getY());
     }
 
