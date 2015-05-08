@@ -33,7 +33,7 @@ public class Vulture {
     }
 
     private void move(Unit target){
-
+        //BLUB
         bwapi.move(unit.getID(), target.getX(), target.getY());
     }
 
