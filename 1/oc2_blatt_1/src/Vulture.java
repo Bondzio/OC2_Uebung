@@ -1,5 +1,7 @@
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Unit;
+
+import jnibwapi.types.OrderType;
 import jnibwapi.types.WeaponType;
 
 import java.util.HashSet;
@@ -21,7 +23,7 @@ public class Vulture {
     public void step() {
         Unit target = getClosestEnemy();
 
-        if (unit.getOrderID() != 10 && !unit.isAttackFrame() && !unit.isStartingAttack() && !unit.isAttacking() && target != null) {
+        if (unit.getOrder() != OrderType.OrderTypes.AttackUnit && !unit.isAttackFrame() && !unit.isStartingAttack() && !unit.isAttacking() && target != null) {
             if (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() > getDistance(target) - 20.0) {
                 bwapi.attack(unit.getID(), target.getID());
             } else {
@@ -31,7 +33,7 @@ public class Vulture {
     }
 
     private void move(Unit target){
-        //TODO: Implement the flocking behavior in this method.
+
         bwapi.move(unit.getID(), target.getX(), target.getY());
     }
 
