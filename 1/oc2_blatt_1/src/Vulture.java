@@ -1,4 +1,5 @@
 import jnibwapi.JNIBWAPI;
+import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.types.WeaponType;
 
@@ -9,8 +10,9 @@ public class Vulture {
     final private JNIBWAPI bwapi;
     private final HashSet<Unit> enemyUnits;
     final private Unit unit;
-    private int id;
+    private int id; // from old version
 
+    //Old Constructor
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id) {
         this.unit = unit;
         this.bwapi = bwapi;
@@ -18,7 +20,14 @@ public class Vulture {
         this.id = id;
     }
 
-    public void step() {
+    // New Constructor
+    public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
+        this.unit = unit;
+        this.bwapi = bwapi;
+        this.enemyUnits = enemyUnits;
+    }
+
+    public void oldStep() {
         Unit target = getClosestEnemy();
 
         if (unit.getOrderID() != 10 && !unit.isAttackFrame() && !unit.isStartingAttack() && !unit.isAttacking() && target != null) {
@@ -36,12 +45,25 @@ public class Vulture {
         }
     }
 
+    public void step() {
+        /**
+         * TODO: XCS
+         */
+        Unit target = getClosestEnemy();
+        move(target);
+    }
+
+
     private void kite(Unit target){
         bwapi.move(unit.getID(), target.getX() - bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange(), target.getY() - bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange());
     }
 
-    private void move(Unit target){
+    private void oldMove(Unit target){
         bwapi.move(unit.getID(), target.getX() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() / 2), target.getY() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() / 2));
+    }
+
+    private void move(Unit target) {
+        unit.move(new Position(target.getPosition().getPX(), target.getPosition().getPY()), false);
     }
 
     private Unit getClosestEnemy() {
@@ -58,7 +80,7 @@ public class Vulture {
         return result;
     }
 
-    private double getDistance(Unit enemy) {
+    private double oldGetDistance(Unit enemy) {
         int myX = unit.getX();
         int myY = unit.getY();
 
@@ -73,7 +95,25 @@ public class Vulture {
         return Math.sqrt(result);
     }
 
+
+    private double getDistance(Unit enemy) {
+        int myX = unit.getPosition().getPX();
+        int myY = unit.getPosition().getPY();
+
+        int enemyX = enemy.getPosition().getPX();
+        int enemyY = enemy.getPosition().getPY();
+
+        int diffX = myX - enemyX;
+        int diffY = myY - enemyY;
+
+        double result = Math.pow(diffX, 2) + Math.pow(diffY, 2);
+
+        return Math.sqrt(result);
+    }
+
+    //Old Methode
     public int getID() {
         return unit.getID();
     }
+
 }

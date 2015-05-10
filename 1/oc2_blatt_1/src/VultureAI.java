@@ -15,7 +15,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     private HashSet<Unit> enemyUnits;
 
     private int frame;
-    private int marineID = 0;
+    private int marineID = 0; // from old Version
 
     public VultureAI() {
         System.out.println("This is the VultureAI! :)");
@@ -41,7 +41,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     @Override
     public void matchFrame() {
 
-        vulture.step();
+        vulture.oldStep(); // to run the old Version of Step
 
         if (frame % 1000 == 0) {
             System.out.println("Frame: " + frame);
@@ -51,6 +51,22 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     @Override
     public void unitDiscover(int unitID) {
+        Unit unit = bwapi.getUnit(unitID);
+        UnitType type = unit.getType();
+
+        if (type == UnitType.UnitTypes.Terran_Vulture) {
+            if (unit.getPlayer() == bwapi.getSelf()) {
+                this.vulture = new Vulture(unit, bwapi, enemyUnits);
+            }
+        } else if (type == UnitType.UnitTypes.Protoss_Zealot) {
+            if (unit.getPlayer() != bwapi.getSelf()) {
+                enemyUnits.add(unit);
+            }
+        }
+    }
+
+
+    public void oldUnitDiscover(int unitID) {
         Unit unit = bwapi.getUnit(unitID);
         int typeID = unit.getTypeID();
 
@@ -66,6 +82,8 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
             }
         }
     }
+
+
 
     @Override
     public void unitDestroy(int unitID) {
