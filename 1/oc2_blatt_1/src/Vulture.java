@@ -1,6 +1,7 @@
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
+import jnibwapi.types.UnitType;
 import jnibwapi.types.WeaponType;
 
 import java.util.HashSet;
@@ -30,6 +31,7 @@ public class Vulture {
     public void oldStep() {
         Unit target = getClosestEnemy();
 
+        
         if (unit.getOrderID() != 10 && !unit.isAttackFrame() && !unit.isStartingAttack() && !unit.isAttacking() && target != null) {
             if (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() > getDistance(target)) {
                bwapi.attack(unit.getID(), target.getID());
@@ -43,6 +45,8 @@ public class Vulture {
             kite(target);
             System.out.println("kite");
         }
+        
+
     }
 
     public void step() {
