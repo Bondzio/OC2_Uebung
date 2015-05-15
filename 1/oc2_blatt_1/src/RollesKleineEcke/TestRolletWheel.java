@@ -19,11 +19,15 @@ public class TestRolletWheel {
         cSet.addNewClassifier(third);
         cSet.addNewClassifier(fourth);
 
-        ActionSet aSet = new ActionSet(cSet);
+        MatchSet mSet = new MatchSet(cSet);
+        PredictionArray pa = new PredictionArray(mSet);
+        
 
-        Classifier c = aSet.rouletteActionWinner();
+     
+        ActionSet aSet = pa.getActionSet();
 
-        System.out.println(c);
+        
+        System.out.println(aSet.toString());
 
     }
 

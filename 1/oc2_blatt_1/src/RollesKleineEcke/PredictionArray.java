@@ -3,11 +3,12 @@ package RollesKleineEcke;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Rolle on 11.05.2015.
  */
-public class PredictionArray {
+public class PredictionArray{
     private HashMap<String ,ClassifierSet> helperMap = new HashMap<String, ClassifierSet>();
 
 
@@ -63,6 +64,27 @@ public class PredictionArray {
         }
         return new ActionSet(helperMap.get(winningAction));
     }
+    
+    
+    // action may be selected completely at random (from actions with non-null predictions),
+    private Classifier rouletteActionWinner(){
+    	int  [] counter = new int[n];
+		int n_select=1000;
+		int index=0;
+		boolean notaccepted;
+		for (int i=0; i<n_select; i++){
+			notaccepted=true;
+			while (notaccepted){
+				index= (int)(n*Math.random());
+				if(Math.random()<weight[index]/max_weight) {notaccepted=false;}
+			}
+			counter[index]++;
+		}
+		for (int i=0; i<n; i++){
+			System.out.println("counter["+i+"]="+counter[i]);
+		}
+    }
+    
 
     public ActionSet getActionSet(){
         return createActionSet();
