@@ -64,8 +64,7 @@ public class PredictionArray {
     private class PredictionArrayElement {
 
         public PredictionArrayElement(ClassifierSet classifierSet) {
-            for(Classifier c : classifierSet.getSet())
-                this.addNewClassifier(c);
+            this.classifierSet = classifierSet;
         }
 
         private ClassifierSet classifierSet;

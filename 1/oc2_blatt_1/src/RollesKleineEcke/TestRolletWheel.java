@@ -21,9 +21,9 @@ public class TestRolletWheel {
 
         ActionSet aSet = new ActionSet(cSet);
 
-        Classifier c = aSet.rouletteActionWinner();
+        //Classifier c = aSet.rouletteActionWinner();
 
-        System.out.println(c);
+        //System.out.println(c);
 
     }
 

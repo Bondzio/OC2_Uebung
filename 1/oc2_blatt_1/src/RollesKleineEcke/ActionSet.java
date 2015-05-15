@@ -20,20 +20,5 @@ public class ActionSet extends ClassifierSet{
         return s;
     }
 
-    public Classifier rouletteActionWinner(){
-        double bidSum=0.;
-        int i;
-        for(Classifier c: getSet())
-            bidSum+= c.getPrediction();
 
-        Random generator = new Random();
-        bidSum*=generator.nextDouble();
-
-        double bidC=0.0;
-        for(i=0; bidC<bidSum; i++){
-            bidC+= getSet().get(i).getPrediction();
-        }
-
-        return getSet().get(i-1);
-    }
 }

@@ -21,7 +21,7 @@ public class TestPredictionArray {
         MatchSet mSet = new MatchSet(cSet);
 
         PredictionArray pArray = new PredictionArray(mSet);
-        ActionSet aSet = pArray.getActionSet();
+        ActionSet aSet = pArray.getBestActionSet();
 
         for (String s : aSet.toString().split(";")){
             System.out.println(s);
