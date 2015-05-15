@@ -3,69 +3,107 @@ package RollesKleineEcke;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Rolle on 11.05.2015.
  */
 public class PredictionArray {
-    private HashMap<String ,ClassifierSet> helperMap = new HashMap<String, ClassifierSet>();
+    private HashMap<String ,PredictionArrayElement> pArray = new HashMap<String, PredictionArrayElement>();
+    //private ArrayList<PredictionArrayElement> pArray = new ArrayList<PredictionArrayElement>();
 
 
     public PredictionArray(MatchSet mSet){
-        this.createHelperMap(mSet);
+        this.createPredictionArray(mSet);
     }
 
-    private void createHelperMap(MatchSet mSet){
+    private void createPredictionArray(MatchSet mSet){
+        /*
+            After the For loop, The Map schould look like that:
+            Map = {
+                "Action 1" : PredictionArrayElement // where every classifier in the set belongs to Action 1
+                "Action 2" : PredictionArrayElement
+            }
+
+        */
         for(Classifier c: mSet.getSet()){
             String action = c.getAction();
 
-            if(helperMap.containsKey(action))
-                helperMap.get(action).addNewClassifier(c);
+            if(pArray.containsKey(action))
+                pArray.get(action).addNewClassifier(c);
             else{
                 ClassifierSet tmp = new ClassifierSet();
                 tmp.addNewClassifier(c);
-                helperMap.put(action, tmp);
+                PredictionArrayElement pAElement = new PredictionArrayElement(tmp);
+                pArray.put(action, pAElement);
             }
 
         }
-
     }
 
-    private ActionSet createActionSet(){
-        double globalWinner=0;
-        double sumPmalF;
-        double sumFitness;
-        double pArrayCalc;
-        String winningAction = "";
+
+    public ActionSet getBestActionSet(){
+        double maxValue = 0;
+        PredictionArrayElement winner = null;
+
+        for(Map.Entry<String,PredictionArrayElement> entry : pArray.entrySet()) {
+            PredictionArrayElement currentElement = entry.getValue();
+            double currentValue = currentElement.getCalculatedPredictionArrayValue();
+            if (maxValue < currentValue) {
+                maxValue = currentValue;
+                winner = currentElement;
+            }
+        }
+
+        ClassifierSet winnerSet = pArray.get(winner).getClassifierSet();
+        return new ActionSet(winnerSet);
+    }
 
 
-        for(Map.Entry<String,ClassifierSet> entry : helperMap.entrySet()){
-            sumPmalF = 0 ;
-            sumFitness = 0 ;
 
-            ClassifierSet value = entry.getValue();
-            String currentAction = "";
-            for(Classifier c : value.getSet()){
-                currentAction = c.getAction();
-                sumPmalF += c.getPrediction() * c.getFitness() ;
+    private class PredictionArrayElement {
+
+        public PredictionArrayElement(ClassifierSet classifierSet) {
+            for(Classifier c : classifierSet.getSet())
+                this.addNewClassifier(c);
+        }
+
+        private ClassifierSet classifierSet;
+        private String action;
+        private Double calculatedPredictionArrayValue;
+
+        private void calculatePredictionArrayValue(){
+            double sumPreTimesFit = 0;
+            double sumFitness = 0;
+
+            for(Classifier c : classifierSet.getSet()){
+                sumPreTimesFit += c.getPrediction() * c.getFitness() ;
                 sumFitness += c.getFitness();
             }
-            pArrayCalc = sumPmalF / sumFitness;
-
-           // System.out.println("Current Action: " + currentAction);
-            //System.out.println("pArrayCalc: " + pArrayCalc);
-            //System.out.println("globalWinner: " + globalWinner);
-            if(globalWinner < pArrayCalc){
-                //System.out.println("pArrayCalc > globalWinner");
-                globalWinner = pArrayCalc;
-                winningAction = currentAction;
-            }
+            calculatedPredictionArrayValue = sumPreTimesFit / sumFitness;
         }
-        return new ActionSet(helperMap.get(winningAction));
-    }
 
-    public ActionSet getActionSet(){
-        return createActionSet();
-    }
+        private void setMyAction(){
+            action = classifierSet.getSet().get(0).getAction();
+        }
 
+        public boolean addNewClassifier(Classifier newClassifier){
+            return classifierSet.addNewClassifier(newClassifier);
+        }
+
+        public Double getCalculatedPredictionArrayValue() {
+            calculatePredictionArrayValue();
+            return calculatedPredictionArrayValue;
+        }
+
+        public String getAction() {
+            setMyAction();
+            return action;
+        }
+
+        public ClassifierSet getClassifierSet(){
+            return this.classifierSet;
+        }
+
+    }
 }
