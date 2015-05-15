@@ -20,5 +20,8 @@ public class ActionSet extends ClassifierSet{
         return s;
     }
 
+    public String getWinningAction(){
+        return this.getSet().get(0).getAction();
+    }
 
 }

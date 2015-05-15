@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public class PredictionArray {
     private HashMap<String ,PredictionArrayElement> pArray = new HashMap<String, PredictionArrayElement>();
-    //private ArrayList<PredictionArrayElement> pArray = new ArrayList<PredictionArrayElement>();
+
 
 
     public PredictionArray(MatchSet mSet){
@@ -18,27 +18,40 @@ public class PredictionArray {
     }
 
     private void createPredictionArray(MatchSet mSet){
-        /*
+        HashMap<String ,ClassifierSet> helperMap = sortMatchSet(mSet);
+
+        for(Map.Entry<String,ClassifierSet> entry : helperMap.entrySet()) {
+            String action = entry.getKey();
+            ClassifierSet cSet = entry.getValue();
+            PredictionArrayElement newPElement = new PredictionArrayElement(cSet);
+            pArray.put(action,newPElement);
+        }
+    }
+
+    private HashMap<String ,ClassifierSet> sortMatchSet(MatchSet mSet){
+        HashMap<String ,ClassifierSet> helperMap = new HashMap<String, ClassifierSet>();
+
+         /*
             After the For loop, The Map schould look like that:
             Map = {
-                "Action 1" : PredictionArrayElement // where every classifier in the set belongs to Action 1
-                "Action 2" : PredictionArrayElement
+                "Action 1" : ClassifierSet // where every classifier in the set belongs to Action 1
+                "Action 2" : ClassifierSet
             }
 
         */
         for(Classifier c: mSet.getSet()){
             String action = c.getAction();
 
-            if(pArray.containsKey(action))
-                pArray.get(action).addNewClassifier(c);
+            if(helperMap.containsKey(action))
+                helperMap.get(action).addNewClassifier(c);
             else{
                 ClassifierSet tmp = new ClassifierSet();
                 tmp.addNewClassifier(c);
-                PredictionArrayElement pAElement = new PredictionArrayElement(tmp);
-                pArray.put(action, pAElement);
+                helperMap.put(action, tmp);
             }
-
         }
+
+        return helperMap;
     }
 
 
@@ -49,7 +62,9 @@ public class PredictionArray {
         for(Map.Entry<String,PredictionArrayElement> entry : pArray.entrySet()) {
             PredictionArrayElement currentElement = entry.getValue();
             double currentValue = currentElement.getCalculatedPredictionArrayValue();
+            //System.out.println("Current Action: >" + currentElement.getAction() + "< ParrayValue: " +currentValue );
             if (maxValue < currentValue) {
+                //System.out.println("New Max Found! old was: " + maxValue + " new is: " + currentValue);
                 maxValue = currentValue;
                 winner = currentElement;
             }
@@ -65,6 +80,8 @@ public class PredictionArray {
 
         public PredictionArrayElement(ClassifierSet classifierSet) {
             this.classifierSet = classifierSet;
+            calculatePredictionArrayValue();
+            setMyAction();
         }
 
         private ClassifierSet classifierSet;
@@ -86,17 +103,11 @@ public class PredictionArray {
             action = classifierSet.getSet().get(0).getAction();
         }
 
-        public boolean addNewClassifier(Classifier newClassifier){
-            return classifierSet.addNewClassifier(newClassifier);
-        }
-
         public Double getCalculatedPredictionArrayValue() {
-            calculatePredictionArrayValue();
             return calculatedPredictionArrayValue;
         }
 
         public String getAction() {
-            setMyAction();
             return action;
         }
 
