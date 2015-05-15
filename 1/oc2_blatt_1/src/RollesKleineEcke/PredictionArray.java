@@ -32,20 +32,34 @@ public class PredictionArray {
     }
 
     private ActionSet createActionSet(){
-        double global = 0 ;
+        double globalWinner=0;
+        double sumPmalF;
+        double sumFitness;
+        double pArrayCalc;
         String winningAction = "";
 
+
         for(Map.Entry<String,ClassifierSet> entry : helperMap.entrySet()){
+            sumPmalF = 0 ;
+            sumFitness = 0 ;
+
             ClassifierSet value = entry.getValue();
+            String currentAction = "";
             for(Classifier c : value.getSet()){
-                double sum = c.getPrediction() * c.getFitness();
-                if(sum >= global){
-                    global = sum;
-                    winningAction = c.getAction();
-                }
-
+                currentAction = c.getAction();
+                sumPmalF += c.getPrediction() * c.getFitness() ;
+                sumFitness += c.getFitness();
             }
+            pArrayCalc = sumPmalF / sumFitness;
 
+           // System.out.println("Current Action: " + currentAction);
+            //System.out.println("pArrayCalc: " + pArrayCalc);
+            //System.out.println("globalWinner: " + globalWinner);
+            if(globalWinner < pArrayCalc){
+                //System.out.println("pArrayCalc > globalWinner");
+                globalWinner = pArrayCalc;
+                winningAction = currentAction;
+            }
         }
         return new ActionSet(helperMap.get(winningAction));
     }

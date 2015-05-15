@@ -19,7 +19,7 @@ public class TestPopulationSet {
 
         PopulationSet pSet = new PopulationSet(cSet);
 
-        String Matcher = "0100";
+        String Matcher = "0000";
 
         MatchSet mSet = pSet.findMatchingClassifier(Matcher);
 
