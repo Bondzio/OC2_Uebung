@@ -55,7 +55,7 @@ public class PredictionArray {
             }
         }
 
-        ClassifierSet winnerSet = pArray.get(winner).getClassifierSet();
+        ClassifierSet winnerSet = pArray.get(winner.getAction()).getClassifierSet();
         return new ActionSet(winnerSet);
     }
 
