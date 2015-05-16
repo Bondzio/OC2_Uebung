@@ -1,6 +1,4 @@
-package RollesKleineEcke;
-
-import java.util.Random;
+package General_XCS;
 
 /**
  * Created by Rolle on 11.05.2015.

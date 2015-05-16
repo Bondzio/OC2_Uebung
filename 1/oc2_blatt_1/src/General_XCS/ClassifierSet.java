@@ -1,4 +1,4 @@
-package RollesKleineEcke;
+package General_XCS;
 
 import java.util.ArrayList;
 

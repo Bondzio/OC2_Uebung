@@ -1,9 +1,12 @@
 package RollesKleineEcke;
 
-import java.util.ArrayList;
+import General_XCS.ActionSet;
+import General_XCS.Classifier;
+import General_XCS.ClassifierSet;
+import General_XCS.MatchSet;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by Rolle on 11.05.2015.
@@ -18,7 +21,7 @@ public class PredictionArray {
     }
 
     private void createPredictionArray(MatchSet mSet){
-        HashMap<String ,ClassifierSet> helperMap = sortMatchSet(mSet);
+        HashMap<String , ClassifierSet> helperMap = sortMatchSet(mSet);
 
         for(Map.Entry<String,ClassifierSet> entry : helperMap.entrySet()) {
             String action = entry.getKey();

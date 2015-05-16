@@ -1,5 +1,7 @@
 package RollesKleineEcke;
 
+import General_XCS.*;
+
 /**
  * Created by Rolle on 11.05.2015.
  */

@@ -1,4 +1,6 @@
-package RollesKleineEcke;
+package StarCraftBW_XCS;
+
+import General_XCS.XCS;
 
 /**
  * Created by Rolle on 16.05.2015.

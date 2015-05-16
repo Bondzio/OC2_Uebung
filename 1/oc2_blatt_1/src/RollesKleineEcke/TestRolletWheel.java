@@ -1,6 +1,10 @@
 package RollesKleineEcke;
 
 
+import General_XCS.ActionSet;
+import General_XCS.Classifier;
+import General_XCS.ClassifierSet;
+
 /**
  * Created by Rolle on 15.05.2015.
  */

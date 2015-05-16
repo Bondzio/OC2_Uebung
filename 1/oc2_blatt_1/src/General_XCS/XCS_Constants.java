@@ -1,4 +1,4 @@
-package RollesKleineEcke;
+package General_XCS;
 
 /**
  * Created by Rolle on 16.05.2015.

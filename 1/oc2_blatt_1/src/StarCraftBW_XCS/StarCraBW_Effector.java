@@ -1,4 +1,4 @@
-package RollesKleineEcke;
+package StarCraftBW_XCS;
 
 /**
  * Created by Rolle on 16.05.2015.

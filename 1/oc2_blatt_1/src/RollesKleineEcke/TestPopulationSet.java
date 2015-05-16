@@ -1,6 +1,9 @@
 package RollesKleineEcke;
 
-import com.sun.org.apache.bcel.internal.generic.POP;
+import General_XCS.Classifier;
+import General_XCS.ClassifierSet;
+import General_XCS.MatchSet;
+import General_XCS.PopulationSet;
 
 /**
  * Created by Rolle on 11.05.2015.
