@@ -10,7 +10,7 @@ public class TestPredictionArray {
         Classifier first = new Classifier("First",5,0,40,"0#0#","This");
         Classifier second = new Classifier("second",8,0,2,"0011","This");
         Classifier third = new Classifier("third",4,0,3,"0011","is");
-        Classifier fourth = new Classifier("fourth",9,0,4,"0000","Sparta");
+        Classifier fourth = new Classifier("fourth",2,0,4,"0000","Sparta");
 
         ClassifierSet cSet = new ClassifierSet();
         cSet.addNewClassifier(first);
@@ -21,7 +21,7 @@ public class TestPredictionArray {
         MatchSet mSet = new MatchSet(cSet);
 
         PredictionArray pArray = new PredictionArray(mSet);
-        ActionSet aSet = pArray.getActionSet();
+        ActionSet aSet = pArray.getBestActionSet();
 
         for (String s : aSet.toString().split(";")){
             System.out.println(s);

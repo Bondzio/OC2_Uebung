@@ -55,6 +55,28 @@ public class Vulture {
          */
         Unit target = getClosestEnemy();
         move(target);
+        
+    	// get Situation
+        String envInput = "";
+    	// define POPULATION SET
+        
+    	
+        while(true){
+        	        	
+        	// Generate MATCH SET out of the POPULATION SET
+        	
+        	// Generate PREDICTION ARRAY out of MATCH SET
+        	
+        	// Select and Execute ACTION from PREDICTION ARRAY
+        	
+        	// IF A-1 not empty: UPDATE A-1
+        	
+        	// ELSE: A-1 = A 
+        	
+        	
+        }
+        
+        
     }
 
 
