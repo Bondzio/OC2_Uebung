@@ -20,17 +20,34 @@ public class TestPredictionArray {
 
         MatchSet mSet = new MatchSet(cSet);
 
-        PredictionArray pArray = new PredictionArray(mSet);
+        System.out.println("---MaYoRs-Shit---");
+        System.out.println("---BestPrediction---");
+        PredictionArrayFromMaYoR pArray = new PredictionArrayFromMaYoR(mSet);
         ActionSet aSet = pArray.getBestActionSet();
-        
         for (String s : aSet.toString().split(";")){
+            System.out.println(s); 
+        }
+        
+        System.out.println("---Roulette---");
+        PredictionArrayFromMaYoR pArray2 = new PredictionArrayFromMaYoR(mSet);
+        ActionSet aSet2 = pArray2.getRouletteActionSet();
+        for (String s : aSet2.toString().split(";")){
+            System.out.println(s);
+        }
+        
+        
+        System.out.println("\n---Rolles-Shit---");
+        System.out.println("---BestPrediction---");
+        PredictionArray pArray3 = new PredictionArray(mSet);
+        ActionSet aSet3 = pArray3.getBestActionSet();
+        for (String s : aSet3.toString().split(";")){
             System.out.println(s);
         }
         
         System.out.println("---Roulette---");
-        
-        ActionSet aSet2 = pArray.getRouletteActionSet();
-        for (String s : aSet2.toString().split(";")){
+        PredictionArray pArray4 = new PredictionArray(mSet);
+        ActionSet aSet4 = pArray4.getRouletteActionSet();
+        for (String s : aSet4.toString().split(";")){
             System.out.println(s);
         }
     }
