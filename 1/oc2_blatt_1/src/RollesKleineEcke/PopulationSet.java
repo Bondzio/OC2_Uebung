@@ -1,6 +1,6 @@
 package RollesKleineEcke;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
+
 
 import java.util.ArrayList;
 
@@ -9,11 +9,19 @@ import java.util.ArrayList;
  */
 public class PopulationSet {
 
-    private ClassifierSet population;
+    private ClassifierSet population ;
+    private String[] actionSet;
+    private int idCounter = 0;
+
 
 
     public PopulationSet(ClassifierSet population) {
         this.population = population;
+    }
+
+    public PopulationSet(String[] actionSet) {
+        population = new ClassifierSet();
+        this.actionSet = actionSet;
     }
     
     
@@ -25,13 +33,20 @@ public class PopulationSet {
 
 
         String[] conAsArray;
-        for(Classifier c: cSet){
-            String cConditon = c.getCondition();
-            conAsArray = cConditon.split("");
+        while(true){
+            boolean foundSomething = false;
+            for(Classifier c: cSet){
+                String cConditon = c.getCondition();
+                conAsArray = cConditon.split("");
 
-            if(this.isEqual(aMatcher,conAsArray))
-                newSet.addNewClassifier(c);
-
+                if(this.isEqual(aMatcher,conAsArray)) {
+                    newSet.addNewClassifier(c);
+                    foundSomething = true;
+                }
+            }
+            if (!foundSomething)
+                covering(matcher);
+            else break;
         }
 
         return new MatchSet(newSet);
@@ -48,5 +63,21 @@ public class PopulationSet {
                 return false;
         }
         return true;
+    }
+
+    private void covering(String machter){
+        for(String action : this.actionSet){
+            String cName = XCS_Constants.DEFAULT_CLASSIFIER_NAME + Integer.toString(idCounter);
+
+            Classifier newC = new Classifier(
+                    cName,
+                    XCS_Constants.DEFAULT_CLASSIFIER_PREDICTION,
+                    XCS_Constants.DEFAULT_CLASSIFIER_PREDICTION_ERR,
+                    XCS_Constants.DEFAULT_CLASSIFIER_FITNESS,
+                    machter,
+                    action);
+
+            this.population.addNewClassifier(newC);
+        }
     }
 }

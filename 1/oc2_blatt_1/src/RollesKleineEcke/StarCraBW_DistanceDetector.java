@@ -3,7 +3,7 @@ package RollesKleineEcke;
 /**
  * Created by Rolle on 11.05.2015.
  */
-public class DistanceDetector {
+public class StarCraBW_DistanceDetector {
     
     private int valtureMaxRange = 160;
     private int zealotMaxRange = 15;

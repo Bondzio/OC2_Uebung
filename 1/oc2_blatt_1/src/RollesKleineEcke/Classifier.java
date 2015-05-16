@@ -5,6 +5,10 @@ package RollesKleineEcke;
  */
 public class Classifier {
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private String name;
     private double prediction;
     private double predictionError;
