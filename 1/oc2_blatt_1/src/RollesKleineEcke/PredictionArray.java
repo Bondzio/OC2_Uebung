@@ -74,6 +74,41 @@ public class PredictionArray {
         return new ActionSet(winnerSet);
     }
 
+    
+    public ActionSet getRouletteActionSet(){
+    	double predictionSum = 0.;
+    	double[] pa = new double[pArray.entrySet().size()];
+    	ClassifierSet winnerSet = null;
+    	
+    	int counter = 0;
+    	for(Map.Entry<String,PredictionArrayElement> entry : pArray.entrySet()) {
+    		PredictionArrayElement currentElement = entry.getValue();
+            double currentValue = currentElement.getCalculatedPredictionArrayValue();
+            
+            pa[counter++] = currentValue;
+            predictionSum = predictionSum + currentValue;
+    	}
+    	
+    	predictionSum *= Math.random();
+    	
+    	double acceptanceValue = 0.;
+    	int predictionValue = 0;
+    	for(int i = 0; acceptanceValue < predictionSum; i++){
+    		acceptanceValue += pa[i];
+    		predictionValue = i;
+    	}
+
+    	counter = 0;
+    	for(Map.Entry<String,PredictionArrayElement> entry : pArray.entrySet()) {
+    		if(counter == predictionValue){
+	    		PredictionArrayElement pae = entry.getValue();
+	    		winnerSet = pArray.get(pae.getAction()).getClassifierSet();
+	    		break;
+    		}
+    		counter++;
+    	}
+    	return new ActionSet(winnerSet);
+  }
 
 
     private class PredictionArrayElement {

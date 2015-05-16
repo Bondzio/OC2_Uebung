@@ -22,8 +22,15 @@ public class TestPredictionArray {
 
         PredictionArray pArray = new PredictionArray(mSet);
         ActionSet aSet = pArray.getBestActionSet();
-
+        
         for (String s : aSet.toString().split(";")){
+            System.out.println(s);
+        }
+        
+        System.out.println("---Roulette---");
+        
+        ActionSet aSet2 = pArray.getRouletteActionSet();
+        for (String s : aSet2.toString().split(";")){
             System.out.println(s);
         }
     }
