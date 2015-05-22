@@ -1,31 +1,38 @@
 package General_XCS;
 
-import RollesKleineEcke.PredictionArray;
+import General_XCS.PredictionArrayFromMaYoR;
 
 /**
  * Created by Rolle on 16.05.2015.
  */
 public class XCS {
 
-     private PopulationSet populationSet;
-     private ActionSetRewarder aSetRewarder;
-    private MultiStepRewarder mStepRewarder;
+    private PopulationSet populationSet;
+    private MultiStepRewarder mStepRewarder = new MultiStepRewarder();
+    private IEffector effector;
+    private IDetector detector;
 
-    public XCS(String[] actionSet) {
+
+    public XCS(String[] actionSet,IEffector effector,IDetector detector) {
         this.populationSet = new PopulationSet(actionSet);
-        this.aSetRewarder = new ActionSetRewarder();
-        this.mStepRewarder = new MultiStepRewarder(aSetRewarder);
-
+        this.mStepRewarder = new MultiStepRewarder();
+        this.effector = effector;
+        this.detector = detector;
     }
 
-    public String runMultiStepLearning(String binaryStringRep){
+    public String runMultiStepLearning(){
+
+        String binaryStringRep = detector.getDetected();
+
         MatchSet mSet = this.populationSet.findMatchingClassifier(binaryStringRep);
 
-        PredictionArray pArray = new PredictionArray(mSet);
+        PredictionArrayFromMaYoR pArray = new PredictionArrayFromMaYoR(mSet);
 
         ActionSet aSet = pArray.getBestActionSet();
 
-        mStepRewarder.addActionSet(aSet);
+        double currentReward = effector.getReward(aSet.getWinningAction());
+
+        mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
 
         return aSet.getSet().get(0).getAction();
     }

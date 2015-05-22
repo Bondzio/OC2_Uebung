@@ -1,20 +1,15 @@
 package StarCraftBW_XCS;
 
+import General_XCS.IEffector;
+
 /**
  * Created by Rolle on 16.05.2015.
  */
-public class StarCraBW_Effector {
+public class StarCraBW_Effector implements IEffector{
 
-    public String getChosenAction() {
-        return chosenAction;
+
+    @Override
+    public int getReward(String winningAction) {
+        return 0;
     }
-
-    public void setChosenAction(String chosenAction) {
-        this.chosenAction = chosenAction;
-    }
-
-    private String chosenAction = "none";
-
-
-
 }

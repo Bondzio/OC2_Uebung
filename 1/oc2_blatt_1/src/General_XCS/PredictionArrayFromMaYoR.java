@@ -53,9 +53,8 @@ public class PredictionArrayFromMaYoR{
 		}
 	}
 
-	// Returns the highest value in the prediction array
-	public ActionSet getBestActionSet() {
 
+	public ActionSet getBestActionSet() {
 		double max = 0;
 		int maxIndex = 0;
 		for(int i = 0; i < actionList.size(); i++){
@@ -66,6 +65,18 @@ public class PredictionArrayFromMaYoR{
 		}	
         return new ActionSet(getWinningClassifier(maxIndex));
 	}
+
+	// Returns the highest value in the prediction array
+	public double getBestValue() {
+		double max = 0;
+		for(int i = 0; i < actionList.size(); i++){
+			if(max < predictionArray[i]){
+				max = predictionArray[i];
+			}
+		}
+		return max;
+	}
+
 	
 	// Selects an action in the prediction array by roulette wheel selection
 	public ActionSet getRouletteActionSet() {

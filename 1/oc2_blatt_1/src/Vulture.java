@@ -1,3 +1,4 @@
+import StarCraftBW_XCS.StarCraBW_XCS;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
@@ -12,6 +13,8 @@ public class Vulture {
     private final HashSet<Unit> enemyUnits;
     final private Unit unit;
     private int id; // from old version
+
+    final private StarCraBW_XCS xcs = new StarCraBW_XCS();
 
     //Old Constructor
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id) {
@@ -54,27 +57,18 @@ public class Vulture {
          * TODO: XCS
          */
         Unit target = getClosestEnemy();
+        double distance = getDistance(target);
+
+        xcs.getDetector().setDistance(distance);
+
+
         move(target);
         
     	// get Situation
         String envInput = "";
     	// define POPULATION SET
         
-    	
-        while(true){
-        	        	
-        	// Generate MATCH SET out of the POPULATION SET
-        	
-        	// Generate PREDICTION ARRAY out of MATCH SET
-        	
-        	// Select and Execute ACTION from PREDICTION ARRAY
-        	
-        	// IF A-1 not empty: UPDATE A-1
-        	
-        	// ELSE: A-1 = A 
-        	
-        	
-        }
+
         
         
     }

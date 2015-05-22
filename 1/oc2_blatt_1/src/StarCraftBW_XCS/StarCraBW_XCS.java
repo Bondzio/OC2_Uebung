@@ -20,18 +20,14 @@ public class StarCraBW_XCS {
 
     public StarCraBW_XCS() {
 
-        this.xcs = new XCS(actionSet);
+        this.xcs = new XCS(actionSet,effector,distanceDetector);
 
     }
 
-    public StarCraBW_Effector run(double distance){
-        String detected = this.distanceDetector.detect(distance);
+    public StarCraBW_DistanceDetector getDetector(){return this.distanceDetector;}
 
-        String suggestioedAction = xcs.runMultiStepLearning(detected);
-
-        effector.setChosenAction(suggestioedAction);
-
-        return effector;
+    public void run(double distance){
+        xcs.runMultiStepLearning();
     }
 
 }
