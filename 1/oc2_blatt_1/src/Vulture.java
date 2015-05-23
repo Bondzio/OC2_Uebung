@@ -1,4 +1,4 @@
-import StarCraftBW_XCS.StarCraBW_XCS;
+import StarCraftBW_XCS.StarCraftBW_XCS;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
@@ -14,7 +14,7 @@ public class Vulture {
     final private Unit unit;
     private int id; // from old version
 
-    final private StarCraBW_XCS xcs = new StarCraBW_XCS();
+    final private StarCraftBW_XCS xcs = new StarCraftBW_XCS();
 
     //Old Constructor
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id) {
@@ -33,6 +33,9 @@ public class Vulture {
 
     public void oldStep() {
         Unit target = getClosestEnemy();
+        double distance = getDistance(target);
+        System.out.println("target: " + target);
+        System.out.println("distance: " + distance);
 
         
         if (unit.getOrderID() != 10 && !unit.isAttackFrame() && !unit.isStartingAttack() && !unit.isAttacking() && target != null) {
@@ -41,12 +44,12 @@ public class Vulture {
             }
             else {
                 move(target);
-                System.out.println("search");
+                //System.out.println("search");
             }
         }
         else if (getDistance(target) < bwapi.getWeaponType(WeaponType.WeaponTypes.Psi_Blades.getID()).getMaxRange() + 75) {
             kite(target);
-            System.out.println("kite");
+            //System.out.println("kite");
         }
         
 
@@ -58,10 +61,21 @@ public class Vulture {
          */
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
+        System.out.println("target: " + target);
+        System.out.println("distance: " + distance);
 
+        
         xcs.getDetector().setDistance(distance);
+        xcs.getEffector().setStats(this.unit, target);
+        
+        
+        String action = xcs.run();
+        
+        
+        
 
-
+        System.out.println("ACTION: " + action);
+        
         move(target);
         
     	// get Situation

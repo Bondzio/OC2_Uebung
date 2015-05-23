@@ -41,11 +41,11 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     @Override
     public void matchFrame() {
 
-        try {
-            vulture.oldStep(); // to run the old Version of Step
-        }catch (NullPointerException np){
-            System.out.println("Game is restarting...");
-        }
+//        try {
+            vulture.step(); // to run the old Version of Step
+//        }catch (NullPointerException np){
+//            System.out.println("Game is restarting...");
+//        }
 
         if (frame % 1000 == 0) {
             System.out.println("Frame: " + frame);

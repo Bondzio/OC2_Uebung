@@ -1,11 +1,12 @@
 package General_XCS;
 
-import General_XCS.PredictionArrayFromMaYoR;
+import jnibwapi.Unit;
+import General_XCS.PredictionArray;
 
 /**
  * Created by Rolle on 16.05.2015.
  */
-public class XCS {
+public class XCS{
 
     private PopulationSet populationSet;
     private MultiStepRewarder mStepRewarder = new MultiStepRewarder();
@@ -13,7 +14,7 @@ public class XCS {
     private IDetector detector;
 
 
-    public XCS(String[] actionSet,IEffector effector,IDetector detector) {
+    public XCS(String[] actionSet,IEffector effector,IDetector detector){
         this.populationSet = new PopulationSet(actionSet);
         this.mStepRewarder = new MultiStepRewarder();
         this.effector = effector;
@@ -24,12 +25,14 @@ public class XCS {
 
         String binaryStringRep = detector.getDetected();
 
+        
         MatchSet mSet = this.populationSet.findMatchingClassifier(binaryStringRep);
 
-        PredictionArrayFromMaYoR pArray = new PredictionArrayFromMaYoR(mSet);
+        PredictionArray pArray = new PredictionArray(mSet);
 
-        ActionSet aSet = pArray.getBestActionSet();
-
+        //ActionSet aSet = pArray.getBestActionSet();
+        ActionSet aSet = pArray.getRouletteActionSet();
+        
         double currentReward = effector.getReward(aSet.getWinningAction());
 
         mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);

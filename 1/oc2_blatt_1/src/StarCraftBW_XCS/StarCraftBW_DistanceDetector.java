@@ -2,10 +2,8 @@ package StarCraftBW_XCS;
 
 import General_XCS.IDetector;
 
-/**
- * Created by Rolle on 11.05.2015.
- */
-public class StarCraBW_DistanceDetector implements IDetector{
+
+public class StarCraftBW_DistanceDetector implements IDetector{
     
     private int valtureMaxRange = 160;
     private int zealotMaxRange = 15;
@@ -14,8 +12,8 @@ public class StarCraBW_DistanceDetector implements IDetector{
     public void setDistance(double distance){this.currentDistance = distance;}
 
 
-    public String checkDistance(double env) {
-        double distance = env;
+    public String convertDistance() {
+        double distance = this.currentDistance;
         int convDistance = (int) distance;
         if (convDistance > 160)
             convDistance = 161; // as Binary 10100001
@@ -23,8 +21,8 @@ public class StarCraBW_DistanceDetector implements IDetector{
         return Integer.toBinaryString(convDistance);
     }
 
-    @Override
+    
     public String getDetected() {
-        return checkDistance(this.currentDistance);
+        return convertDistance();
     }
 }

@@ -1,9 +1,13 @@
 package General_XCS;
 
-/**
- * Created by Rolle on 22.05.2015.
- */
+import jnibwapi.Unit;
+
+
 public interface IEffector {
 
     public int getReward(String winningAction);
+    public void setStats(Unit unit, Unit target);
+    public Unit getUnit();
+    public Unit getTarget();
+    
 }

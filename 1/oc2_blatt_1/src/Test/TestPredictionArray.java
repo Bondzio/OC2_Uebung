@@ -1,4 +1,4 @@
-package RollesKleineEcke;
+package Test;
 
 import General_XCS.*;
 
@@ -24,14 +24,14 @@ public class TestPredictionArray {
 
         System.out.println("---MaYoRs-Shit---");
         System.out.println("---BestPrediction---");
-        PredictionArrayFromMaYoR pArray = new PredictionArrayFromMaYoR(mSet);
+        PredictionArray pArray = new PredictionArray(mSet);
         ActionSet aSet = pArray.getBestActionSet();
         for (String s : aSet.toString().split(";")){
             System.out.println(s); 
         }
         
         System.out.println("---Roulette---");
-        PredictionArrayFromMaYoR pArray2 = new PredictionArrayFromMaYoR(mSet);
+        PredictionArray pArray2 = new PredictionArray(mSet);
         ActionSet aSet2 = pArray2.getRouletteActionSet();
         for (String s : aSet2.toString().split(";")){
             System.out.println(s);
@@ -40,14 +40,14 @@ public class TestPredictionArray {
         
         System.out.println("\n---Rolles-Shit---");
         System.out.println("---BestPrediction---");
-        PredictionArray pArray3 = new PredictionArray(mSet);
+        PredictionArray_old pArray3 = new PredictionArray_old(mSet);
         ActionSet aSet3 = pArray3.getBestActionSet();
         for (String s : aSet3.toString().split(";")){
             System.out.println(s);
         }
         
         System.out.println("---Roulette---");
-        PredictionArray pArray4 = new PredictionArray(mSet);
+        PredictionArray_old pArray4 = new PredictionArray_old(mSet);
         ActionSet aSet4 = pArray4.getRouletteActionSet();
         for (String s : aSet4.toString().split(";")){
             System.out.println(s);

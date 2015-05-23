@@ -1,4 +1,4 @@
-package RollesKleineEcke;
+package Test;
 
 import General_XCS.ActionSet;
 import General_XCS.Classifier;
@@ -11,12 +11,12 @@ import java.util.Map;
 /**
  * Created by Rolle on 11.05.2015.
  */
-public class PredictionArray {
+public class PredictionArray_old {
     private HashMap<String ,PredictionArrayElement> pArray = new HashMap<String, PredictionArrayElement>();
 
 
 
-    public PredictionArray(MatchSet mSet){
+    public PredictionArray_old(MatchSet mSet){
         this.createPredictionArray(mSet);
     }
 

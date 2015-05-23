@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created NOT by Rolle on 11.05.2015.
  */
-public class PredictionArrayFromMaYoR{
+public class PredictionArray{
 
 	private MatchSet matchSet;
 	private double[] predictionArray;
@@ -15,7 +15,7 @@ public class PredictionArrayFromMaYoR{
 	private double[] nr;
 
 	
-	public PredictionArrayFromMaYoR(MatchSet set) {
+	public PredictionArray(MatchSet set) {
 		this.matchSet = set;
 		this.createPredictionArray();
 	}

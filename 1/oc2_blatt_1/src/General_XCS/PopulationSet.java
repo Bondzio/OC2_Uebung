@@ -26,7 +26,7 @@ public class PopulationSet {
     
     
     public MatchSet findMatchingClassifier(String matcher){
-        ArrayList<Classifier> cSet = population.getSet();
+//        ArrayList<Classifier> cSet = population.getSet();
         String[] aMatcher = matcher.split("");
 
         ClassifierSet newSet = new ClassifierSet();
@@ -35,7 +35,7 @@ public class PopulationSet {
         String[] conAsArray;
         while(true){
             boolean foundSomething = false;
-            for(Classifier c: cSet){
+            for(Classifier c: this.population.getSet()){
                 String cConditon = c.getCondition();
                 conAsArray = cConditon.split("");
 
@@ -65,7 +65,7 @@ public class PopulationSet {
         return true;
     }
 
-    private void covering(String machter){
+    private void covering(String matcher){
         for(String action : this.actionSet){
             String cName = XCS_Constants.DEFAULT_CLASSIFIER_NAME + Integer.toString(idCounter);
 
@@ -74,7 +74,7 @@ public class PopulationSet {
                     XCS_Constants.DEFAULT_CLASSIFIER_PREDICTION,
                     XCS_Constants.DEFAULT_CLASSIFIER_PREDICTION_ERR,
                     XCS_Constants.DEFAULT_CLASSIFIER_FITNESS,
-                    machter,
+                    matcher,
                     action);
 
             this.population.addNewClassifier(newC);

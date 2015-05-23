@@ -1,4 +1,4 @@
-package RollesKleineEcke;
+package Test;
 
 
 import General_XCS.ActionSet;
