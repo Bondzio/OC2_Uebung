@@ -11,8 +11,7 @@ public class StarCraftBW_Effector implements IEffector{
 	private Unit unit;
 	private Unit target;
 	private Double distance;
-	private static final int WEAPONRANGE = UnitType.UnitTypes.Terran_Vulture.getGroundWeapon().getMaxRange();
-	private static final int ENEMYRANGE = UnitType.UnitTypes.Protoss_Zealot.getGroundWeapon().getMaxRange();
+	private int killedUnits = 0;
 
 	@Override
 	public void setStats(Unit unit, Unit target, Double distance) {
@@ -32,42 +31,35 @@ public class StarCraftBW_Effector implements IEffector{
 	}
 	
 	@Override
-	public int getReward(String winningAction) {
-		int reward = 1;
+	public int getReward() {
+		int reward = 0;
 		
-		// TODO: implement Rewards - first: execute Action (see unit)
-//		if(winningAction == "move")
-//			move();
-//			
-//		if(winningAction == "kite")
-//			kite();
+		// TODO: Rewards richtig gewichten
 		
-//		if(unit.isUnderAttack())
-//            reward += -1;
-//		
-//        if(unit.isAttackFrame())
-//            reward += +1.5;
-//		
-//        if(unit.attack(this.target,false))
-//            reward += +2;
+		if (unit.isUnderAttack())
+			reward += -1;
+
+		if (unit.isAttackFrame())
+			reward += 4;
+		
+		if(this.distance > StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
+			reward += 1;
+		
+		if(this.distance <= StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
+			reward += -1;
+		
+		if(this.distance < StarCraftBW_Unit_Constants.OWN_WEAPONRANGE)
+			reward += 5;
         
+		if(unit.getKillCount() > this.killedUnits){
+			reward += 10;
+			this.killedUnits++;
+		}
+
+		if(unit.isExists())
+			reward += 1; 
+
 		
 		return reward;
 	}
-
-	private void kite() {
-		System.out.println("kite");
-		
-		unit.move(new Position(target.getPosition().getPX() - WEAPONRANGE, target.getPosition().getPY() - WEAPONRANGE), false);
-	}
-
-	private void move() {
-		System.out.println("move");
-
-		if (WEAPONRANGE <= this.distance)
-			unit.attack(target, false);
-		else
-			unit.move(new Position(target.getPosition().getPX(), target.getPosition().getPY()), false);
-	}
-
 }

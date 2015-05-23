@@ -29,13 +29,12 @@ public class XCS{
         //ActionSet aSet = pArray.getBestActionSet();
         ActionSet aSet = pArray.getRouletteActionSet();
         
-        double currentReward = effector.getReward(aSet.getWinningAction());
+        double currentReward = effector.getReward();
         System.out.println("reward: " + currentReward);
-        
-        
+       
         mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
 
-        return aSet.getSet().get(0).getAction();
+        return aSet.getWinningAction();
     }
 
 }

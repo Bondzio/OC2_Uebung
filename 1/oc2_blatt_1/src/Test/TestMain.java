@@ -25,7 +25,8 @@ public class TestMain {
 //    public static double toDouble(byte[] bytes) {
 //        return ByteBuffer.wrap(bytes).getDouble();
 //    }
-    
+
+    @Deprecated
     private void testXCS(){
     	double distance = 291.4648418;
         System.out.println("distance: " + distance);

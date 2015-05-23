@@ -70,22 +70,22 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     }
 
 
-    public void oldUnitDiscover(int unitID) {
-        Unit unit = bwapi.getUnit(unitID);
-        int typeID = unit.getTypeID();
-
-        if (typeID == UnitType.UnitTypes.Terran_Vulture.getID()) {
-            if (unit.getPlayerID() == bwapi.getSelf().getID()) {
-                this.vulture = new Vulture(unit, bwapi, enemyUnits, marineID);
-                System.out.println("found vulture");
-            }
-        } else if (typeID == UnitType.UnitTypes.Protoss_Zealot.getID()) {
-            if (unit.getPlayerID() != bwapi.getSelf().getID()) {
-                enemyUnits.add(unit);
-                System.out.println("found zealot");
-            }
-        }
-    }
+//    public void oldUnitDiscover(int unitID) {
+//        Unit unit = bwapi.getUnit(unitID);
+//        int typeID = unit.getTypeID();
+//
+//        if (typeID == UnitType.UnitTypes.Terran_Vulture.getID()) {
+//            if (unit.getPlayerID() == bwapi.getSelf().getID()) {
+//                this.vulture = new Vulture(unit, bwapi, enemyUnits, marineID);
+//                System.out.println("found vulture");
+//            }
+//        } else if (typeID == UnitType.UnitTypes.Protoss_Zealot.getID()) {
+//            if (unit.getPlayerID() != bwapi.getSelf().getID()) {
+//                enemyUnits.add(unit);
+//                System.out.println("found zealot");
+//            }
+//        }
+//    }
 
 
 
