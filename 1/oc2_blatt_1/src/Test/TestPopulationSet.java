@@ -11,7 +11,7 @@ import General_XCS.PopulationSet;
 public class TestPopulationSet {
 
     public static void main(String[] args) {
-        Classifier first = new Classifier("First",0,0,0,"0#0#","This");
+        Classifier first = new Classifier("First",0,0,0,"0#0000#","This");
         Classifier second = new Classifier("second",0,0,0,"0011","is");
         Classifier third = new Classifier("third",0,0,0,"0000","Sparta");
 

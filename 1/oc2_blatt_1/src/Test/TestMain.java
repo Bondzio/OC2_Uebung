@@ -31,7 +31,7 @@ public class TestMain {
         System.out.println("distance: " + distance);
 
         xcs.getDetector().setDistance(distance);
-        String action = xcs.run();
+        xcs.run();
     }
     
     

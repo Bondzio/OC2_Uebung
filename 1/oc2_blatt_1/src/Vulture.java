@@ -61,29 +61,24 @@ public class Vulture {
          */
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
-        System.out.println("target: " + target);
+//        System.out.println("target: " + target);
         System.out.println("distance: " + distance);
 
         
         xcs.getDetector().setDistance(distance);
-        xcs.getEffector().setStats(this.unit, target);
-        
+        xcs.getEffector().setStats(this.unit, target, distance);   
         
         String action = xcs.run();
-        
-        
-        
-
-        System.out.println("ACTION: " + action);
-        
-        move(target);
-        
-    	// get Situation
-        String envInput = "";
-    	// define POPULATION SET
-        
-
-        
+        if(action == "kite")
+        	kite(target);
+        if(action == "move"){
+        	 if (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() > getDistance(target)) {
+                 bwapi.attack(unit.getID(), target.getID());
+              }
+        	 else
+        		 move(target);
+        }
+        	
         
     }
 

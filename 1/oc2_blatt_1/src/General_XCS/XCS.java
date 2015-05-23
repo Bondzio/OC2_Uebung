@@ -1,11 +1,7 @@
 package General_XCS;
 
-import jnibwapi.Unit;
 import General_XCS.PredictionArray;
 
-/**
- * Created by Rolle on 16.05.2015.
- */
 public class XCS{
 
     private PopulationSet populationSet;
@@ -34,7 +30,9 @@ public class XCS{
         ActionSet aSet = pArray.getRouletteActionSet();
         
         double currentReward = effector.getReward(aSet.getWinningAction());
-
+        System.out.println("reward: " + currentReward);
+        
+        
         mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
 
         return aSet.getSet().get(0).getAction();

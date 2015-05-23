@@ -82,14 +82,24 @@ public class PredictionArray{
 	public ActionSet getRouletteActionSet() {
 		double predictionSum = 0.;
 		int i;
-		for (i = 0; i < predictionArray.length; i++)
+		for (i = 0; i < predictionArray.length; i++) //{
 			predictionSum += predictionArray[i];
 
-		predictionSum *= Math.random();
+//		System.out.println("pA[i]: " + predictionArray[i]);
+//		System.out.println("predictionSum: " + predictionSum);
+//		}
+
+		double randomNumber = Math.random();
+		
+		predictionSum *= randomNumber;
+		
 		double acceptanceValue = 0.;
 		for (i = 0; acceptanceValue < predictionSum; i++) {
 			acceptanceValue += predictionArray[i];
 		}
+		
+
+		
 		return new ActionSet(getWinningClassifier(i-1));
 	}
 	

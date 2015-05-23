@@ -54,6 +54,9 @@ public class PopulationSet {
     }
 
     private boolean isEqual(String[] aMatcher, String[] conAsArray){
+    	if (aMatcher.length != conAsArray.length)
+    		return false;
+    	
         for(int i = 0; i<conAsArray.length; i++){
             String sFromCon = conAsArray[i];
             String sFromMat = aMatcher[i];

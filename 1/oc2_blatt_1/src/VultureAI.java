@@ -18,7 +18,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     private int marineID = 0; // from old Version
 
     public VultureAI() {
-        System.out.println("This is the VultureAI! :)");
+        System.out.println("This is the ANANAS VultureAI! :)");
 
         bwapi = new JNIBWAPI(this, false);
     }
@@ -41,11 +41,11 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     @Override
     public void matchFrame() {
 
-//        try {
+        try {
             vulture.step(); // to run the old Version of Step
-//        }catch (NullPointerException np){
-//            System.out.println("Game is restarting...");
-//        }
+        }catch (NullPointerException np){
+            System.out.println("Game is restarting...");
+        }
 
         if (frame % 1000 == 0) {
             System.out.println("Frame: " + frame);
