@@ -13,19 +13,19 @@ public class StarCraftBW_Effector implements IEffector{
 	private Double distance;
 	private int killedUnits = 0;
 
-	@Override
+
 	public void setStats(Unit unit, Unit target, Double distance) {
 		this.unit = unit;
 		this.target = target;
 		this.distance = distance;
 	}
 
-	@Override
+
 	public Unit getUnit() {
 		return this.unit;
 	}
 
-	@Override
+
 	public Unit getTarget() {
 		return this.target;
 	}
