@@ -16,7 +16,7 @@ public class Vulture {
     final private JNIBWAPI bwapi;
     private final HashSet<Unit> enemyUnits;
     final private Unit unit;
-    final private StarCraftBW_XCS_Manager xcs_Manager = new StarCraftBW_XCS_Manager();
+    final public StarCraftBW_XCS_Manager xcs_Manager = new StarCraftBW_XCS_Manager();
     BWColor bwColor;
     private int leftCounts = 0;
     private int rightCounts = 0;
@@ -53,6 +53,7 @@ public class Vulture {
         if(!first){
              xcs_Manager.actionExecutionFin(unit, target, distance);
         }else {
+            xcs_Manager.loadOldProgress();
             first = false;
         }
 

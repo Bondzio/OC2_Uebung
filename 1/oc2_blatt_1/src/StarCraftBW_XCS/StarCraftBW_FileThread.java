@@ -21,6 +21,7 @@ public class StarCraftBW_FileThread extends Thread{
     @Override
     public void run() {
         // For keeping the thread Alive
+        System.out.println("FileThread: started");
         stop = false;
         try {
             while (!stop) {
@@ -78,10 +79,12 @@ public class StarCraftBW_FileThread extends Thread{
     }
 
     public synchronized PopulationSet getSavedPopulationSet() {
+        System.out.println("FileThread: Try to load File");
         Gson gson = new Gson();
         try{
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             PopulationSet pSet = gson.fromJson(br, PopulationSet.class);
+            System.out.println("FileThread: File loaded");
             return pSet;
        } catch (FileNotFoundException e) {
            e.printStackTrace();

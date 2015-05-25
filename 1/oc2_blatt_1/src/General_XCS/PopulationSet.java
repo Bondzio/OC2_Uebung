@@ -85,6 +85,7 @@ public class PopulationSet extends ClassifierSet{
                     action);
 
             this.addNewClassifier(newC);
+            idCounter++;
         }
     }
 }

@@ -108,6 +108,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     @Override
     public void matchEnd(boolean winner) {
+        vulture.xcs_Manager.cleanUp();
     }
 
     @Override

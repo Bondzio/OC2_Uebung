@@ -50,7 +50,11 @@ public class StarCraftBW_XCS_Manager {
 
     public void loadOldProgress(){
         PopulationSet newPSet = fileThread.getSavedPopulationSet();
-        xcs.setPopulationSet(newPSet);
+
+        if (newPSet == null)
+            return;
+        else if(newPSet.getSet().size() > 0)
+            xcs.setPopulationSet(newPSet);
     }
 
 
@@ -59,8 +63,8 @@ public class StarCraftBW_XCS_Manager {
         fileThread.stopMe();
     }
 
-    private void cleanUp(){
-
+    public void cleanUp(){
+        saveOnlyOnce();
     }
 
 
