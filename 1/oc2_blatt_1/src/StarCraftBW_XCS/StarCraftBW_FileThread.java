@@ -21,13 +21,16 @@ public class StarCraftBW_FileThread extends Thread{
     @Override
     public void run() {
         // For keeping the thread Alive
+        stop = false;
         try {
             while (!stop) {
                 saveClassifierSet();
             }
         } catch (InterruptedException e) {
+            stop = true;
+            System.out.println("FileThread: Was interupted");
         }
-        System.out.println("FileThread has been stopped");
+        System.out.println("FileThread:  has been stopped");
         // do it once
 //        try {
 //            saveClassifierSet();
@@ -38,16 +41,15 @@ public class StarCraftBW_FileThread extends Thread{
 
 
     public synchronized void putClassifierSetToSave(PopulationSet toSave) throws InterruptedException {
-        while (cSet != null && !stop) {
-            System.out.println("Waiting for something to save!");
+        if(stop)
+            return;
+
+        while (cSet != null) {
+            System.out.println("FileThread: waiting to set new PopulationSet");
             wait();
         }
 
-        if(stop){
-            return;
-        }
-
-        System.out.println("found something to save");
+        System.out.println("FileThread: found something to save");
         this.cSet = toSave;
         notify();
         //Later, when the necessary event happens, the thread that is running it calls notify() from a block synchronized on the same object.
@@ -55,15 +57,11 @@ public class StarCraftBW_FileThread extends Thread{
 
     private synchronized void saveClassifierSet() throws InterruptedException {
         notify();
-        while (cSet == null && !stop) {
+        while (cSet == null) {
             wait();//By executing wait() from a synchronized block, a thread gives up its hold on the lock and goes to sleep.
         }
 
-        if(stop){
-            return;
-        }
-
-        System.out.println("save file");
+        System.out.println("FileThread: save file");
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         String jString = gson.toJson(cSet);
@@ -79,7 +77,7 @@ public class StarCraftBW_FileThread extends Thread{
 
     }
 
-    public synchronized PopulationSet getSavedClassifierSet() {
+    public synchronized PopulationSet getSavedPopulationSet() {
         Gson gson = new Gson();
         try{
             BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -92,9 +90,10 @@ public class StarCraftBW_FileThread extends Thread{
     }
 
     public synchronized void stopMe(){
-        this.stop = true;
-        notify();
+        this.interrupt();
     }
+
+
 
 
 }

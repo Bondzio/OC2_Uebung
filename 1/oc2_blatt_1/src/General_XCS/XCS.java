@@ -29,7 +29,7 @@ public class XCS implements Serializable{
     }
 
 
-    public String runMultiStepLearning(){
+    public void doOneMultiStepLearning(){
 
         String binaryStringRep = detector.getDetected();
 
@@ -40,14 +40,16 @@ public class XCS implements Serializable{
 
         //ActionSet aSet = pArray.getBestActionSet();
         ActionSet aSet = pArray.getRouletteActionSet();
+
+        String winningAction = aSet.getWinningAction();
         
-        double currentReward = effector.getReward();
-        System.out.println("reward: " + currentReward);
-       
+        double currentReward = effector.execAction(winningAction);
+
         mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
 
-        return aSet.getWinningAction();
     }
+
+
 
     public PopulationSet getPopulationSet() {
         return populationSet;

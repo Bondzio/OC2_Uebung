@@ -3,9 +3,6 @@ package Test;
 import General_XCS.Classifier;
 import General_XCS.ClassifierSet;
 import General_XCS.PopulationSet;
-import General_XCS.XCS;
-import StarCraftBW_XCS.StarCraftBW_DistanceDetector;
-import StarCraftBW_XCS.StarCraftBW_Effector;
 import StarCraftBW_XCS.StarCraftBW_FileThread;
 
 /**
@@ -31,10 +28,16 @@ public class TestFileThread {
 
         StarCraftBW_FileThread fT = new StarCraftBW_FileThread();
         fT.start();
+        Boolean test = true;
 
         for(int i=0; i <=10; i++){
             try {
                 fT.putClassifierSetToSave(pSet);
+                if(test){
+                    fT.stopMe();
+                    test = false;
+                }
+
 
                 System.out.println("DOING STUFF");
             } catch (InterruptedException e) {
@@ -42,10 +45,15 @@ public class TestFileThread {
             }
         }
 
-        PopulationSet testP = fT.getSavedClassifierSet();
+        //fT.stopMe();
 
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        fT.stopMe();
+        PopulationSet testP = fT.getSavedPopulationSet();
 
         for(Classifier c : testP.getSet()){
             System.out.println(c.toString());

@@ -22,6 +22,15 @@ public class Vulture {
         this.enemyUnits = enemyUnits;
     }
 
+
+
+    public void rollesStep(){
+        Unit target = getClosestEnemy();
+        double distance = getDistance(target);
+
+
+    }
+
     public void step() {
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
@@ -38,16 +47,16 @@ public class Vulture {
         xcs.getDetector().setDistance(distance);
         xcs.getEffector().setStats(this.unit, target, distance);   
         
-        String action = xcs.run();
+//        String action = xcs.run();
 
 
 
         
-        if(action.equals("kite"))
-            kite(target);
-//        	kite(target, distance);
-        else if(action.equals("move"))
-        	move(target, distance);
+//        if(action.equals("kite"))
+//            kite(target);
+////        	kite(target, distance);
+//        else if(action.equals("move"))
+//        	move(target, distance);
 
     }
 

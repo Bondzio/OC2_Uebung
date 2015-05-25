@@ -3,7 +3,7 @@ package StarCraftBW_XCS;
 import General_XCS.PopulationSet;
 import General_XCS.XCS;
 
-public class StarCraftBW_XCS {
+public class StarCraftBW_XCS extends Thread{
 
 	private String[] actionSet = {"move", "kite"};
 
@@ -22,12 +22,23 @@ public class StarCraftBW_XCS {
     	return this.distanceDetector;
     }
 
-    public StarCraftBW_Effector getEffector(){
-    	return this.effector;
+    public StarCraftBW_Effector getEffector() {
+        return this.effector;
     }
-    
-    public String run(){
-        return xcs.runMultiStepLearning();
+
+    @Override
+    public void run() {
+        while(true){
+            if(isInterrupted()){
+                cleanUp();
+                interrupted();
+            }
+        }
+    }
+
+
+    public void doIt(){
+        xcs.doOneMultiStepLearning();
     }
 
     public void saveProgress(){
@@ -38,11 +49,19 @@ public class StarCraftBW_XCS {
     }
 
     public void loadOldProgress(){
-        PopulationSet newPSet = fileThread.getSavedClassifierSet();
+        PopulationSet newPSet = fileThread.getSavedPopulationSet();
         xcs.setPopulationSet(newPSet);
     }
 
 
+    private void saveOnlyOnce(){
+        saveProgress();
+        fileThread.stopMe();
+    }
+
+    private void cleanUp(){
+
+    }
 
 
 }
