@@ -4,14 +4,14 @@ import General_XCS.PredictionArray;
 
 import java.io.Serializable;
 
-public class XCS implements Serializable{
+public class XCS{
 
 
 
-    private PopulationSet populationSet;
-    private MultiStepRewarder mStepRewarder = new MultiStepRewarder();
-    private IEffector effector;
-    private IDetector detector;
+    protected PopulationSet populationSet;
+    protected MultiStepRewarder mStepRewarder = new MultiStepRewarder();
+    protected IEffector effector;
+    protected IDetector detector;
 
 
     public XCS(String[] actionSet,IEffector effector,IDetector detector){
@@ -42,12 +42,16 @@ public class XCS implements Serializable{
         ActionSet aSet = pArray.getRouletteActionSet();
 
         String winningAction = aSet.getWinningAction();
-        
-        double currentReward = effector.execAction(winningAction);
+
+        effector.execAction(winningAction);
+
+        double currentReward = effector.getRewardForExecutedAction();
 
         mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
 
     }
+
+
 
 
 

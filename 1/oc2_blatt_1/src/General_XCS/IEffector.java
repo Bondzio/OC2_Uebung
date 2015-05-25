@@ -5,7 +5,8 @@ import jnibwapi.Unit;
 
 public interface IEffector {
 
-    public int execAction(String winningAction);
+    public void execAction(String winningAction);
+    public int getRewardForExecutedAction();
 
     
 }

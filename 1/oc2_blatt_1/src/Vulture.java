@@ -1,5 +1,5 @@
 import StarCraftBW_XCS.StarCraftBW_Unit_Constants;
-import StarCraftBW_XCS.StarCraftBW_XCS;
+import StarCraftBW_XCS.StarCraftBW_XCS_Manager;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
@@ -16,11 +16,12 @@ public class Vulture {
     final private JNIBWAPI bwapi;
     private final HashSet<Unit> enemyUnits;
     final private Unit unit;
-    final private StarCraftBW_XCS xcs = new StarCraftBW_XCS();
+    final private StarCraftBW_XCS_Manager xcs_Manager = new StarCraftBW_XCS_Manager();
     BWColor bwColor;
     private int leftCounts = 0;
     private int rightCounts = 0;
     private int backCounts = 0;
+    private boolean first = true;
 
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
         this.unit = unit;
@@ -28,9 +29,8 @@ public class Vulture {
         this.enemyUnits = enemyUnits;
     }
 
-    public void step() {
-        Unit target = getClosestEnemy();
-        double distance = getDistance(target);
+
+    private void printStuff(double distance){
 
         System.out.println("distance: " + distance);
         bwapi.drawText(unit.getPosition(), "TilePos: " + unit.getTilePosition().toString() + " Pos: " + unit.getPosition().toString(), false);
@@ -40,20 +40,29 @@ public class Vulture {
         System.out.println("moved right total: " + rightCounts);
         System.out.println("moved back total: " + backCounts);
 
-        //XCS
-        //TODO: Persistieren!
-        xcs.getDetector().setDistance(distance);
-        xcs.getEffector().setStats(this.unit, target, distance);
+    }
 
-        String action = xcs.run();
+    public void step() {
+        Unit target = getClosestEnemy();
+        double distance = getDistance(target);
 
+        //printStuff(distance);
+
+        xcs_Manager.getDetector().setDistance(distance);
+
+        if(!first){
+             xcs_Manager.actionExecutionFin(unit, target, distance);
+        }else {
+            first = false;
+        }
+
+        String action = xcs_Manager.getNextPredictedAction();;
 
         if (action.equals("kite"))
 //            kite(target);
             kite(target, distance);
         else if (action.equals("move"))
             move(target, distance);
-
     }
 
 

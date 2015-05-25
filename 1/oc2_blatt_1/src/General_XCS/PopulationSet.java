@@ -74,7 +74,7 @@ public class PopulationSet extends ClassifierSet{
 
 
         for(String action : this.actionSet){
-            String cName = XCS_Constants.DEFAULT_CLASSIFIER_NAME + Integer.toString(idCounter);
+            String cName = XCS_Constants.DEFAULT_CLASSIFIER_NAME + "_" + Integer.toString(idCounter);
 
             Classifier newC = new Classifier(
                     cName,
