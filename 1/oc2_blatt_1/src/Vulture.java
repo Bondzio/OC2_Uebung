@@ -3,6 +3,9 @@ import StarCraftBW_XCS.StarCraftBW_XCS;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
+import jnibwapi.util.BWColor;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Vulture {
@@ -11,6 +14,7 @@ public class Vulture {
     private final HashSet<Unit> enemyUnits;
     final private Unit unit;
     final private StarCraftBW_XCS xcs = new StarCraftBW_XCS();
+    BWColor bwColor;
 
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
         this.unit = unit;
@@ -22,7 +26,12 @@ public class Vulture {
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
 
+
         System.out.println("distance: " + distance);
+        bwapi.drawText(unit.getPosition(), "TilePos: " + unit.getTilePosition().toString() + " Pos: " + unit.getPosition().toString(), false);
+        bwapi.drawCircle(unit.getPosition(), StarCraftBW_Unit_Constants.OWN_WEAPONRANGE, bwColor.Red, false, false);
+        bwapi.drawBox(unit.getTopLeft(), unit.getBottomRight(), bwColor.Green, false, false);
+        bwapi.drawLine(unit.getPosition(), unit.getTargetPosition(),bwColor.Blue, false);
 
         //XCS
         //TODO: Persistieren!
@@ -120,9 +129,9 @@ public class Vulture {
 ////                    return unitFinderResults;
 ////                }
 //
-//                HashSet<Unit> lefts = getUnitsInRadius(left, 75);
-//                HashSet<Unit> rights = getUnitsInRadius(right, 75);
-//                HashSet<Unit> backs = getUnitsInRadius(back, 75);
+//                ArrayList<Unit> lefts = getUnitsInRadius(left, 75);
+//                ArrayList<Unit> rights = getUnitsInRadius(right, 75);
+//                ArrayList<Unit> backs = getUnitsInRadius(back, 75);
 //
 //                //store the unit counts
 //                int leftcount = lefts.size();
@@ -150,28 +159,33 @@ public class Vulture {
 //        }
 //    }
 //
-//    private HashSet<Unit> getUnitsInRectangle(int left, int top, int right, int bottom) {
-//        HashSet<Unit> unitFinderResults;
+//    private ArrayList<Unit> getUnitsInRectangle(int left, int top, int right, int bottom) {
+//        ArrayList<Unit> unitFinderResults;
+//
 //        // Have the unit finder do its stuff
+//        for (Position i : ) {
+//            for (Position j : ) {
+//               unitFinderResults.addAll(bwapi.getUnitsOnTile(j));
+//            }
+//        }
 //
 //        // Return results
 //        return unitFinderResults;
 //    }
 //
-//    private HashSet<Unit> getUnitsInRadius(int x, int y, int radius) {
+//    private ArrayList<Unit> getUnitsInRadius(Position center, int radius) {
+//        int x = center.getPX();
+//        int y = center.getPY();
+//
 //        return this.getUnitsInRectangle(x - radius,
 //                y - radius,
 //                x + radius,
 //                y + radius);
 //    }
-//
-//    private HashSet<Unit> getUnitsInRadius(Position center, int radius) {
-//        return this.getUnitsInRadius(center.getPX(), center.getPY(), radius);
-//    }
 
     private void move(Unit target, double distance) {
     	System.out.println("move");
-    	
+
     	if (distance <= StarCraftBW_Unit_Constants.OWN_WEAPONRANGE)
 			unit.attack(target, false);
 		else
