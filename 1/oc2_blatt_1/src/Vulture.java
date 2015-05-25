@@ -30,7 +30,8 @@ public class Vulture {
         xcs.getEffector().setStats(this.unit, target, distance);   
         
         String action = xcs.run();
-        
+
+
 
         
         if(action.equals("kite"))

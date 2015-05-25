@@ -20,7 +20,9 @@ public class TestPopulationSet {
         cSet.addNewClassifier(second);
         cSet.addNewClassifier(third);
 
-        PopulationSet pSet = new PopulationSet(cSet);
+        String[] aSet = {"move","kite"};
+
+        PopulationSet pSet = new PopulationSet(cSet,aSet);
 
         String Matcher = "0000";
 

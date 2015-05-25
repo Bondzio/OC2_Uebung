@@ -2,7 +2,11 @@ package General_XCS;
 
 import General_XCS.PredictionArray;
 
-public class XCS{
+import java.io.Serializable;
+
+public class XCS implements Serializable{
+
+
 
     private PopulationSet populationSet;
     private MultiStepRewarder mStepRewarder = new MultiStepRewarder();
@@ -16,6 +20,14 @@ public class XCS{
         this.effector = effector;
         this.detector = detector;
     }
+
+    public XCS(ClassifierSet cSet,String[] actionSet,IEffector effector,IDetector detector){
+        this.populationSet = new PopulationSet(cSet,actionSet);
+        this.mStepRewarder = new MultiStepRewarder();
+        this.effector = effector;
+        this.detector = detector;
+    }
+
 
     public String runMultiStepLearning(){
 
@@ -37,4 +49,12 @@ public class XCS{
         return aSet.getWinningAction();
     }
 
+    public PopulationSet getPopulationSet() {
+        return populationSet;
+    }
+
+
+    public void setPopulationSet(PopulationSet pSet) {
+        this.populationSet = pSet;
+    }
 }

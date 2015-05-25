@@ -7,20 +7,22 @@ import java.util.ArrayList;
 /**
  * Created by Rolle on 11.05.2015.
  */
-public class PopulationSet {
+public class PopulationSet extends ClassifierSet{
 
-    private ClassifierSet population ;
     private String[] actionSet;
     private int idCounter = 0;
 
 
 
-    public PopulationSet(ClassifierSet population) {
-        this.population = population;
+    public PopulationSet(ClassifierSet population,String[] actionSet) {
+        for(Classifier c : population.getSet())
+            this.addNewClassifier(c);
+
+        this.actionSet = actionSet;
     }
 
     public PopulationSet(String[] actionSet) {
-        population = new ClassifierSet();
+
         this.actionSet = actionSet;
     }
     
@@ -35,7 +37,7 @@ public class PopulationSet {
         String[] conAsArray;
         while(true){
             boolean foundSomething = false;
-            for(Classifier c: this.population.getSet()){
+            for(Classifier c: getSet()){
                 String cConditon = c.getCondition();
                 conAsArray = cConditon.split("");
 
@@ -69,6 +71,8 @@ public class PopulationSet {
     }
 
     private void covering(String matcher){
+
+
         for(String action : this.actionSet){
             String cName = XCS_Constants.DEFAULT_CLASSIFIER_NAME + Integer.toString(idCounter);
 
@@ -80,7 +84,7 @@ public class PopulationSet {
                     matcher,
                     action);
 
-            this.population.addNewClassifier(newC);
+            this.addNewClassifier(newC);
         }
     }
 }
