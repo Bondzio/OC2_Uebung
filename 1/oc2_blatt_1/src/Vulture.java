@@ -3,8 +3,6 @@ import StarCraftBW_XCS.StarCraftBW_XCS;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
-import jnibwapi.types.WeaponType;
-
 import java.util.HashSet;
 
 public class Vulture {
@@ -35,9 +33,10 @@ public class Vulture {
         
 
         
-        if(action == "kite")
-        	kite(target);
-        else if(action == "move")
+        if(action.equals("kite"))
+            kite(target);
+//        	kite(target, distance);
+        else if(action.equals("move"))
         	move(target, distance);
 
     }
@@ -49,6 +48,126 @@ public class Vulture {
     	unit.move(new Position(target.getPosition().getPX() - StarCraftBW_Unit_Constants.OWN_WEAPONRANGE, target.getPosition().getPY() - StarCraftBW_Unit_Constants.OWN_WEAPONRANGE), false);
     }
 
+//    private void kite(Unit target, double distance) {
+//        System.out.println("kite");
+//
+//        if (target != null) {
+//            if (distance > 155) {
+//                unit.attack(target, false);
+//            }
+//            else {
+//                Position posMy = unit.getPosition(); //our unit position
+//                Position posEnemy = target.getPosition(); //enemy position
+//
+//                int myX = posMy.getPX();
+//                int myY = posMy.getPY();
+//                int enemyX = posEnemy.getPX();
+//                int enemyY = posEnemy.getPY();
+//
+//                //vector from us to target
+//                int evadeX = myX - enemyX;
+//                int evadeY = myY - enemyY;
+//
+//                //position behind us
+//                evadeX = myX + evadeX;
+//                evadeY = myY + evadeY;
+//
+//                //rotate behind->us vector 90 degrees counterclockwise
+//                int torotateX = myX - evadeX;
+//                int torotateY = myY - evadeY;
+//                int temp_x = torotateX;
+//                torotateX = -torotateY;
+//                torotateY = temp_x;
+//
+//                //store 90 counterclockwise position
+//                Position left = new Position(evadeX + torotateX, evadeY + torotateY);
+//                left = left.makeValid();
+//
+//                //store 90 clockwise position
+//                Position right = new Position(evadeX - torotateX, evadeY - torotateY);
+//                right = right.makeValid();
+//
+//                //store behind position
+//                Position back = new Position(evadeX, evadeY);
+//                back = back.makeValid();
+//
+//                //get list of units in each area
+//
+////                Unitset Game::getUnitsInRadius(int x, int y, int radius, const UnitFilter &pred) const
+////                {
+////                    return this->getUnitsInRectangle(x - radius,
+////                        y - radius,
+////                        x + radius,
+////                        y + radius,
+////                        [&x,&y,&radius,&pred](Unit u){ return u->getDistance(Position(x,y)) <= radius && (!pred.isValid() || pred(u)); });
+////                }
+////
+////                Unitset GameImpl::getUnitsInRectangle(int left, int top, int right, int bottom, const UnitFilter &pred) const
+////                {
+////                    Unitset unitFinderResults;
+////
+////                    // Have the unit finder do its stuff
+////                    Templates::iterateUnitFinder<unitFinder>(data->xUnitSearch,
+////                            data->yUnitSearch,
+////                            data->unitSearchSize,
+////                            left,
+////                            top,
+////                            right,
+////                            bottom,
+////                    [&](Unit u){ if ( !pred.isValid() || pred(u) )
+////                    unitFinderResults.insert(u); });
+////                    // Return results
+////                    return unitFinderResults;
+////                }
+//
+//                HashSet<Unit> lefts = getUnitsInRadius(left, 75);
+//                HashSet<Unit> rights = getUnitsInRadius(right, 75);
+//                HashSet<Unit> backs = getUnitsInRadius(back, 75);
+//
+//                //store the unit counts
+//                int leftcount = lefts.size();
+//                int rightcount = rights.size();
+//                int backcount = backs.size();
+//
+//                //find area with least amount
+//                int least;
+//                if(rightcount < leftcount) least = rightcount;
+//                else least = leftcount;
+//                if(least < backcount){}
+//                else least = backcount;
+//
+//                //if a path exists, move to that area
+//                if(least == leftcount && bwapi.hasPath(target, left)){
+//                    unit.move(left, false);
+//                }
+//                else if(least == rightcount && bwapi.hasPath(target, right)){
+//                    unit.move(right, false);
+//                }
+//                else if(least == backcount && bwapi.hasPath(target, back)){
+//                    unit.move(back, false);
+//                }
+//            }
+//        }
+//    }
+//
+//    private HashSet<Unit> getUnitsInRectangle(int left, int top, int right, int bottom) {
+//        HashSet<Unit> unitFinderResults;
+//        // Have the unit finder do its stuff
+//
+//        // Return results
+//        return unitFinderResults;
+//    }
+//
+//    private HashSet<Unit> getUnitsInRadius(int x, int y, int radius) {
+//        return this.getUnitsInRectangle(x - radius,
+//                y - radius,
+//                x + radius,
+//                y + radius);
+//    }
+//
+//    private HashSet<Unit> getUnitsInRadius(Position center, int radius) {
+//        return this.getUnitsInRadius(center.getPX(), center.getPY(), radius);
+//    }
 
     private void move(Unit target, double distance) {
     	System.out.println("move");
