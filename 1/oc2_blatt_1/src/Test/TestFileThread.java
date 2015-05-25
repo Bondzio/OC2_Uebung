@@ -28,30 +28,30 @@ public class TestFileThread {
 
         StarCraftBW_FileThread fT = new StarCraftBW_FileThread();
         fT.start();
-        Boolean test = true;
-
-        for(int i=0; i <=10; i++){
-            try {
-                fT.putClassifierSetToSave(pSet);
-                if(test){
-                    fT.stopMe();
-                    test = false;
-                }
-
-
-                System.out.println("DOING STUFF");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //fT.stopMe();
-
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        Boolean test = true;
+//
+//        for(int i=0; i <=10; i++){
+//            try {
+//                fT.putClassifierSetToSave(pSet);
+//                if(test){
+//                    fT.stopMe();
+//                    test = false;
+//                }
+//
+//
+//                System.out.println("DOING STUFF");
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        //fT.stopMe();
+//
+//        try {
+//            Thread.sleep(10);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         PopulationSet testP = fT.getSavedPopulationSet();
 
