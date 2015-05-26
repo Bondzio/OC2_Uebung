@@ -6,36 +6,35 @@ import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
 import jnibwapi.util.BWColor;
 
-import java.awt.image.TileObserver;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+
 
 public class Vulture {
 
     final private JNIBWAPI bwapi;
-    private final HashSet<Unit> enemyUnits;
+    final private HashSet<Unit> enemyUnits;
     final private Unit unit;
     final public StarCraftBW_XCS_Manager xcs_Manager = new StarCraftBW_XCS_Manager();
-    BWColor bwColor;
     private int leftCounts = 0;
     private int rightCounts = 0;
     private int backCounts = 0;
     private boolean first = true;
 
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
+
         this.unit = unit;
         this.bwapi = bwapi;
         this.enemyUnits = enemyUnits;
+
     }
 
 
-    private void printStuff(double distance){
+    private void printStuff(double distance) {
 
         System.out.println("distance: " + distance);
-        bwapi.drawText(unit.getPosition(), "TilePos: " + unit.getTilePosition().toString() + " Pos: " + unit.getPosition().toString(), false);
-        bwapi.drawCircle(unit.getPosition(), StarCraftBW_Unit_Constants.OWN_WEAPONRANGE, bwColor.Red, false, false);
-        bwapi.drawLine(unit.getPosition(), unit.getTargetPosition(), bwColor.Green, false);
+        bwapi.drawCircle(unit.getPosition(), StarCraftBW_Unit_Constants.OWN_WEAPONRANGE, BWColor.Red, false, false);
+        bwapi.drawLine(unit.getPosition(), unit.getTargetPosition(), BWColor.Green, false);
         System.out.println("moved left total: " + leftCounts);
         System.out.println("moved right total: " + rightCounts);
         System.out.println("moved back total: " + backCounts);
@@ -43,21 +42,21 @@ public class Vulture {
     }
 
     public void step() {
+
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
-
-        //printStuff(distance);
+        printStuff(distance);
 
         xcs_Manager.getDetector().setDistance(distance);
 
-        if(!first){
-             xcs_Manager.actionExecutionFin(unit, target, distance);
-        }else {
+        if (!first) {
+            xcs_Manager.actionExecutionFin(unit, target, distance);
+        } else {
             xcs_Manager.loadOldProgress();
             first = false;
         }
 
-        String action = xcs_Manager.getNextPredictedAction();;
+        String action = xcs_Manager.getNextPredictedAction();
 
         if (action.equals("kite"))
 //            kite(target);
@@ -66,11 +65,9 @@ public class Vulture {
             move(target, distance);
     }
 
-
 //    private void kite(Unit target){
 //    	System.out.println("kite");
-//    	//TODO: Testen: weniger weit wegfahren (nur die Haelfte z.B.)
-//    	unit.move(new Position(target.getPosition().getPX() - StarCraftBW_Unit_Constants.OWN_WEAPONRANGE, target.getPosition().getPY() - StarCraftBW_Unit_Constants.OWN_WEAPONRANGE), false);
+//    	unit.move(new Position(target.getPosition().getPX() - 80, target.getPosition().getPY() - 80), false);
 //    }
 
     private void kite(Unit target, double distance) {
@@ -97,18 +94,18 @@ public class Vulture {
                 evadeY = myY + evadeY;
 
                 //rotate behind->us vector 90 degrees counterclockwise
-                int torotateX = myX - evadeX;
-                int torotateY = myY - evadeY;
-                int temp_x = torotateX;
-                torotateX = -torotateY;
-                torotateY = temp_x;
+                int toRotateX = myX - evadeX;
+                int toRotateY = myY - evadeY;
+                int temp = toRotateX;
+                toRotateX = -toRotateY;
+                toRotateY = temp;
 
                 //store 90 counterclockwise position
-                Position left = new Position(evadeX + torotateX, evadeY + torotateY);
+                Position left = new Position(evadeX + toRotateX, evadeY + toRotateY);
                 left = left.makeValid();
 
                 //store 90 clockwise position
-                Position right = new Position(evadeX - torotateX, evadeY - torotateY);
+                Position right = new Position(evadeX - toRotateX, evadeY - toRotateY);
                 right = right.makeValid();
 
                 //store behind position
@@ -121,40 +118,37 @@ public class Vulture {
                 ArrayList<Unit> backs = getUnitsInRadius(back, 80);
 
                 //store the unit counts
-                int leftcount = lefts.size();
-                //int leftcount = 2;
-                int rightcount = rights.size();
-                //int rightcount = 1;
-                int backcount = backs.size();
-                //int backcount = 3;
+                int leftCount = lefts.size();
+                int rightCount = rights.size();
+                int backCount = backs.size();
 
-//                System.out.println("leftcount: " + leftcount);
-//                System.out.println("rightcount: " + rightcount);
-//                System.out.println("backcount: " + backcount);
+//                System.out.println("leftCount: " + leftCount);
+//                System.out.println("rightCount: " + rightCount);
+//                System.out.println("backCount: " + backCount);
 
                 //find area with least amount
                 int least;
-                if (rightcount < leftcount) least = rightcount;
-                else least = leftcount;
-                if (least < backcount) {
-                } else least = backcount;
-
+                if (rightCount < leftCount) least = rightCount;
+                else least = leftCount;
+                if (least < backCount) least = backCount;
 //                System.out.println("least: " + least);
 
                 //move to that area
-                if (least == leftcount && least == rightcount && least == backcount) {
-                    unit.move(back, false);
+//                if (least == leftCount && least == rightCount && least == backCount && least != 0 && bwapi.hasPath(unit, back)) {
+//                    unit.move(back, false);
 //                    System.out.println("moving back");
-                    backCounts += 1;
-                } else if (least == leftcount) {
+//                    backCounts += 1;
+//                }
+                if (least == leftCount) {
+
                     unit.move(left, false);
 //                    System.out.println("moving left");
                     leftCounts += 1;
-                } else if (least == rightcount) {
+                } else if (least == rightCount) {
                     unit.move(right, false);
 //                    System.out.println("moving right");
                     rightCounts += 1;
-                } else if (least == backcount) {
+                } else {
                     unit.move(back, false);
 //                    System.out.println("moving back");
                     backCounts += 1;
@@ -164,11 +158,11 @@ public class Vulture {
     }
 
     private ArrayList<Unit> getUnitsInRectangle(int left, int top, int right, int bottom) {
-        ArrayList<Unit> unitFinderResults = new ArrayList<Unit>();
-        Position topLeft = new Position(left, top);
-        Position bottomRight = new Position(right, bottom);
 
-        bwapi.drawBox(topLeft, bottomRight, bwColor.Blue, false, false);
+        ArrayList<Unit> unitFinderResults = new ArrayList<Unit>();
+//        Position topLeft = new Position(left, top);
+//        Position bottomRight = new Position(right, bottom);
+//        bwapi.drawBox(topLeft, bottomRight, bwColor.Blue, false, false);
 
         // Have the unit finder do its stuff
         for (int i = left; i < right; i++) {
@@ -191,7 +185,6 @@ public class Vulture {
                         }
                     }
                 }
-
             }
         }
 
@@ -200,6 +193,7 @@ public class Vulture {
     }
 
     private ArrayList<Unit> getUnitsInRadius(Position center, int radius) {
+
         int x = center.getPX();
         int y = center.getPY();
 
@@ -207,6 +201,7 @@ public class Vulture {
                 y - radius,
                 x + radius,
                 y + radius);
+
     }
 
     private void move(Unit target, double distance) {
@@ -219,6 +214,7 @@ public class Vulture {
     }
 
     private Unit getClosestEnemy() {
+
         Unit result = null;
         double minDistance = Double.POSITIVE_INFINITY;
         for (Unit enemy : enemyUnits) {
@@ -232,8 +228,8 @@ public class Vulture {
         return result;
     }
 
-
     private double getDistance(Unit enemy) {
+
         int myX = unit.getPosition().getPX();
         int myY = unit.getPosition().getPY();
 
@@ -247,55 +243,4 @@ public class Vulture {
 
         return Math.sqrt(result);
     }
-
-
-//  private void oldMove(Unit target){
-//      bwapi.move(unit.getID(), target.getX() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() / 2), target.getY() - (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() / 2));
-//  }
-
-//    private double oldGetDistance(Unit enemy) {
-//        int myX = unit.getX();
-//        int myY = unit.getY();
-//
-//        int enemyX = enemy.getX();
-//        int enemyY = enemy.getY();
-//
-//        int diffX = myX - enemyX;
-//        int diffY = myY - enemyY;
-//
-//        double result = Math.pow(diffX, 2) + Math.pow(diffY, 2);
-//
-//        return Math.sqrt(result);
-//    }
-
-
-//    //Old Methode
-//    public int getID() {
-//        return unit.getID();
-//    }
-
-
-//  public void oldStep() {
-//  Unit target = getClosestEnemy();
-//  double distance = getDistance(target);
-//  System.out.println("target: " + target);
-//  System.out.println("distance: " + distance);
-//
-//
-//  if (unit.getOrderID() != 10 && !unit.isAttackFrame() && !unit.isStartingAttack() && !unit.isAttacking() && target != null) {
-//      if (bwapi.getWeaponType(WeaponType.WeaponTypes.Fragmentation_Grenade.getID()).getMaxRange() > getDistance(target)) {
-//         bwapi.attack(unit.getID(), target.getID());
-//      }
-//      else {
-//          move(target);
-//          //System.out.println("search");
-//      }
-//  }
-//  else if (getDistance(target) < bwapi.getWeaponType(WeaponType.WeaponTypes.Psi_Blades.getID()).getMaxRange() + 75) {
-//      kite(target);
-//      //System.out.println("kite");
-//  }
-//
-//
-//}
 }
