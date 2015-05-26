@@ -26,6 +26,7 @@ public class StarCraftBW_XCS extends XCS{
         //ActionSet aSet = pArray.getBestActionSet();
         ActionSet aSet = pArray.getRouletteActionSet();
 
+
         String winningAction = aSet.getWinningAction();
 
         if(saveForReward){

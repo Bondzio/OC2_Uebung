@@ -133,7 +133,9 @@ public class Classifier {
      * @param accuracy The accuracy of the classifier.
      */
     public double updateFitness(double accSum, double accuracy) {
-        fitness += XCS_Constants.BETA * ((accuracy*numerosity) / accSum - fitness);
+
+        fitness += XCS_Constants.BETA * ( ((accuracy * (double) numerosity) / accSum )- fitness);
+
         return fitness;
     }
 

@@ -15,6 +15,7 @@ public class PopulationSet extends ClassifierSet{
 
 
     public PopulationSet(ClassifierSet population,String[] actionSet) {
+        super();
         for(Classifier c : population.getSet())
             this.addNewClassifier(c);
 
@@ -22,7 +23,6 @@ public class PopulationSet extends ClassifierSet{
     }
 
     public PopulationSet(String[] actionSet) {
-
         this.actionSet = actionSet;
     }
     
@@ -34,10 +34,13 @@ public class PopulationSet extends ClassifierSet{
         ClassifierSet newSet = new ClassifierSet();
 
 
+
+
+
         String[] conAsArray;
         while(true){
             boolean foundSomething = false;
-            for(Classifier c: getSet()){
+            for(Classifier c: this.myColletction){
                 String cConditon = c.getCondition();
                 conAsArray = cConditon.split("");
 

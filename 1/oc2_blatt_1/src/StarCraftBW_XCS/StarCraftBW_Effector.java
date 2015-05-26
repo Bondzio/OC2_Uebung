@@ -74,7 +74,7 @@ public class StarCraftBW_Effector implements IEffector{
         if(unit.isExists())
             reward += 1;
 
-        System.out.println("Effector: calc Reward-> " + reward);
+        //System.out.println("Effector: calc Reward-> " + reward);
         return reward;
 
     }

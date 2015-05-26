@@ -51,10 +51,17 @@ public class StarCraftBW_XCS_Manager {
     public void loadOldProgress(){
         PopulationSet newPSet = fileThread.getSavedPopulationSet();
 
-        if (newPSet == null)
+        if (newPSet == null){
+            System.out.println("Manager: Loaded Set was empty");
             return;
-        else if(newPSet.getSet().size() > 0)
+        }
+        else if(newPSet.getSet().size() > 0){
+            System.out.println("Manager: Loaded old pSet");
             xcs.setPopulationSet(newPSet);
+        }
+        else{
+            System.out.println("Manager: loaded pSet was empty");
+        }
     }
 
 

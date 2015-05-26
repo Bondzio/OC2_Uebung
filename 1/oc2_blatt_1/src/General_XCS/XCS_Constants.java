@@ -6,8 +6,8 @@ package General_XCS;
 public class XCS_Constants {
 
     public static final double DEFAULT_CLASSIFIER_PREDICTION = 1;
-    public static final double DEFAULT_CLASSIFIER_PREDICTION_ERR = 1;
-    public static final double DEFAULT_CLASSIFIER_FITNESS = 1;
+    public static final double DEFAULT_CLASSIFIER_PREDICTION_ERR = 0.5;
+    public static final double DEFAULT_CLASSIFIER_FITNESS = 0.5;
     public static final String DEFAULT_CLASSIFIER_NAME = "DefClassifier";
 
     /**

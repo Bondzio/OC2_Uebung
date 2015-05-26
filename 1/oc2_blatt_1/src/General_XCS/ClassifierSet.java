@@ -7,7 +7,12 @@ import java.util.ArrayList;
  */
 public class ClassifierSet {
 
-    private ArrayList<Classifier> myColletction = new ArrayList<Classifier>();
+    protected ArrayList<Classifier> myColletction;
+
+
+    public ClassifierSet(){
+        myColletction = new ArrayList<Classifier>();
+    }
     
     public ArrayList<Classifier> getSet() {
         return new ArrayList<Classifier>(myColletction);
@@ -28,10 +33,12 @@ public class ClassifierSet {
         double[] accuracies = new double[myColletction.size()];
 
         //First, calculate the accuracies of the classifier and the accuracy sums
-        for(int i=0; i<myColletction.size(); i++){
+        for(int i=0; i< myColletction.size(); i++){
             accuracies[i]= myColletction.get(i).getAccuracy();
-            accuracySum+=accuracies[i]*myColletction.get(i).getNumerosity();
+            accuracySum += accuracies[i] * myColletction.get(i).getNumerosity();
         }
+
+
 
         //Next, update the fitnesses accordingly
         for(int i=0; i<myColletction.size(); i++){
@@ -55,9 +62,10 @@ public class ClassifierSet {
     public void updateSet(double maxPrediction, double reward)
     {
 
+
         double P = reward + XCS_Constants.GAMMA*maxPrediction;
 
-        for(int i=0; i<myColletction.size(); i++){
+        for(int i=0; i< myColletction.size(); i++){
            // myColletction.get(i).increaseExperience();
             myColletction.get(i).updatePreError(P);
             myColletction.get(i).updatePrediction(P);
