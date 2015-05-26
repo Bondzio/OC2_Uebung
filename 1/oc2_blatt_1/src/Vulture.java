@@ -9,6 +9,9 @@ import jnibwapi.util.BWColor;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static java.util.Collections.min;
+import static java.util.Arrays.asList;
+
 
 public class Vulture {
 
@@ -19,6 +22,7 @@ public class Vulture {
     private int leftCounts = 0;
     private int rightCounts = 0;
     private int backCounts = 0;
+    private int frontCounts = 0;
     private boolean first = true;
 
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
@@ -38,6 +42,7 @@ public class Vulture {
         System.out.println("moved left total: " + leftCounts);
         System.out.println("moved right total: " + rightCounts);
         System.out.println("moved back total: " + backCounts);
+        System.out.println("moved front total: " + frontCounts);
 
     }
 
@@ -45,7 +50,6 @@ public class Vulture {
 
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
-        printStuff(distance);
 
         xcs_Manager.getDetector().setDistance(distance);
 
@@ -63,6 +67,8 @@ public class Vulture {
             kite(target, distance);
         else if (action.equals("move"))
             move(target, distance);
+
+        printStuff(distance);
     }
 
 //    private void kite(Unit target){
@@ -100,58 +106,79 @@ public class Vulture {
                 toRotateX = -toRotateY;
                 toRotateY = temp;
 
-                //store 90 counterclockwise position
-                Position left = new Position(evadeX + toRotateX, evadeY + toRotateY);
-                left = left.makeValid();
-
-                //store 90 clockwise position
-                Position right = new Position(evadeX - toRotateX, evadeY - toRotateY);
-                right = right.makeValid();
+                //store infornt position
+                Position front = new Position(enemyX, enemyY);
+                front = front.makeValid();
 
                 //store behind position
                 Position back = new Position(evadeX, evadeY);
                 back = back.makeValid();
 
+                //store 90 counterclockwise position
+                Position left = new Position(myX + toRotateX, myY + toRotateY);
+                left = left.makeValid();
+
+                //store 90 clockwise position
+                Position right = new Position(myX - toRotateX, myY - toRotateY);
+                right = right.makeValid();
+
                 //get list of units in each area
                 ArrayList<Unit> lefts = getUnitsInRadius(left, 80);
                 ArrayList<Unit> rights = getUnitsInRadius(right, 80);
                 ArrayList<Unit> backs = getUnitsInRadius(back, 80);
+                ArrayList<Unit> fronts = getUnitsInRadius(front, 80);
 
                 //store the unit counts
                 int leftCount = lefts.size();
                 int rightCount = rights.size();
                 int backCount = backs.size();
+                int frontCount = fronts.size();
 
-//                System.out.println("leftCount: " + leftCount);
-//                System.out.println("rightCount: " + rightCount);
-//                System.out.println("backCount: " + backCount);
+                System.out.println("leftCount: " + leftCount);
+                System.out.println("rightCount: " + rightCount);
+                System.out.println("backCount: " + backCount);
+                System.out.println("frontCount: " + frontCount);
 
                 //find area with least amount
-                int least;
-                if (rightCount < leftCount) least = rightCount;
-                else least = leftCount;
-                if (least < backCount) least = backCount;
+                int least = min(asList(leftCount, rightCount, backCount, frontCount));
 //                System.out.println("least: " + least);
 
                 //move to that area
-//                if (least == leftCount && least == rightCount && least == backCount && least != 0 && bwapi.hasPath(unit, back)) {
-//                    unit.move(back, false);
-//                    System.out.println("moving back");
-//                    backCounts += 1;
-//                }
-                if (least == leftCount) {
-
+                if (least == leftCount && least == rightCount && least == backCount && least == frontCount) {
+                    int rnd = (int) (Math.random() * 4);
+                    if (rnd < 1 && bwapi.hasPath(unit.getPosition(), back)) {
+                        unit.move(back, false);
+//                        System.out.println("moving back");
+                        backCounts += 1;
+                    } else if (rnd < 2 && rnd >= 1 && bwapi.hasPath(unit.getPosition(), left)) {
+                        unit.move(left, false);
+//                        System.out.println("moving left");
+                        leftCounts += 1;
+                    } else if (rnd < 3 && rnd >= 2 && bwapi.hasPath(unit.getPosition(), right)) {
+                        unit.move(right, false);
+//                        System.out.println("moving right");
+                        rightCounts += 1;
+                    } else if (bwapi.hasPath(unit.getPosition(), front)) {
+                        unit.move(front, false);
+//                        System.out.println("moving front");
+                        frontCounts += 1;
+                    }
+                } else if (least == leftCount && bwapi.hasPath(unit.getPosition(), left)) {
                     unit.move(left, false);
 //                    System.out.println("moving left");
                     leftCounts += 1;
-                } else if (least == rightCount) {
+                } else if (least == rightCount && bwapi.hasPath(unit.getPosition(), right)) {
                     unit.move(right, false);
 //                    System.out.println("moving right");
                     rightCounts += 1;
-                } else {
+                } else if (least == backCount && bwapi.hasPath(unit.getPosition(), back)) {
                     unit.move(back, false);
 //                    System.out.println("moving back");
                     backCounts += 1;
+                } else if (least == frontCount && bwapi.hasPath(unit.getPosition(), front)) {
+                    unit.move(front, false);
+//                    System.out.println("moving front");
+                    frontCounts += 1;
                 }
             }
         }
@@ -160,9 +187,9 @@ public class Vulture {
     private ArrayList<Unit> getUnitsInRectangle(int left, int top, int right, int bottom) {
 
         ArrayList<Unit> unitFinderResults = new ArrayList<Unit>();
-//        Position topLeft = new Position(left, top);
-//        Position bottomRight = new Position(right, bottom);
-//        bwapi.drawBox(topLeft, bottomRight, bwColor.Blue, false, false);
+        Position topLeft = new Position(left, top);
+        Position bottomRight = new Position(right, bottom);
+        bwapi.drawBox(topLeft, bottomRight, BWColor.Blue, false, false);
 
         // Have the unit finder do its stuff
         for (int i = left; i < right; i++) {
