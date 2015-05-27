@@ -45,36 +45,36 @@ public class StarCraftBW_Effector implements IEffector{
     @Override
     public int getRewardForExecutedAction() {
 
-
-
         int reward = 0;
 
         // TODO: Rewards richtig gewichten
 
         if (unit.isUnderAttack())
-            reward += -1;
+            reward += -500;
 
         if (unit.isAttackFrame())
-            reward += 4;
+            reward += 500;
 
-        if(this.distance > StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
-            reward += 1;
-
-        if(this.distance <= StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
-            reward += -1;
+//        if(this.distance > StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
+//            reward += 1;
+//
+//        if(this.distance <= StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
+//            reward += -1;
 
         if(this.distance < StarCraftBW_Unit_Constants.OWN_WEAPONRANGE)
-            reward += 5;
+            reward += 250;
 
         if(unit.getKillCount() > this.killedUnits){
-            reward += 10;
+            reward += 1000;
             this.killedUnits++;
         }
 
-        if(unit.isExists())
-            reward += 1;
+        if(!unit.isExists())
+            reward += -1000;
 
-        //System.out.println("Effector: calc Reward-> " + reward);
+        if(reward <= 0 )
+            reward = 0;
+
         return reward;
 
     }

@@ -47,28 +47,28 @@ public class Vulture {
     }
 
     public void step() {
+            Unit target = getClosestEnemy();
+            double distance = getDistance(target);
 
-        Unit target = getClosestEnemy();
-        double distance = getDistance(target);
+            xcs_Manager.getDetector().setDistance(distance);
 
-        xcs_Manager.getDetector().setDistance(distance);
+            if (!first) {
+                xcs_Manager.actionExecutionFin(unit, target, distance);
+            } else {
+                xcs_Manager.loadOldProgress();
+                first = false;
+            }
 
-        if (!first) {
-            xcs_Manager.actionExecutionFin(unit, target, distance);
-        } else {
-            xcs_Manager.loadOldProgress();
-            first = false;
-        }
+            String action = xcs_Manager.getNextPredictedAction();
 
-        String action = xcs_Manager.getNextPredictedAction();
-
-        if (action.equals("kite"))
+            if (action.equals("kite"))
 //            kite(target);
-            kite(target, distance);
-        else if (action.equals("move"))
-            move(target, distance);
+                kite(target, distance);
+            else if (action.equals("move"))
+                move(target, distance);
 
-        printStuff(distance);
+            //printStuff(distance);
+
     }
 
 //    private void kite(Unit target){
@@ -80,9 +80,10 @@ public class Vulture {
         System.out.println("kite");
 
         if (target != null) {
-            if (distance > 155) {
-                unit.attack(target, false);
-            } else {
+//            if (distance > 155) {
+//                unit.attack(target, false);
+//            }
+            if(true) {
                 Position posMy = unit.getPosition(); //our unit position
                 Position posEnemy = target.getPosition(); //enemy position
 
@@ -192,11 +193,15 @@ public class Vulture {
 //        bwapi.drawBox(topLeft, bottomRight, BWColor.Blue, false, false);
 
         // Have the unit finder do its stuff
-        for (int i = left; i < right; i++) {
+        for (int i = left; i < right; i+=32) {
 
-            for (int j = top; j < bottom; j++) {
+            for (int j = top; j < bottom; j+=32) {
                 Position tilePosition = new Position(i / 32, j / 32, Position.PosType.BUILD);
                 tilePosition.makeValid();
+//                Position topLeft = new Position(i-16, j-16);
+//                Position bottomRight = new Position(i+16, j+16);
+//                bwapi.drawBox(topLeft, bottomRight, BWColor.Blue, false, false);
+
 
                 for (Unit unit : bwapi.getUnitsOnTile(tilePosition)) {
                     UnitType type = unit.getType();
