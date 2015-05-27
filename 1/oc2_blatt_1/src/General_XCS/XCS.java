@@ -1,9 +1,5 @@
 package General_XCS;
 
-import General_XCS.PredictionArray;
-
-import java.io.Serializable;
-
 public class XCS{
 
 
@@ -21,35 +17,35 @@ public class XCS{
         this.detector = detector;
     }
 
-    public XCS(ClassifierSet cSet,String[] actionSet,IEffector effector,IDetector detector){
-        this.populationSet = new PopulationSet(cSet,actionSet);
-        this.mStepRewarder = new MultiStepRewarder();
-        this.effector = effector;
-        this.detector = detector;
-    }
+//    public XCS(ClassifierSet cSet,String[] actionSet,IEffector effector,IDetector detector){
+//        this.populationSet = new PopulationSet(cSet,actionSet);
+//        this.mStepRewarder = new MultiStepRewarder();
+//        this.effector = effector;
+//        this.detector = detector;
+//    }
 
 
-    public void doOneMultiStepLearning(){
-
-        String binaryStringRep = detector.getDetected();
-
-        
-        MatchSet mSet = this.populationSet.findMatchingClassifier(binaryStringRep);
-
-        PredictionArray pArray = new PredictionArray(mSet);
-
-        //ActionSet aSet = pArray.getBestActionSet();
-        ActionSet aSet = pArray.getRouletteActionSet();
-
-        String winningAction = aSet.getWinningAction();
-
-        effector.execAction(winningAction);
-
-        double currentReward = effector.getRewardForExecutedAction();
-
-        mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
-
-    }
+//    public void doOneMultiStepLearning(){
+//
+//        String binaryStringRep = detector.getDetected();
+//
+//        
+//        MatchSet mSet = this.populationSet.findMatchingClassifier(binaryStringRep);
+//
+//        PredictionArray pArray = new PredictionArray(mSet);
+//
+//        //ActionSet aSet = pArray.getBestActionSet();
+//        ActionSet aSet = pArray.getRouletteActionSet();
+//
+//        String winningAction = aSet.getWinningAction();
+//
+//        effector.execAction(winningAction);
+//
+//        double currentReward = effector.getRewardForExecutedAction();
+//
+//        mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
+//
+//    }
 
 
 

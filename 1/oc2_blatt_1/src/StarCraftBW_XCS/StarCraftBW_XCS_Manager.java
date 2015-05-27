@@ -3,9 +3,6 @@ package StarCraftBW_XCS;
 import General_XCS.PopulationSet;
 import jnibwapi.Unit;
 
-/**
- * Created by Rolle on 25.05.2015.
- */
 public class StarCraftBW_XCS_Manager {
 
     private StarCraftBW_FileThread fileThread = new StarCraftBW_FileThread();
@@ -20,7 +17,6 @@ public class StarCraftBW_XCS_Manager {
         this.xcs = new StarCraftBW_XCS(actionSet,theEffector,dDetector);
         fileThread.start();
     }
-
 
     public String getNextPredictedAction(){
         xcs.cleanCurrentAction();
@@ -64,7 +60,6 @@ public class StarCraftBW_XCS_Manager {
         }
     }
 
-
     private void saveOnlyOnce(){
         saveProgress();
         fileThread.stopMe();
@@ -73,7 +68,4 @@ public class StarCraftBW_XCS_Manager {
     public void cleanUp(){
         saveOnlyOnce();
     }
-
-
-
 }
