@@ -3,5 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="JNIBWAPI.jar"/>
+	<classpathentry kind="lib" path="gson-2.3.1.jar"/>
 	<classpathentry kind="output" path="out/production/oc2_blatt_1"/>
 </classpath>
