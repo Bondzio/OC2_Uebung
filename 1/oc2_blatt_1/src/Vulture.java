@@ -123,10 +123,10 @@ public class Vulture {
                 right = right.makeValid();
 
                 //get list of units in each area
-                ArrayList<Unit> lefts = getUnitsInRadius(left, 80);
-                ArrayList<Unit> rights = getUnitsInRadius(right, 80);
-                ArrayList<Unit> backs = getUnitsInRadius(back, 80);
-                ArrayList<Unit> fronts = getUnitsInRadius(front, 80);
+                ArrayList<Unit> lefts = getUnitsInRadius(left, 60);
+                ArrayList<Unit> rights = getUnitsInRadius(right, 60);
+                ArrayList<Unit> backs = getUnitsInRadius(back, 60);
+                ArrayList<Unit> fronts = getUnitsInRadius(front, 60);
 
                 //store the unit counts
                 int leftCount = lefts.size();
@@ -134,10 +134,10 @@ public class Vulture {
                 int backCount = backs.size();
                 int frontCount = fronts.size();
 
-                System.out.println("leftCount: " + leftCount);
-                System.out.println("rightCount: " + rightCount);
-                System.out.println("backCount: " + backCount);
-                System.out.println("frontCount: " + frontCount);
+//                System.out.println("leftCount: " + leftCount);
+//                System.out.println("rightCount: " + rightCount);
+//                System.out.println("backCount: " + backCount);
+//                System.out.println("frontCount: " + frontCount);
 
                 //find area with least amount
                 int least = min(asList(leftCount, rightCount, backCount, frontCount));
@@ -163,18 +163,18 @@ public class Vulture {
 //                        System.out.println("moving front");
                         frontCounts += 1;
                     }
-                } else if (least == leftCount && bwapi.hasPath(unit.getPosition(), left)) {
-                    unit.move(left, false);
-//                    System.out.println("moving left");
-                    leftCounts += 1;
-                } else if (least == rightCount && bwapi.hasPath(unit.getPosition(), right)) {
-                    unit.move(right, false);
-//                    System.out.println("moving right");
-                    rightCounts += 1;
                 } else if (least == backCount && bwapi.hasPath(unit.getPosition(), back)) {
                     unit.move(back, false);
 //                    System.out.println("moving back");
                     backCounts += 1;
+                } else if (least == rightCount && bwapi.hasPath(unit.getPosition(), right)) {
+                    unit.move(right, false);
+//                    System.out.println("moving right");
+                    rightCounts += 1;
+                } else if (least == leftCount && bwapi.hasPath(unit.getPosition(), left)) {
+                    unit.move(left, false);
+//                    System.out.println("moving left");
+                    leftCounts += 1;
                 } else if (least == frontCount && bwapi.hasPath(unit.getPosition(), front)) {
                     unit.move(front, false);
 //                    System.out.println("moving front");
@@ -187,9 +187,9 @@ public class Vulture {
     private ArrayList<Unit> getUnitsInRectangle(int left, int top, int right, int bottom) {
 
         ArrayList<Unit> unitFinderResults = new ArrayList<Unit>();
-        Position topLeft = new Position(left, top);
-        Position bottomRight = new Position(right, bottom);
-        bwapi.drawBox(topLeft, bottomRight, BWColor.Blue, false, false);
+//        Position topLeft = new Position(left, top);
+//        Position bottomRight = new Position(right, bottom);
+//        bwapi.drawBox(topLeft, bottomRight, BWColor.Blue, false, false);
 
         // Have the unit finder do its stuff
         for (int i = left; i < right; i++) {
