@@ -1,10 +1,5 @@
 package General_XCS;
 
-import java.util.LinkedList;
-
-/**
- * Created by Rolle on 16.05.2015.
- */
 public class MultiStepRewarder {
     private ActionSet prevActionSet = null;
     private double prevReward= 0.0;
@@ -17,5 +12,4 @@ public class MultiStepRewarder {
         this.prevActionSet = currentActionSet;
         this.prevReward = currentReward;
     }
-
 }

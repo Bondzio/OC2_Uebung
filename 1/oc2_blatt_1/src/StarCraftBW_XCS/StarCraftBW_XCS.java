@@ -1,11 +1,8 @@
 package StarCraftBW_XCS;
 
 import General_XCS.*;
-import com.sun.java.swing.plaf.windows.resources.windows;
-import com.sun.xml.internal.fastinfoset.util.StringArray;
 
 public class StarCraftBW_XCS extends XCS{
-
 
     private PredictionArray currentPArray;
     private ActionSet currentASet;
@@ -52,8 +49,4 @@ public class StarCraftBW_XCS extends XCS{
         currentASet = null;
         currentPArray = null;
     }
-
-
-
-
 }
