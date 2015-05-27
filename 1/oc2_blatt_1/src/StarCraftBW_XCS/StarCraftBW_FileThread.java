@@ -81,6 +81,10 @@ public class StarCraftBW_FileThread extends Thread{
     public synchronized PopulationSet getSavedPopulationSet() {
         System.out.println("FileThread: Try to load File");
         Gson gson = new Gson();
+        
+        if(!(new File(filePath)).exists())
+        	return null;
+        
         try{
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             PopulationSet pSet = gson.fromJson(br, PopulationSet.class);

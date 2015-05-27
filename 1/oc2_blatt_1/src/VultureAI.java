@@ -15,7 +15,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     private HashSet<Unit> enemyUnits;
 
     private int frame;
-    private int marineID = 0; // from old Version
+//    private int marineID = 0; // from old Version
 
     public VultureAI() {
         System.out.println("This is the ANANAS VultureAI! :)");
@@ -35,7 +35,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(20);
+        bwapi.setGameSpeed(30);
     }
 
     @Override
@@ -68,26 +68,6 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
             }
         }
     }
-
-
-//    public void oldUnitDiscover(int unitID) {
-//        Unit unit = bwapi.getUnit(unitID);
-//        int typeID = unit.getTypeID();
-//
-//        if (typeID == UnitType.UnitTypes.Terran_Vulture.getID()) {
-//            if (unit.getPlayerID() == bwapi.getSelf().getID()) {
-//                this.vulture = new Vulture(unit, bwapi, enemyUnits, marineID);
-//                System.out.println("found vulture");
-//            }
-//        } else if (typeID == UnitType.UnitTypes.Protoss_Zealot.getID()) {
-//            if (unit.getPlayerID() != bwapi.getSelf().getID()) {
-//                enemyUnits.add(unit);
-//                System.out.println("found zealot");
-//            }
-//        }
-//    }
-
-
 
     @Override
     public void unitDestroy(int unitID) {

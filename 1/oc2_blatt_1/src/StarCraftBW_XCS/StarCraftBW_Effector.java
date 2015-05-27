@@ -39,33 +39,36 @@ public class StarCraftBW_Effector implements IEffector{
 	
 	@Override
 	public void execAction(String winningAction) {
-            currentActionToExecute = winningAction;
+            this.currentActionToExecute = winningAction;
 	}
 
     @Override
     public int getRewardForExecutedAction() {
-
-
-
         int reward = 0;
 
         // TODO: Rewards richtig gewichten
 
-        if (unit.isUnderAttack())
+        if (unit.isUnderAttack() && this.currentActionToExecute == "move")
             reward += -1;
+        
+        if (unit.isUnderAttack() && this.currentActionToExecute == "kite")
+            reward += 5;
 
         if (unit.isAttackFrame())
             reward += 4;
 
-        if(this.distance > StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
-            reward += 1;
-
-        if(this.distance <= StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
+//        if(this.distance > StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
+//            reward += 1;
+//
+//        if(this.distance <= StarCraftBW_Unit_Constants.ENEMY_WEAPONRANGE)
+//            reward += -1;
+        
+        if(this.distance > StarCraftBW_Unit_Constants.OWN_WEAPONRANGE && this.currentActionToExecute == "kite")
             reward += -1;
 
-        if(this.distance < StarCraftBW_Unit_Constants.OWN_WEAPONRANGE)
+        if(this.distance > StarCraftBW_Unit_Constants.OWN_WEAPONRANGE && this.currentActionToExecute == "move")
             reward += 5;
-
+        
         if(unit.getKillCount() > this.killedUnits){
             reward += 10;
             this.killedUnits++;
