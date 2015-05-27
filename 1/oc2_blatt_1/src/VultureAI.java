@@ -35,7 +35,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(0);
+        bwapi.setGameSpeed(20);
     }
 
     @Override
