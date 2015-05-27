@@ -42,7 +42,8 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     public void matchFrame() {
 
         try {
-            vulture.step();
+            if(frame % 1 == 0) //delay of frames
+                vulture.step();
         }catch (NullPointerException np){
             System.out.println("Game is restarting...");
         }

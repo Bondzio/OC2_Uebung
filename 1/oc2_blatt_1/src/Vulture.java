@@ -47,7 +47,7 @@ public class Vulture {
     }
 
     public void step() {
-    	
+
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
 
@@ -68,7 +68,7 @@ public class Vulture {
         else if (action.equals("move"))
             move(target, distance);
 
-//        printStuff(distance);
+        printStuff(distance);
     }
 
 //    private void kite(Unit target){
@@ -77,7 +77,7 @@ public class Vulture {
 //    }
 
     private void kite(Unit target, double distance) {
-//        System.out.println("kite");
+        System.out.println("kite");
 
         if (target != null) {
             if (distance > 155) {
@@ -232,7 +232,7 @@ public class Vulture {
     }
 
     private void move(Unit target, double distance) {
-//        System.out.println("move");
+        System.out.println("move");
 
         if (distance <= StarCraftBW_Unit_Constants.OWN_WEAPONRANGE)
             unit.attack(target, false);
