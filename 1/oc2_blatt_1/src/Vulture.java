@@ -73,8 +73,8 @@ public class Vulture {
 
     private void dummyKite(Unit target){
         Position p = target.getPosition();
-        Position deineMudda = new Position(p.getPX()-60,p.getPY()-60);
-        unit.move(deineMudda, false);
+        Position newPos = new Position(p.getPX()-60,p.getPY()-60);
+        unit.move(newPos, false);
     }
 
     private void kite(Unit target) {
