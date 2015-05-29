@@ -20,6 +20,12 @@ public class Vulture {
     private int rightCounts = 0;
     private int backCounts = 0;
     private int frontCounts = 0;
+
+
+
+    private int countAttackMove = 0;
+    private int countKite = 0;
+
     private boolean first = true;
 
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
@@ -54,10 +60,21 @@ public class Vulture {
 
         String action = xcs_Manager.getNextPredictedAction();
 
-        if (action.equals("kite"))
-            kite(target);
-        else if (action.equals("move"))
-            move(target, distance);
+        if (action.equals("kite")) {
+            //kite(target);
+            dummyKite(target);
+            this.countKite++;
+        }
+        else if (action.equals("attackMove")) {
+            attackMove(target);
+            this.countAttackMove++;
+        }
+    }
+
+    private void dummyKite(Unit target){
+        Position p = target.getPosition();
+        Position deineMudda = new Position(p.getPX()-60,p.getPY()-60);
+        unit.move(deineMudda, false);
     }
 
     private void kite(Unit target) {
@@ -217,14 +234,9 @@ public class Vulture {
         return this.getUnitsInRectangle(x - radius, y - radius, x + radius, y + radius);
     }
 
-    private void move(Unit target, double distance) {
-        System.out.println("move");
-
-        if (distance <= StarCraftBW_Unit_Constants.OWN_WEAPONRANGE)
-            unit.attack(target, false);
-
-        else
-            unit.move(new Position(target.getPosition().getPX(), target.getPosition().getPY()), false);
+    private void attackMove(Unit target) {
+        System.out.println("attackMove");
+        unit.attack(target, false);
     }
 
     private Unit getClosestEnemy() {
@@ -254,5 +266,17 @@ public class Vulture {
         double result = Math.pow(diffX, 2) + Math.pow(diffY, 2);
 
         return Math.sqrt(result);
+    }
+
+    public Unit getMyUnit(){
+        return this.unit;
+    }
+
+    public int getCountKite() {
+        return countKite;
+    }
+
+    public int getCountAttackMove() {
+        return countAttackMove;
     }
 }

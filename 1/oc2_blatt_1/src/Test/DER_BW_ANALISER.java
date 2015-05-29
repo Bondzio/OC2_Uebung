@@ -2,6 +2,7 @@ package Test;
 
 import General_XCS.Classifier;
 import General_XCS.PopulationSet;
+import StarCraftBW_XCS.StarCraftBW_Statistic;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -14,6 +15,11 @@ import java.io.FileReader;
 public class DER_BW_ANALISER {
 
     public static void main(String[] args) {
+        printStats();
+
+    }
+
+    private static void printClassifier(){
         Gson gson = new Gson();
         try{
             BufferedReader br = new BufferedReader(new FileReader("saves.txt"));
@@ -27,8 +33,11 @@ public class DER_BW_ANALISER {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 
+    private static void printStats(){
+        StarCraftBW_Statistic stats = new StarCraftBW_Statistic();
+        stats.calcStats();
+    }
 
 }

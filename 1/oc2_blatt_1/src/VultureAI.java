@@ -35,7 +35,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(30);
+        bwapi.setGameSpeed(0);
     }
 
     @Override
@@ -44,14 +44,15 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
         try {
             if(frame % 1 == 0) //delay of frames
                 vulture.step();
+
+            if (frame % 1000 == 0) {
+                System.out.println("Frame: " + frame);
+            }
+            frame++;
+
         }catch (NullPointerException np){
             System.out.println("Game is restarting...");
         }
-
-        if (frame % 1000 == 0) {
-            System.out.println("Frame: " + frame);
-        }
-        frame++;
     }
 
     @Override
@@ -89,6 +90,14 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     @Override
     public void matchEnd(boolean winner) {
+        Unit vultureUnit = vulture.getMyUnit();
+        int hpVulture = vultureUnit.getHitPoints();
+        int kills= vultureUnit.getKillCount();
+
+        int cAttackMove = vulture.getCountAttackMove();
+        int cKite = vulture.getCountKite();
+
+        vulture.xcs_Manager.makeNewMatchStat(frame,hpVulture,kills,cAttackMove,cKite);
         vulture.xcs_Manager.cleanUp();
     }
 
