@@ -26,7 +26,7 @@ public class Vulture {
     private int countAttackMove = 0;
     private int countKite = 0;
 
-    private boolean first = true;
+    private boolean start = true;
 
     public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
         this.unit = unit;
@@ -50,19 +50,20 @@ public class Vulture {
         xcs_Manager.getDetector().setDistance(distance);
         printStuff(distance);
 
-        if (!first) {
+        if (!start) {
             xcs_Manager.actionExecutionFin(unit, target, distance);
         }
         else {
             xcs_Manager.loadOldProgress();
-            first = false;
+            start = false;
         }
 
         String action = xcs_Manager.getNextPredictedAction();
 
         if (action.equals("kite")) {
             //kite(target);
-            dummyKite(target);
+            dummKite(target);
+            //kiteInOppositeDir(target,distance);
             this.countKite++;
         }
         else if (action.equals("attackMove")) {
@@ -71,13 +72,38 @@ public class Vulture {
         }
     }
 
-    private void dummyKite(Unit target){
+    private void dummKite(Unit target){
+        System.out.println("dummKite");
         Position p = target.getPosition();
         Position newPos = new Position(p.getPX()-60,p.getPY()-60);
         unit.move(newPos, false);
     }
 
-    private void kite(Unit target) {
+
+    private void kiteInOppositeDir(Unit target,double distance){
+        System.out.println("kiteInOppositeDir");
+        int target_X = target.getPosition().getPX();
+        int target_Y = target.getPosition().getPY();
+
+        int myX = unit.getPosition().getPX();
+        int myY = unit.getPosition().getPY();
+
+
+        int vector_x = myX - target_X;
+        int vector_y = myY -target_Y;
+
+        int vector_x_Norm = vector_x / (int) distance;
+        int vector_y_Norm = vector_y / (int) distance;
+
+        int newPos_X = myX + (vector_x_Norm * 100);
+        int newPos_Y = myY + (vector_y_Norm * 100);
+
+        Position newP = new Position(newPos_X,newPos_Y);
+
+        unit.move(newP,false);
+    }
+
+    private void advancedKite(Unit target) {
         System.out.println("kite");
 
         if (target != null) {

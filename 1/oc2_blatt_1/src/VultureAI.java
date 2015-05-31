@@ -35,14 +35,13 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(0);
+        bwapi.setGameSpeed(100);
     }
 
     @Override
     public void matchFrame() {
 
         try {
-            if(frame % 1 == 0) //delay of frames
                 vulture.step();
 
             if (frame % 1000 == 0) {
