@@ -5,11 +5,11 @@ package General_XCS;
  */
 public class Classifier {
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    private String name;
+    private String id;
 
     /**
      * The reward prediction value of this classifier.
@@ -35,8 +35,8 @@ public class Classifier {
     private int numerosity;
 
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     public double getPrediction() {
@@ -61,8 +61,8 @@ public class Classifier {
 
 
 
-    public Classifier(String name, double prediction, double predictionError, double fitness, String condition, String action) {
-        this.name = name;
+    public Classifier(String id, double prediction, double predictionError, double fitness, String condition, String action) {
+        this.id = id;
         this.prediction = prediction;
         this.predictionError = predictionError;
         this.fitness = fitness;
@@ -72,7 +72,7 @@ public class Classifier {
     }
 
     public String toString(){
-        String s = "Name: " + name + " ";
+        String s = "Name: " + id + " ";
         s += "p: " + prediction + " ";
         s += "err: " + predictionError + " ";
         s += "f: " + fitness + " ";

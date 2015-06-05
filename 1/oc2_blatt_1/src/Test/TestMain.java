@@ -1,14 +1,9 @@
 package Test;
 
-import jnibwapi.types.UnitType;
-import jnibwapi.types.WeaponType;
-import jnibwapi.JNIBWAPI;
+import General_XCS.Classifier;
+import General_XCS.PopulationSet;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-
-import StarCraftBW_XCS.StarCraftBW_XCS;
+import StarCraftBW_XCS.StarCraftBW_FileThread;
 
 
 
@@ -36,23 +31,15 @@ public class TestMain {
 //    }
 //
 //
-//    public static void main(String[] args) {
-//    	TestMain test = new TestMain();
-//    	test.testXCS();
-//
-//
-////        double blub = 161;
-////        int inti = (int)blub;
-////
-////        System.out.println(Long.toBinaryString(Double.doubleToRawLongBits(blub)));
-////        System.out.println(Integer.toBinaryString(inti));
-////
-////        System.out.println("START");
-////        int testo = 150;
-////        for (int i=0; i<= 20; i++){
-////            int cur = testo + i;
-////            System.out.println(cur + " : " + Integer.toBinaryString(cur));
-////        }
+    public static void main(String[] args) {
+        StarCraftBW_FileThread fileThread = new StarCraftBW_FileThread();
+        PopulationSet pSet = fileThread.getSavedPopulationSet();
 
-    //}
+        for(Classifier c: pSet.getSet()){
+            System.out.println("ID: " + c.getId() + " Con: " + c.getCondition());
+        }
+
+
+
+    }
 }

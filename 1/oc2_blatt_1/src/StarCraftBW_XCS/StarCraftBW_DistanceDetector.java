@@ -18,9 +18,23 @@ public class StarCraftBW_DistanceDetector implements IDetector{
         if (convDistance > 160)
             convDistance = 161; // as Binary 10100001
 
-        return Integer.toBinaryString(convDistance);
+        String ret = makeBinaryStringFixLength(8,Integer.toBinaryString(convDistance));
+        return ret;
     }
 
+    private String makeBinaryStringFixLength(int length, String baseBString){
+        String ret = "";
+        if(baseBString.length() < length){
+            String zeroSting = "";
+            for(int i = 0; i < (length-baseBString.length()); i++){
+                zeroSting += "0";
+            }
+            ret = zeroSting + baseBString;
+        }
+        else
+            ret = baseBString;
+        return ret;
+    }
     
     public String getDetected() {
         return convertDistance();

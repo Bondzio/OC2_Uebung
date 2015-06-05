@@ -25,27 +25,27 @@ public class XCS{
 //    }
 
 
-//    public void doOneMultiStepLearning(){
-//
-//        String binaryStringRep = detector.getDetected();
-//
-//        
-//        MatchSet mSet = this.populationSet.findMatchingClassifier(binaryStringRep);
-//
-//        PredictionArray pArray = new PredictionArray(mSet);
-//
-//        //ActionSet aSet = pArray.getBestActionSet();
-//        ActionSet aSet = pArray.getRouletteActionSet();
-//
-//        String winningAction = aSet.getWinningAction();
-//
-//        effector.execAction(winningAction);
-//
-//        double currentReward = effector.getRewardForExecutedAction();
-//
-//        mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
-//
-//    }
+    public void doOneMultiStepLearning(){
+
+        String binaryStringRep = detector.getDetected();
+
+
+        MatchSet mSet = this.populationSet.findMatchingClassifier(binaryStringRep);
+
+        PredictionArray pArray = new PredictionArray(mSet);
+
+        //ActionSet aSet = pArray.getBestActionSet();
+        ActionSet aSet = pArray.getRouletteActionSet();
+
+        String winningAction = aSet.getWinningAction();
+
+        effector.execAction(winningAction);
+
+        double currentReward = effector.getRewardForExecutedAction();
+
+        mStepRewarder.reward(aSet, pArray.getBestValue(),currentReward);
+
+    }
 
 
 
