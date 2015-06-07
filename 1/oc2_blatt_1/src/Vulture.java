@@ -37,14 +37,14 @@ public class Vulture {
     private void printStuff(double distance) {
         bwapi.drawCircle(unit.getPosition(), StarCraftBW_Unit_Constants.OWN_WEAPONRANGE, BWColor.Red, false, false);
         bwapi.drawLine(unit.getPosition(), unit.getTargetPosition(), BWColor.Green, false);
-        System.out.println("distance: " + distance);
+//        System.out.println("distance: " + distance);
 //        System.out.println("moved left total: " + leftCounts);
 //        System.out.println("moved right total: " + rightCounts);
 //        System.out.println("moved back total: " + backCounts);
 //        System.out.println("moved front total: " + frontCounts);
     }
 
-    public void step() {
+    public void step(String gaType) {
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
         xcs_Manager.getDetector().setDistance(distance);
@@ -73,7 +73,7 @@ public class Vulture {
     }
 
     private void dummKite(Unit target){
-        System.out.println("dummKite");
+//        System.out.println("dummKite");
         Position p = target.getPosition();
         Position newPos = new Position(p.getPX()-60,p.getPY()-60);
         unit.move(newPos, false);
@@ -81,7 +81,7 @@ public class Vulture {
 
 
     private void kiteInOppositeDir(Unit target,double distance){
-        System.out.println("kiteInOppositeDir");
+//        System.out.println("kiteInOppositeDir");
         int target_X = target.getPosition().getPX();
         int target_Y = target.getPosition().getPY();
 
@@ -104,7 +104,7 @@ public class Vulture {
     }
 
     private void advancedKite(Unit target) {
-        System.out.println("kite");
+//        System.out.println("kite");
 
         if (target != null) {
             Position posMy = unit.getPosition();
@@ -261,7 +261,7 @@ public class Vulture {
     }
 
     private void attackMove(Unit target) {
-        System.out.println("attackMove");
+//        System.out.println("attackMove");
         unit.attack(target, false);
     }
 

@@ -49,7 +49,7 @@ public class StarCraftBW_XCS_Manager {
             fileThread.putMatchStatsToSave(this.mStats);
 
         } catch (InterruptedException e) {
-            System.out.println("XCS_Manager: INTERUPTED");
+            System.err.println("XCS_Manager: SAVING INTERUPTED");
         }
     }
 

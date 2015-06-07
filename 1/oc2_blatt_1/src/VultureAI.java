@@ -10,7 +10,12 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     private final JNIBWAPI bwapi;
 
+    private final int LEARNING_MATCHES = 200;
+    private final String[] LEARNING_GA = new String[]{"ga1", "ga2"};
+    
     private Vulture vulture;
+    private int matches = 0;
+    private int gaSelector = 0;
 
     private HashSet<Unit> enemyUnits;
 
@@ -32,7 +37,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
         enemyUnits = new HashSet<Unit>();
 
         frame = 0;
-
+        
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
         bwapi.setGameSpeed(0);
@@ -41,8 +46,19 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     @Override
     public void matchFrame() {
 
+    	if (matches >= LEARNING_MATCHES){
+    		matches = 0;
+    		gaSelector++;
+    		
+    		if(gaSelector > LEARNING_GA.length){
+    			System.out.println("LEARNING FINISHED!");
+    			System.exit(1);
+       		}
+    	}
+
         try {
-                vulture.step();
+        	vulture.step(LEARNING_GA[gaSelector]);
+                
 
             if (frame % 1000 == 0) {
                 System.out.println("Frame: " + frame);
@@ -98,6 +114,8 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
         vulture.xcs_Manager.makeNewMatchStat(frame,hpVulture,kills,cAttackMove,cKite);
         vulture.xcs_Manager.cleanUp();
+        matches++;
+        System.out.println("MatchOver - Matches:" + matches);
     }
 
     @Override
@@ -145,6 +163,8 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     }
 
+   
+    
     @Override
     public void unitCreate(int unitID) {
     }

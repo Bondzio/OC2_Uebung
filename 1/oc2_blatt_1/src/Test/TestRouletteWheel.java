@@ -8,7 +8,7 @@ import General_XCS.ClassifierSet;
 /**
  * Created by Rolle on 15.05.2015.
  */
-public class TestRolletWheel {
+public class TestRouletteWheel {
 
     public static void main(String[] args) {
 
