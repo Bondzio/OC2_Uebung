@@ -56,8 +56,7 @@ public class PopulationSet extends ClassifierSet{
             if (!foundSomething)
                 covering(matcher);
             else{
-                //ga_OnePoint_Crossover();
-                //genAlgo();
+                doGA();
                 break;
             }
 
