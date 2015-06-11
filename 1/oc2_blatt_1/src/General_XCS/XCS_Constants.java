@@ -36,4 +36,20 @@ public class XCS_Constants {
      */
     final public static double GAMMA=0.95;
 
+
+    /**
+     * ############################################
+     * ##########    Generic Algo        ##########
+     * ############################################
+     */
+
+    // Parents
+    final public static String GEN_ALGO_FIND_BEST_PARENT = "genAlgo_findBestParents";
+
+    // Crossover
+    final public static String GEN_ALGO_ONE_POINT_CROSSOVER= "genAlgo_onePointCrossover";
+
+    // Mutation
+    final public static String GEN_ALGO_RANDOM_ONE_POS_MUTATION = "genAlgo_rndPosMutation";
+
 }

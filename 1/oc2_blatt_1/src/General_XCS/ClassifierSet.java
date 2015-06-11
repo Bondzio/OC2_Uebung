@@ -13,7 +13,12 @@ public class ClassifierSet {
     public ClassifierSet(){
         myColletction = new ArrayList<Classifier>();
     }
-    
+
+    /**
+     * Special function for updating the fitnesses of the classifiers in the set.
+     *
+     * @return  ArrayList<Classifier> returns a copy of the classifier set
+     */
     public ArrayList<Classifier> getSet() {
         return new ArrayList<Classifier>(myColletction);
     }

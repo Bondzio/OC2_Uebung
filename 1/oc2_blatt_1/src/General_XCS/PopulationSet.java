@@ -3,6 +3,7 @@ package General_XCS;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Rolle on 11.05.2015.
@@ -12,6 +13,13 @@ public class PopulationSet extends ClassifierSet{
     private String[] actionSet;
     private int idCounter = 0;
     private GA genericAlgorithm = new GA();
+
+    /*
+     FOR GA
+     */
+    private String parent_select_method_type = XCS_Constants.GEN_ALGO_FIND_BEST_PARENT;
+    private String crossover_method_type = XCS_Constants.GEN_ALGO_ONE_POINT_CROSSOVER;
+    private String mutation_method_type = XCS_Constants.GEN_ALGO_RANDOM_ONE_POS_MUTATION;
 
 
     public PopulationSet(ClassifierSet population,String[] actionSet) {
@@ -49,7 +57,7 @@ public class PopulationSet extends ClassifierSet{
                 covering(matcher);
             else{
                 //ga_OnePoint_Crossover();
-                genAlgo();
+                //genAlgo();
                 break;
             }
 
@@ -92,69 +100,67 @@ public class PopulationSet extends ClassifierSet{
         }
     }
 
-    private void genAlgo(){
-        ArrayList<ArrayList<Classifier>> parentList = makeParentList("BEST");
-        doGA_Type("ONE_POINT_CROSSOVER",parentList);
+    private void createAndAddClassifier(String id,double pre,double pre_err,double fit,String con,String action){
+        Classifier newC = new Classifier(id,pre,pre_err,fit,con,action);
+        this.addNewClassifier(newC);
     }
+    private void doGA(){
+        ArrayList<Classifier> dummyClassifierList = genericAlgorithm.genAlgo_go(
+                parent_select_method_type,
+                crossover_method_type,
+                mutation_method_type,
+                this.getSet(),
+                actionSet
+        );
 
-    private ArrayList<ArrayList<Classifier>> makeParentList(String type){
-        ArrayList<ArrayList<Classifier>> parentList = new ArrayList<ArrayList<Classifier>>();
-        switch (type){
-            case "BEST":
-                for(String action : actionSet){
-                    parentList.add(genericAlgorithm.findBest_Parents(action, this.getSet()));
-                }
-                break;
-            case "ROULET":
-                break;
+        for(Classifier dummyClassifier : dummyClassifierList){
+            createAndAddClassifier(
+               new String("GA_Classifier" + "_" + Integer.toString(idCounter++)),
+                    dummyClassifier.getPrediction(),
+                    dummyClassifier.getPredictionError(),
+                    dummyClassifier.getFitness(),
+                    dummyClassifier.getCondition(),
+                    dummyClassifier.getAction()
+            );
         }
 
-        return parentList;
     }
 
-    private void doGA_Type(String ga_type,ArrayList<ArrayList<Classifier>> parentList ){
-        switch (ga_type){
-            case "ONE_POINT_CROSSOVER":
-
-                break;
-        }
-    }
-
-    private void ga_OnePoint_Crossover(){
-
-        ArrayList<ArrayList<Classifier>> parentList = new ArrayList<ArrayList<Classifier>>();
-
-        for(String action : actionSet){
-            parentList.add(genericAlgorithm.findBest_Parents(action, this.getSet()));
-        }
-
-        for(ArrayList<Classifier> parents : parentList){
-            Classifier father = parents.get(0);
-            Classifier mother = parents.get(1);
-
-            String[] child_con_Array = genericAlgorithm.onePoint_Crossover(4,father.getCondition(),mother.getCondition());
-
-            for(String child_Con : child_con_Array){
-                String cName = "GA_Classifier" + "_" + Integer.toString(idCounter++);
-                String action = father.getAction(); // mother got the same
-                double newPred = (father.getPrediction() + mother.getPrediction()) / 2;
-                double newPreErr = (father.getPredictionError() + mother.getPredictionError()) / 2;
-                double newFit = (father.getFitness() + mother.getFitness()) / 2;
-
-                Classifier classifier_Child = new Classifier(
-                        cName,
-                        newPred,
-                        newPreErr,
-                        newFit,
-                        child_Con,
-                        action);
-
-                this.addNewClassifier(classifier_Child);
-            }
-        }
-
-
-    }
+//    private void ga_OnePoint_Crossover(){
+//
+//        ArrayList<ArrayList<Classifier>> parentList = new ArrayList<ArrayList<Classifier>>();
+//
+//        for(String action : actionSet){
+//            parentList.add(genericAlgorithm.findBest_Parents(action, this.getSet()));
+//        }
+//
+//        for(ArrayList<Classifier> parents : parentList){
+//            Classifier father = parents.get(0);
+//            Classifier mother = parents.get(1);
+//
+//            String[] child_con_Array = genericAlgorithm.onePoint_Crossover(4,father.getCondition(),mother.getCondition());
+//
+//            for(String child_Con : child_con_Array){
+//                String cName = "GA_Classifier" + "_" + Integer.toString(idCounter++);
+//                String action = father.getAction(); // mother got the same
+//                double newPred = (father.getPrediction() + mother.getPrediction()) / 2;
+//                double newPreErr = (father.getPredictionError() + mother.getPredictionError()) / 2;
+//                double newFit = (father.getFitness() + mother.getFitness()) / 2;
+//
+//                Classifier classifier_Child = new Classifier(
+//                        cName,
+//                        newPred,
+//                        newPreErr,
+//                        newFit,
+//                        child_Con,
+//                        action);
+//
+//                this.addNewClassifier(classifier_Child);
+//            }
+//        }
+//
+//
+//    }
 
 
 
