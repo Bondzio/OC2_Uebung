@@ -23,6 +23,21 @@ public class StarCraftBW_FileThread extends Thread{
 
     private boolean stop = false;
 
+    public String getFilePath_cSet() {
+        return filePath_cSet;
+    }
+
+    public String getFilePath_mStats() {
+        return filePath_mStats;
+    }
+
+    public void setFilePath_cSet(String filePath_cSet) {
+        this.filePath_cSet = filePath_cSet;
+    }
+
+    public void setFilePath_mStats(String filePath_mStats) {
+        this.filePath_mStats = filePath_mStats;
+    }
 
     @Override
     public void run() {

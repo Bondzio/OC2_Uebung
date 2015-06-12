@@ -1,6 +1,7 @@
 package StarCraftBW_XCS;
 
 import General_XCS.PopulationSet;
+import General_XCS.XCS_Constants;
 import jnibwapi.Unit;
 
 public class StarCraftBW_XCS_Manager {
@@ -20,6 +21,8 @@ public class StarCraftBW_XCS_Manager {
         fileThread.start();
     }
 
+
+
     public String getNextPredictedAction(){
         xcs.cleanCurrentAction();
         xcs.execPredictAction(true);
@@ -30,6 +33,35 @@ public class StarCraftBW_XCS_Manager {
         theEffector.setStats(unit, target, distance);
         xcs.rewardCurrentAction();
     }
+
+    public void setGA_Type(String typeName){
+        PopulationSet populationSet = xcs.getPopulationSet();
+        switch (typeName){
+            case "ga1":
+                populationSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_FIND_BEST);
+                populationSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_ONE_POINT);
+                populationSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
+                break;
+            case "ga2":
+                populationSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
+                populationSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_ONE_POINT);
+                populationSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
+                break;
+            case "ga3":
+                populationSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
+                populationSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_RANDOM_ONE_POINT);
+                populationSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
+                break;
+            case "ga4":
+                populationSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
+                populationSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_ONE_POINT);
+                populationSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_NONE);
+                break;
+        }
+        fileThread.setFilePath_cSet(typeName + "_saves");
+        fileThread.setFilePath_mStats(typeName + "_stats");
+    }
+
 
     public StarCraftBW_DistanceDetector getDetector(){
         return this.dDetector;

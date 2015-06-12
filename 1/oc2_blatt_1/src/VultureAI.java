@@ -10,8 +10,8 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     private final JNIBWAPI bwapi;
 
-    private final int LEARNING_MATCHES = 200;
-    private final String[] LEARNING_GA = new String[]{"ga1", "ga2"};
+    private final int LEARNING_MATCHES = 10;
+    private final String[] LEARNING_GA = new String[]{"ga1", "ga2","ga3","ga4"};
     
     private Vulture vulture;
     private int matches = 0;
@@ -50,7 +50,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     		matches = 0;
     		gaSelector++;
     		
-    		if(gaSelector > LEARNING_GA.length){
+    		if(gaSelector >= LEARNING_GA.length){
     			System.out.println("LEARNING FINISHED!");
     			System.exit(1);
        		}

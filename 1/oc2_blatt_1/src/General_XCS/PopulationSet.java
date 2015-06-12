@@ -3,7 +3,6 @@ package General_XCS;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Rolle on 11.05.2015.
@@ -12,15 +11,40 @@ public class PopulationSet extends ClassifierSet{
 
     private String[] actionSet;
     private int idCounter = 0;
-    private GA genericAlgorithm = new GA();
+    private int ga_counter = 0;
+
+
 
     /*
      FOR GA
      */
-    private String parent_select_method_type = XCS_Constants.GEN_ALGO_FIND_BEST_PARENT;
-    private String crossover_method_type = XCS_Constants.GEN_ALGO_ONE_POINT_CROSSOVER;
-    private String mutation_method_type = XCS_Constants.GEN_ALGO_RANDOM_ONE_POS_MUTATION;
+    private GA genericAlgorithm = new GA();
+    private String parent_select_method_type = XCS_Constants.GEN_ALGO_PARENT_FIND_BEST;
+    private String crossover_method_type = XCS_Constants.GEN_ALGO_CROSSOVER_ONE_POINT;
+    private String mutation_method_type = XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS;
+    private int ga_classifier_creation_threshold = 10000;
+    private int ga_cooldown_time = 10;
+    private int ga_min_pop_size = 100;
 
+    public void setParent_select_method_type(String parent_select_method_type) {
+        this.parent_select_method_type = parent_select_method_type;
+    }
+
+    public void setCrossover_method_type(String crossover_method_type) {
+        this.crossover_method_type = crossover_method_type;
+    }
+
+    public void setMutation_method_type(String mutation_method_type) {
+        this.mutation_method_type = mutation_method_type;
+    }
+
+    public void setGa_classifier_creation_threshold(int ga_classifier_creation_threshold) {
+        this.ga_classifier_creation_threshold = ga_classifier_creation_threshold;
+    }
+
+    public void setGa_cooldown_time(int ga_cooldown_time) {
+        this.ga_cooldown_time = ga_cooldown_time;
+    }
 
     public PopulationSet(ClassifierSet population,String[] actionSet) {
         super();
@@ -104,6 +128,16 @@ public class PopulationSet extends ClassifierSet{
         this.addNewClassifier(newC);
     }
     private void doGA(){
+        if(ga_counter < ga_cooldown_time){
+            ga_counter++;
+            return;
+        }
+        else
+            ga_counter = 0;
+
+        if( myColletction.size()>= ga_classifier_creation_threshold || myColletction.size()<ga_min_pop_size)
+            return;
+
         ArrayList<Classifier> dummyClassifierList = genericAlgorithm.genAlgo_go(
                 parent_select_method_type,
                 crossover_method_type,
@@ -122,7 +156,7 @@ public class PopulationSet extends ClassifierSet{
                     dummyClassifier.getAction()
             );
         }
-
+        return;
     }
 
 //    private void ga_OnePoint_Crossover(){

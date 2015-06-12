@@ -44,12 +44,15 @@ public class XCS_Constants {
      */
 
     // Parents
-    final public static String GEN_ALGO_FIND_BEST_PARENT = "genAlgo_findBestParents";
+    final public static String GEN_ALGO_PARENT_FIND_BEST = "genAlgo_findBestParents";
+    final public static String GEN_ALGO_PARENT_ROULET = "genAlgo_rouletParents";
 
     // Crossover
-    final public static String GEN_ALGO_ONE_POINT_CROSSOVER= "genAlgo_onePointCrossover";
+    final public static String GEN_ALGO_CROSSOVER_ONE_POINT = "genAlgo_onePointCrossover";
+    final public static String GEN_ALGO_CROSSOVER_RANDOM_ONE_POINT = "genAlgo_rndOnePointCrossover";
 
     // Mutation
-    final public static String GEN_ALGO_RANDOM_ONE_POS_MUTATION = "genAlgo_rndPosMutation";
+    final public static String GEN_ALGO_MUTATION_RANDOM_ONE_POS = "genAlgo_rndPosMutation";
+    final public static String GEN_ALGO_MUTATION_NONE = "genAlgo_noMutation";
 
 }

@@ -46,12 +46,12 @@ public class GA {
         Classifier[] parent_classifier = null;
         switch (find_method_parents){
 
-            case XCS_Constants.GEN_ALGO_FIND_BEST_PARENT:
+            case XCS_Constants.GEN_ALGO_PARENT_FIND_BEST:
                 parent_classifier = this.findBest_Parent(parent_Action,base_classifier_ArrayList);
-
                 break;
 
-            case "ROULET":
+            case XCS_Constants.GEN_ALGO_PARENT_ROULET:
+                parent_classifier = this.roullet_Parent(parent_Action, base_classifier_ArrayList);
                 break;
         }
 
@@ -79,6 +79,43 @@ public class GA {
         return foundClassifiers;
     }
 
+    private Classifier[] roullet_Parent(String action, ArrayList<Classifier> base_classifier_ArrayList ){
+        Classifier[] foundClassifiers = new Classifier[2];
+        // copy only with the same action
+        ArrayList<Classifier> copyOfBase = new ArrayList<Classifier>();
+
+        for (Classifier cl : base_classifier_ArrayList){
+            if(cl.getAction().equals(action))
+                copyOfBase.add(cl);
+        }
+        //so we get two parents
+        for(int i = 0; i < 2; i ++){
+
+            double fitSum = 0.;
+            for (Classifier cl : copyOfBase){
+                fitSum += cl.getFitness();
+            }
+
+            double randomFit = fitSum * r.nextDouble();
+            fitSum = 0.;
+
+            int pos = 0;
+            for(Classifier cl: copyOfBase){
+                fitSum += cl.getFitness();
+                if(fitSum < randomFit){
+                    pos++;
+                }
+                else
+                    break;
+            }
+            foundClassifiers[i] = copyOfBase.get(pos);
+            copyOfBase.remove(pos);
+        }
+
+        return foundClassifiers;
+    }
+
+
     /**
      * ############################################
      * ##########    Crossover Part      ##########
@@ -91,11 +128,12 @@ public class GA {
         Classifier mother = parent_classifier[1];
 
         switch (crossover_method){
-            case XCS_Constants.GEN_ALGO_ONE_POINT_CROSSOVER:
-                int splitPos = 4;
+            case XCS_Constants.GEN_ALGO_CROSSOVER_ONE_POINT:
+                int splitPos = father.getCondition().length()/2;
                 crossoverd_Children_Condition = this.onePoint_Crossover(splitPos,father.getCondition(),mother.getCondition());
                 break;
-            case "ROULET":
+            case XCS_Constants.GEN_ALGO_CROSSOVER_RANDOM_ONE_POINT:
+                crossoverd_Children_Condition = this.random_OnePoint_Crossover(father.getCondition(),mother.getCondition());
                 break;
         }
         return crossoverd_Children_Condition;
@@ -128,8 +166,11 @@ public class GA {
     private String[] makeMutation(String mutation_method, String[] children_condition){
         String[] mutaited_Children_Condition = null;
         switch (mutation_method){
-            case XCS_Constants.GEN_ALGO_RANDOM_ONE_POS_MUTATION:
+            case XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS:
                 mutaited_Children_Condition = this.random_OnePoint_SingleMutation(children_condition);
+                break;
+            case XCS_Constants.GEN_ALGO_MUTATION_NONE:
+                mutaited_Children_Condition = this.noMutation(children_condition);
                 break;
         }
         return mutaited_Children_Condition;
@@ -153,6 +194,11 @@ public class GA {
         return mutaited_Children_Condtion;
     }
 
+    private String[] noMutation(String[] children_condition){
+        return children_condition;
+    }
+
+
     /**
      * ############################################
      * #####   Create Dummy Classifier Part    ####
@@ -160,17 +206,6 @@ public class GA {
      */
 
 
-    private void fillConMap(String action, String[] con,HashMap<String,ArrayList<String>> conMap){
-        for(String condtion : con){
-            if(conMap.containsKey(action))
-                conMap.get(action).add(condtion);
-            else {
-                ArrayList<String> conArrayList = new ArrayList<String>();
-                conArrayList.add(condtion);
-                conMap.put(action,conArrayList);
-            }
-        }
-    }
 
     private Classifier createDummyClassifier(String action, String con, Classifier[] parent_classifier ){
         String cName = "DUMMY";

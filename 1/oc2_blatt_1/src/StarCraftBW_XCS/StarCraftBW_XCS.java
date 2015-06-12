@@ -49,4 +49,6 @@ public class StarCraftBW_XCS extends XCS{
         currentASet = null;
         currentPArray = null;
     }
+
+
 }

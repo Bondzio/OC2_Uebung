@@ -54,6 +54,7 @@ public class Vulture {
             xcs_Manager.actionExecutionFin(unit, target, distance);
         }
         else {
+            xcs_Manager.setGA_Type(gaType);
             xcs_Manager.loadOldProgress();
             start = false;
         }
