@@ -17,15 +17,15 @@ public class GA {
     public ArrayList<Classifier> genAlgo_go(String find_method_parents, String crossover_method, String mutation_method, ArrayList<Classifier> base_classifier_ArrayList, String[] aviable_actions){
         ArrayList<Classifier> dummy_Classifier = new ArrayList<Classifier>();
         for(String action: aviable_actions){
-            System.out.printf("Finding Parents with Method: " + find_method_parents);
+            //System.out.printf("Finding Parents with Method: " + find_method_parents);
             Classifier[] parent_classifier = makeParentList(action, find_method_parents, base_classifier_ArrayList);
-            System.out.println("Parents are: " + Arrays.toString(parent_classifier));
-            System.out.println("Crossover Method used: " + crossover_method);
+            //System.out.println("Parents are: " + Arrays.toString(parent_classifier));
+            //System.out.println("Crossover Method used: " + crossover_method);
             String[] crossoverd_Children_Condition = makeCrossover(crossover_method, parent_classifier);
-            System.out.println("Crossover Cons are: " + Arrays.toString(crossoverd_Children_Condition));
-            System.out.println("Mutation method used: " + mutation_method);
+            //System.out.println("Crossover Cons are: " + Arrays.toString(crossoverd_Children_Condition));
+            //System.out.println("Mutation method used: " + mutation_method);
             String[] mutaited_Children_Condtion = makeMutation(mutation_method, crossoverd_Children_Condition);
-            System.out.println("Mutation Cons are: " + Arrays.toString(mutaited_Children_Condtion));
+            //System.out.println("Mutation Cons are: " + Arrays.toString(mutaited_Children_Condtion));
 
             for (String child_Con: mutaited_Children_Condtion){
                 dummy_Classifier.add(createDummyClassifier(action,child_Con,parent_classifier));
