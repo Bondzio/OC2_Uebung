@@ -51,9 +51,9 @@ public class StarCraftBW_FileThread extends Thread{
             }
         } catch (InterruptedException e) {
             stop = true;
-            System.out.println("FileThread: Was interupted");
+//            System.out.println("FileThread: Was interupted");
         }
-        System.out.println("FileThread:  has been stopped");
+//        System.out.println("FileThread:  has been stopped");
         // do it once
 //        try {
 //            saveClassifierSet();
@@ -139,7 +139,7 @@ public class StarCraftBW_FileThread extends Thread{
 
 
     public synchronized PopulationSet getSavedPopulationSet() {
-        System.out.println("FileThread: Try to load File");
+//        System.out.println("FileThread: Try to load File");
         Gson gson = new Gson();
         
         if(!(new File(filePath_cSet)).exists())
@@ -157,7 +157,7 @@ public class StarCraftBW_FileThread extends Thread{
     }
 
     public synchronized StarCraftBW_MatchStats getSavedMatchStats() {
-        System.out.println("FileThread: Try to load MatchStats File");
+//        System.out.println("FileThread: Try to load MatchStats File");
         Gson gson = new Gson();
 
         if(!(new File(filePath_mStats)).exists())

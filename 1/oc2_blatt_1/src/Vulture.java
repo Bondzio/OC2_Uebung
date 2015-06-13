@@ -16,10 +16,10 @@ public class Vulture {
     final private HashSet<Unit> enemyUnits;
     final private Unit unit;
     final public StarCraftBW_XCS_Manager xcs_Manager = new StarCraftBW_XCS_Manager();
-    private int leftCounts = 0;
-    private int rightCounts = 0;
-    private int backCounts = 0;
-    private int frontCounts = 0;
+//    private int leftCounts = 0;
+//    private int rightCounts = 0;
+//    private int backCounts = 0;
+//    private int frontCounts = 0;
 
 
 
@@ -180,44 +180,44 @@ public class Vulture {
 
                 if (rnd < 1 && bwapi.hasPath(unit.getPosition(), back)) {
                     unit.move(back, false);
-                    backCounts += 1;
+//                    backCounts += 1;
 //                    System.out.println("moving back");
                 }
                 else if (rnd < 2 && rnd >= 1 && bwapi.hasPath(unit.getPosition(), left)) {
                     unit.move(left, false);
-                    leftCounts += 1;
+//                    leftCounts += 1;
 //                    System.out.println("moving left");
                 }
                 else if (rnd < 3 && rnd >= 2 && bwapi.hasPath(unit.getPosition(), right)) {
                     unit.move(right, false);
-                    rightCounts += 1;
+//                    rightCounts += 1;
 //                    System.out.println("moving right");
                 }
                 else if (bwapi.hasPath(unit.getPosition(), front)) {
                     unit.move(front, false);
-                    frontCounts += 1;
+//                    frontCounts += 1;
 //                    System.out.println("moving front");
                 }
             }
 
             else if (least == backCount && bwapi.hasPath(unit.getPosition(), back)) {
                 unit.move(back, false);
-                backCounts += 1;
+//                backCounts += 1;
 //                System.out.println("moving back");
             }
             else if (least == rightCount && bwapi.hasPath(unit.getPosition(), right)) {
                 unit.move(right, false);
-                rightCounts += 1;
+//                rightCounts += 1;
 //                System.out.println("moving right");
             }
             else if (least == leftCount && bwapi.hasPath(unit.getPosition(), left)) {
                 unit.move(left, false);
-                leftCounts += 1;
+//                leftCounts += 1;
 //                System.out.println("moving left");
             }
             else if (least == frontCount && bwapi.hasPath(unit.getPosition(), front)) {
                 unit.move(front, false);
-                frontCounts += 1;
+//                frontCounts += 1;
 //                System.out.println("moving front");
             }
         }

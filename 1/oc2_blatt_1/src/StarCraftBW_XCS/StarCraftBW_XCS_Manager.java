@@ -93,35 +93,21 @@ public class StarCraftBW_XCS_Manager {
     private void loadOldPopulationSet(){
         PopulationSet newPSet = fileThread.getSavedPopulationSet();
 
-
-        if (newPSet == null){
-            System.out.println("Manager: Loaded Set was empty");
+        if (newPSet == null)
             return;
-        }
-        else if(newPSet.getSet().size() > 0){
-            System.out.println("Manager: Loaded old pSet");
-            xcs.setPopulationSet(newPSet);
-        }
-        else{
-            System.out.println("Manager: loaded pSet was empty");
-        }
+        
+        else if(newPSet.getSet().size() > 0)
+            xcs.setPopulationSet(newPSet); 
     }
 
     private void loadOldMatchStats(){
         StarCraftBW_MatchStats newMStats = fileThread.getSavedMatchStats();
 
-
-        if (newMStats == null){
-            System.out.println("Manager: Loaded MatchStats was empty");
+        if (newMStats == null)
             return;
-        }
-        else if(newMStats.getMatchStats().size() > 0){
-            System.out.println("Manager: Loaded old MatchStats");
+
+        else if(newMStats.getMatchStats().size() > 0)
             this.mStats = newMStats;
-        }
-        else{
-            System.out.println("Manager: loaded MatchStats was empty");
-        }
     }
 
     private void saveOnlyOnce(){

@@ -10,7 +10,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     private final JNIBWAPI bwapi;
 
-    private final int LEARNING_MATCHES = 10;
+    private final int LEARNING_MATCHES = 50;
     private final String[] LEARNING_GA = new String[]{"ga1", "ga2","ga3","ga4"};
     
     private Vulture vulture;
