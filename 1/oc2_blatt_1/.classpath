@@ -2,10 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JNIBWAPI"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/classifierLibrary"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/XCSJava1.0"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gson"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/gson"/>
+	<classpathentry kind="lib" path="JNIBWAPI.jar"/>
+	<classpathentry kind="lib" path="lib/gson/gson-2.3.1.jar"/>
 	<classpathentry kind="output" path="out/production/oc2_blatt_1"/>
 </classpath>
