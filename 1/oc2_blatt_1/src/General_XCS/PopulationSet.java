@@ -68,7 +68,7 @@ public class PopulationSet extends ClassifierSet{
         String[] conAsArray;
         while(true){
             boolean foundSomething = false;
-            for(Classifier c: this.myColletction){
+            for(Classifier c: this.myCollection){
                 String cConditon = c.getCondition();
                 conAsArray = cConditon.split("");
 
@@ -135,7 +135,8 @@ public class PopulationSet extends ClassifierSet{
         else
             ga_counter = 0;
 
-        if( myColletction.size()>= ga_classifier_creation_threshold || myColletction.size()<ga_min_pop_size)
+        
+        if( myCollection.size() >= ga_classifier_creation_threshold || myCollection.size() < ga_min_pop_size)
             return;
 
         ArrayList<Classifier> dummyClassifierList = genericAlgorithm.genAlgo_go(

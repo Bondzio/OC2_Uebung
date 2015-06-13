@@ -7,11 +7,11 @@ import java.util.ArrayList;
  */
 public class ClassifierSet {
 
-    protected ArrayList<Classifier> myColletction;
+    protected ArrayList<Classifier> myCollection;
 
 
     public ClassifierSet(){
-        myColletction = new ArrayList<Classifier>();
+        myCollection = new ArrayList<Classifier>();
     }
 
     /**
@@ -20,12 +20,12 @@ public class ClassifierSet {
      * @return  ArrayList<Classifier> returns a copy of the classifier set
      */
     public ArrayList<Classifier> getSet() {
-        return new ArrayList<Classifier>(myColletction);
+        return new ArrayList<Classifier>(myCollection);
     }
 
     
     public boolean addNewClassifier(Classifier newClassifier){
-        return myColletction.add(newClassifier);
+        return myCollection.add(newClassifier);
     }
 
     /**
@@ -35,19 +35,19 @@ public class ClassifierSet {
     private void updateFitnessSet()
     {
         double accuracySum=0.;
-        double[] accuracies = new double[myColletction.size()];
+        double[] accuracies = new double[myCollection.size()];
 
         //First, calculate the accuracies of the classifier and the accuracy sums
-        for(int i=0; i< myColletction.size(); i++){
-            accuracies[i]= myColletction.get(i).getAccuracy();
-            accuracySum += accuracies[i] * myColletction.get(i).getNumerosity();
+        for(int i=0; i< myCollection.size(); i++){
+            accuracies[i]= myCollection.get(i).getAccuracy();
+            accuracySum += accuracies[i] * myCollection.get(i).getNumerosity();
         }
 
 
 
         //Next, update the fitnesses accordingly
-        for(int i=0; i<myColletction.size(); i++){
-            myColletction.get(i).updateFitness(accuracySum, accuracies[i]);
+        for(int i=0; i<myCollection.size(); i++){
+            myCollection.get(i).updateFitness(accuracySum, accuracies[i]);
         }
     }
 
@@ -70,10 +70,10 @@ public class ClassifierSet {
 
         double P = reward + XCS_Constants.GAMMA*maxPrediction;
 
-        for(int i=0; i< myColletction.size(); i++){
+        for(int i=0; i< myCollection.size(); i++){
            // myColletction.get(i).increaseExperience();
-            myColletction.get(i).updatePreError(P);
-            myColletction.get(i).updatePrediction(P);
+            myCollection.get(i).updatePreError(P);
+            myCollection.get(i).updatePrediction(P);
            // myColletction.get(i).updateActionSetSize(numerositySum);
         }
         updateFitnessSet();
