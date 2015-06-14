@@ -50,10 +50,12 @@ public class Vulture {
         xcs_Manager.getDetector().setDistance(distance);
         printStuff(distance);
 
-        if (!start || stop_learning) {
-            xcs_Manager.actionExecutionFin(unit, target, distance);
+        if (!start) {
+            if(!stop_learning)
+                xcs_Manager.actionExecutionFin(unit, target, distance);
         }
         else {
+            System.out.println("MyGaType " + gaType);
             xcs_Manager.setGA_Type(gaType);
             xcs_Manager.loadOldProgress();
             start = false;
