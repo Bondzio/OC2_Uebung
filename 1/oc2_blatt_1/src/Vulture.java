@@ -44,13 +44,13 @@ public class Vulture {
 //        System.out.println("moved front total: " + frontCounts);
     }
 
-    public void step(String gaType) {
+    public void step(String gaType, boolean stop_learning) {
         Unit target = getClosestEnemy();
         double distance = getDistance(target);
         xcs_Manager.getDetector().setDistance(distance);
         printStuff(distance);
 
-        if (!start) {
+        if (!start || stop_learning) {
             xcs_Manager.actionExecutionFin(unit, target, distance);
         }
         else {

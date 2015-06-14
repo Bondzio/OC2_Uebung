@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class StarCraftBW_Statistic_Analyzer extends Application{
 	
 	private ArrayList<StarCraftBW_MatchStat> mStats = new ArrayList<StarCraftBW_MatchStat>();
-    private final String[] LEARNING_GA = new String[]{"ga1", "ga2","ga3"};
+    private final String[] LEARNING_GA = new String[]{"ga1", "ga2","ga3","ga4"};
     private LineChart<Number, Number> frameChart;
     private String actualGA;
     

@@ -12,6 +12,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     private final int LEARNING_MATCHES = 50;
     private final String[] LEARNING_GA = new String[]{"ga1", "ga2","ga3","ga4"};
+    private final boolean stop_learning = false;
     
     private Vulture vulture;
     private int matches = 0;
@@ -57,7 +58,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     	}
 
         try {
-        	vulture.step(LEARNING_GA[gaSelector]);
+        	vulture.step(LEARNING_GA[gaSelector],stop_learning);
                 
 
             if (frame % 1000 == 0) {
