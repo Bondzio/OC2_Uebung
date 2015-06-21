@@ -19,11 +19,11 @@ public class Marine {
     private final  Unit unit;
     private int id;
 
-    private final double rangeOfNeighborhood = 50; // r_sig from the paper
+    private final double rangeOfNeighborhood = 200; // r_sig from the paper
     private final int coulumFormationFileNumber = 4;
     private final double widthOfColumnFormation = (2*rangeOfNeighborhood)/coulumFormationFileNumber; // r_col from the paper
 
-    private final int lineFormationRankNumber = 4;
+    private final int lineFormationRankNumber = 2;
     private final double heightOfLineFormation = (2*rangeOfNeighborhood)/lineFormationRankNumber; // r_lin from the paper
 
 
