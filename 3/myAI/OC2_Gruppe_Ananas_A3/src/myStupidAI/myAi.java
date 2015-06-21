@@ -22,8 +22,7 @@ public class myAi implements BWAPIEventListener, Runnable {
     private int marineID = 0;
 
     public myAi() {
-        System.out.println("This is the StupidMarineAI! :)");
-
+        System.out.println("This is the myAI! (-.(-.-).-)");
         bwapi = new JNIBWAPI(this, false);
     }
 

@@ -42,10 +42,13 @@ public class Marine {
     	//rule 1
         int[] vector_ruleOne = moveToEnemy(target);
 
+        //rule 3
+        int[] vector_ruleThree = moveToCentroidColumnFormation(marines);
 
 
-        int final_vector_x = vector_ruleOne[0];
-        int final_vector_y = vector_ruleOne[1];
+
+        int final_vector_x = vector_ruleOne[0] + vector_ruleThree[0];
+        int final_vector_y = vector_ruleOne[1] + vector_ruleThree[1];
 
         int myCurrentX = unit.getX();
         int myCurrentY = unit.getY();
@@ -67,9 +70,9 @@ public class Marine {
         return new int[] {vector_x,vector_y};
     }
 
-    private void moveToCentroidColumnFormation(HashSet<Marine> marines){
-        double rangeOfNeighborhood = 10;
-        int widthOfColumnFormation = 5;
+    private int[] moveToCentroidColumnFormation(HashSet<Marine> marines){
+        double rangeOfNeighborhood = 300;
+        double widthOfColumnFormation = (2*rangeOfNeighborhood)/4;
 
         ArrayList<Unit> myNeighbors = new ArrayList<Unit>();
         double distance =0;
@@ -84,40 +87,99 @@ public class Marine {
 
         double topCirclePos = unit.getY() + rangeOfNeighborhood;
         double bottomCirclePos = unit.getY() - rangeOfNeighborhood;
-        double currentFramePos = topCirclePos;
-        while(currentFramePos > bottomCirclePos){
+        double currentFramePosTop = topCirclePos;
+        double currentFramePosBottom = 0;
+        while(currentFramePosTop > bottomCirclePos){
+            currentFramePosBottom = currentFramePosTop - widthOfColumnFormation;
             ArrayList<Unit> set = new ArrayList<>();
             for(Unit neighbor: myNeighbors){
-                if(neighbor.getY()<= currentFramePos && neighbor.getY()> (currentFramePos - widthOfColumnFormation))
+                if(neighbor.getY()<= currentFramePosTop && neighbor.getY()> currentFramePosBottom)
                     set.add(neighbor);
             }
             setOfSets.add(set);
-            currentFramePos -= widthOfColumnFormation;
+            currentFramePosTop -= widthOfColumnFormation;
         }
 
+        int[] maxCohDelta = findMaxCohVector(setOfSets,calculateCentroid(myNeighbors));
+        int[] sepDelta = calculateSeparationDelta(myNeighbors);
+        int[] result = addVector(maxCohDelta,sepDelta);
 
-
+        return result;
     }
 
 
-    private double getDistanceToNeighbor(int neighborpos_x, int neighborpos_y){
-        int diffX = unit.getX() - neighborpos_x;
-        int diffY = unit.getY() - neighborpos_y;
-        double result = Math.pow(diffX, 2) + Math.pow(diffY, 2);
+    private int[] findMaxCohVector(ArrayList<ArrayList<Unit>> setOfSets,int[] centroidPos){
+        double maxValue = 0;
+        double result = 0;
+        int[] winningChoesionDelta = null;
+        for (ArrayList<Unit> S: setOfSets){
+            result = 0;
+            for (Unit neighborInS: S){
+                int[] tempVector = {0,0};
+                int[] cohesionDelta = caclulateCohesionDelta(centroidPos,new int[]{neighborInS.getX(), neighborInS.getY()});
+                tempVector[0] = unit.getX() + cohesionDelta[0];
+                tempVector[1] = unit.getY() + cohesionDelta[1];
+                result = S.size() / calcVectorLength(tempVector[0],tempVector[1]);
+                if(result > maxValue){
+                    maxValue = result;
+                    winningChoesionDelta = cohesionDelta;
+                }
+            }
+        }
+
+        return winningChoesionDelta;
+    }
+
+
+    private double calcVectorLength(int vector_x, int vectro_y){
+        double result = Math.pow(vector_x, 2) + Math.pow(vectro_y, 2);
         return Math.sqrt(result);
     }
 
-    private int[] calculateCentroid(ArrayList<int[]> neighbors){
+    private int[] caclulateCohesionDelta(int[] centroidPos, int[] poiPos){
+        int cohesionDelta_x = centroidPos[0] - poiPos[0];
+        int cohesionDelta_y = centroidPos[1] - poiPos[1];
+        return new int[]{cohesionDelta_x,cohesionDelta_y};
+    }
+
+    private int[] calculateCentroid(ArrayList<Unit> neighbors){
         int vector_sumX = 0;
         int vector_sumY = 0;
-        for(int[] neighbor: neighbors){
-            vector_sumX += neighbor[0];
-            vector_sumY += neighbor[1];
+        for(Unit neighbor: neighbors){
+            vector_sumX += neighbor.getX();
+            vector_sumY += neighbor.getY();
         }
 
         int centroid_x = (1/neighbors.size()) * vector_sumX;
         int centroid_y = (1/neighbors.size()) * vector_sumY;
         return new int[]{centroid_x,centroid_y};
+    }
+
+    private int[] calculateSeparationDelta(ArrayList<Unit> myNeighbors){
+        int[] seperationDelta = {0,0};
+        int[] temp = {0,0};
+        for(Unit neighbor: myNeighbors){
+            int [] currentV = calculateVector(neighbor.getX(),neighbor.getY(),unit.getX(),unit.getY());
+            temp = addVector(temp,currentV);
+        }
+        seperationDelta[0] = - temp[0];
+        seperationDelta[1] = - temp[1];
+        return seperationDelta;
+    }
+
+    /**
+     *  One - Two
+     */
+    private int[] calculateVector(int pos_one_x, int pos_one_y, int pos_two_x, int pos_two_y){
+        int diffX = pos_one_x - pos_two_x;
+        int diffY = pos_one_y - pos_two_y;
+        return new int[]{diffX,diffY};
+    }
+
+    private int[] addVector(int[] vector_one, int[] vector_two){
+        int x = vector_one[0] + vector_two[0];
+        int y = vector_one[1] + vector_two[1];
+        return new int[]{x,y};
     }
 
     private Unit getClosestEnemy() {
