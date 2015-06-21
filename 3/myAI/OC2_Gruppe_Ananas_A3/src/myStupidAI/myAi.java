@@ -22,7 +22,12 @@ public class myAi implements BWAPIEventListener, Runnable {
     private int marineID = 0;
 
     public myAi() {
-        System.out.println("This is the myAI! (-.(-.-).-)");
+        System.out.println("This is the ANANAS-AI! (-.(-.-).-)");
+        System.out.println("    \\|/");
+        System.out.println("    AXA");
+        System.out.println("   /XXX\\");
+        System.out.println("   \\XXX/");
+        System.out.println("    '^'");
         bwapi = new JNIBWAPI(this, false);
     }
 
