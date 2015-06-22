@@ -44,7 +44,13 @@ public class myAi implements BWAPIEventListener, Runnable {
 
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(0);
+        bwapi.setGameSpeed(30);
+        bwapi.printText("Im a ANANAS!");
+        int color = bwapi.getSelf().getColor();
+        if(color == 111)
+        	System.out.println("I'm the red Player!");
+        else if(color == 165)
+        	System.out.println("I'm the blue Player!");
     }
 
     @Override

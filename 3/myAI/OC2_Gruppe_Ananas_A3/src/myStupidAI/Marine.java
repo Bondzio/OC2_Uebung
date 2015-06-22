@@ -26,8 +26,9 @@ public class Marine {
     private final int lineFormationRankNumber = 2;
     private final double heightOfLineFormation = (2*rangeOfNeighborhood)/lineFormationRankNumber; // r_lin from the paper
 
-
-
+    private int w1 = 1;
+    private int w3 = 1;
+    private int w4 = 1;
 
     public Marine(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id) {
         this.unit = unit;
@@ -35,6 +36,13 @@ public class Marine {
         this.enemyUnits = enemyUnits;
         this.id = id;
     }
+    
+    public Marine(){ 
+    	this.unit = null;
+    	this.bwapi = null;
+    	this.enemyUnits = null;
+    }
+
 
     public void step(HashSet<Marine> marines) {
         Unit target = getClosestEnemy();
@@ -48,8 +56,11 @@ public class Marine {
         }
     }
     
-    private void move(Unit target,HashSet<Marine> marines){
-    	//TODO: Implement the flocking behavior in this method.
+    public void move(Unit target,HashSet<Marine> marines){
+    	int myCurrentX = unit.getX();
+        int myCurrentY = unit.getY();
+        
+    	//TODO: Implement the GA
     	//rule 1
         int[] vector_ruleOne = moveToEnemy(target);
 
@@ -62,16 +73,14 @@ public class Marine {
         int[] vector_ruleFour = moveToCentroidOfLineFormation(marines);
 
 
-        int final_vector_x = vector_ruleOne[0] + vector_ruleThree[0] + vector_ruleFour[0];
-        int final_vector_y = vector_ruleOne[1] + vector_ruleThree[1] + vector_ruleFour[1];
+        int final_vector_x = myCurrentX + w1 * vector_ruleOne[0] + w3 * vector_ruleThree[0] + w4 * vector_ruleFour[0];
+        int final_vector_y = myCurrentY + w1 * vector_ruleOne[1] + w3 * vector_ruleThree[1] + w4 * vector_ruleFour[1];
 
-        int myCurrentX = unit.getX();
-        int myCurrentY = unit.getY();
-        bwapi.move(unit.getID(), (myCurrentX + final_vector_x), (myCurrentY + final_vector_y));
+        bwapi.move(unit.getID(), (final_vector_x), (final_vector_y));
     }
 
     // ################## FOR RULE ONE ########################################
-    private int[] moveToEnemy(Unit target){
+    public int[] moveToEnemy(Unit target){
         int x = unit.getX();
         int y = unit.getY();
 
@@ -81,12 +90,13 @@ public class Marine {
         int vector_x = enemy_x - x;
         int vector_y = enemy_y - y;
 
+        System.out.println("enemy: (" + vector_x + ", " + vector_y + ")");
         return new int[] {vector_x,vector_y};
     }
 
 
     // ################## FOR RULE THREE ######################################
-    private int[] moveToCentroidColumnFormation(HashSet<Marine> marines){
+    public int[] moveToCentroidColumnFormation(HashSet<Marine> marines){
 
         //1.Step find all my Neighbors within the range of r_sig
         ArrayList<Unit> myNeighbors = findMyNeighbors(marines);
@@ -103,13 +113,14 @@ public class Marine {
         //Last step add both results from 3.Step and 4.Step and we are finished
         int[] result = addVector(maxCohDelta,sepDelta);
 
+        System.out.println("centerCol: (" + result[0] + ", " + result[1] + ")");
         return result;
     }
 
     private ArrayList<Unit> findMyNeighbors(HashSet<Marine> marines){
         ArrayList<Unit> myNeighbors = new ArrayList<Unit>();
-        double distance =0;
-        for (Marine marine: marines){
+        double distance = 0;
+        for (Marine marine : marines){
             Unit m = marine.getUnit();
             distance = getDistance(m);
             if(distance <= rangeOfNeighborhood)
@@ -172,6 +183,7 @@ public class Marine {
         //Last step add both results from 3.Step and 4.Step and we are finished
         int[] result = addVector(maxCohDelta, sepDelta);
 
+        System.out.println("centerLine: (" + result[0] + ", " + result[1] + ")");
         return result;
     }
 
