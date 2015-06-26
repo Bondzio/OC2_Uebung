@@ -19,16 +19,16 @@ public class Marine {
     private final  Unit unit;
     private int id;
 
-    private final double rangeOfNeighborhood = 200; // r_sig from the paper
+    private final int rangeOfNeighborhood = 100; // r_sig from the paper
     private final int coulumFormationFileNumber = 4;
     private final double widthOfColumnFormation = (2*rangeOfNeighborhood)/coulumFormationFileNumber; // r_col from the paper
 
     private final int lineFormationRankNumber = 2;
     private final double heightOfLineFormation = (2*rangeOfNeighborhood)/lineFormationRankNumber; // r_lin from the paper
 
-    private int w1 = 1;
-    private int w3 = 1;
-    private int w4 = 1;
+    private double w1 = 1;
+    private double w3 = 1;
+    private double w4 = 1;
 
     public Marine(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id) {
         this.unit = unit;
@@ -73,10 +73,10 @@ public class Marine {
         int[] vector_ruleFour = moveToCentroidOfLineFormation(marines);
 
 
-        int final_vector_x = myCurrentX + w1 * vector_ruleOne[0] + w3 * vector_ruleThree[0] + w4 * vector_ruleFour[0];
-        int final_vector_y = myCurrentY + w1 * vector_ruleOne[1] + w3 * vector_ruleThree[1] + w4 * vector_ruleFour[1];
+        double final_vector_x = myCurrentX + w1 * vector_ruleOne[0] + w3 * vector_ruleThree[0] + w4 * vector_ruleFour[0];
+        double final_vector_y = myCurrentY + w1 * vector_ruleOne[1] + w3 * vector_ruleThree[1] + w4 * vector_ruleFour[1];
 
-        bwapi.move(unit.getID(), (final_vector_x), (final_vector_y));
+        bwapi.move(unit.getID(), (int) final_vector_x, (int) final_vector_y );
     }
 
     // ################## FOR RULE ONE ########################################
@@ -90,7 +90,7 @@ public class Marine {
         int vector_x = enemy_x - x;
         int vector_y = enemy_y - y;
 
-        System.out.println("enemy: (" + vector_x + ", " + vector_y + ")");
+        //System.out.println("enemy: (" + vector_x + ", " + vector_y + ")");
         return new int[] {vector_x,vector_y};
     }
 
@@ -105,15 +105,17 @@ public class Marine {
         ArrayList<ArrayList<Unit>> setOfSets = createSetsOfCharactersForRuleThree(myNeighbors);
 
         //3.Step find the best cohesion vector
-        int[] maxCohDelta = findMaxCohVector(setOfSets,calculateCentroid(myNeighbors));
+        int[] maxCohDelta = findMaxCohVector(setOfSets, calculateCentroid(myNeighbors));
 
         //4.Step calculate a separation Delta in order to diversify the resultant formation
-        int[] sepDelta = calculateSeparationDelta(myNeighbors);
+        //int[] sepDelta = calculateSeparationDelta(myNeighbors);
+        int[] sepDelta = {0,0};
 
         //Last step add both results from 3.Step and 4.Step and we are finished
         int[] result = addVector(maxCohDelta,sepDelta);
 
-        System.out.println("centerCol: (" + result[0] + ", " + result[1] + ")");
+
+        //System.out.println("centerCol: (" + result[0] + ", " + result[1] + ")");
         return result;
     }
 
@@ -177,13 +179,13 @@ public class Marine {
 
 
         //4.Step calculate a separation Delta in order to diversify the resultant formation
-        int[] sepDelta = calculateSeparationDelta(myNeighbors);
-
+        //int[] sepDelta = calculateSeparationDelta(myNeighbors);
+        int[] sepDelta = {0,0};
 
         //Last step add both results from 3.Step and 4.Step and we are finished
         int[] result = addVector(maxCohDelta, sepDelta);
 
-        System.out.println("centerLine: (" + result[0] + ", " + result[1] + ")");
+        //System.out.println("centerLine: (" + result[0] + ", " + result[1] + ")");
         return result;
     }
 
