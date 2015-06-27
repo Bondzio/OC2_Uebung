@@ -4,6 +4,7 @@ import jnibwapi.BWAPIEventListener;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.model.Unit;
 import jnibwapi.types.UnitType;
+import myStupidAI.bolding.BoldingManager;
 
 import java.util.HashSet;
 
@@ -17,6 +18,8 @@ public class myAi implements BWAPIEventListener, Runnable {
     private HashSet<Marine> marines;
 
     private HashSet<Unit> enemyUnits;
+
+    private BoldingManager boldingManager;
 
     private int frame;
     private int marineID = 0;
@@ -39,6 +42,8 @@ public class myAi implements BWAPIEventListener, Runnable {
     public void matchStart() {
         marines = new HashSet<>();
         enemyUnits = new HashSet<>();
+
+        this.boldingManager  = new BoldingManager();
 
         frame = 0;
 
@@ -73,7 +78,7 @@ public class myAi implements BWAPIEventListener, Runnable {
 
         if (typeID == UnitType.UnitTypes.Terran_Marine.getID()) {
             if (unit.getPlayerID() == bwapi.getSelf().getID()) {
-                marines.add(new Marine(unit, bwapi, enemyUnits, marineID));
+                marines.add(new Marine(unit, bwapi, enemyUnits, marineID, boldingManager.getRuleMachine()));
                 marineID++;
             } else {
                 enemyUnits.add(unit);
@@ -113,6 +118,10 @@ public class myAi implements BWAPIEventListener, Runnable {
 
     @Override
     public void matchEnd(boolean winner) {
+        int hpLeft = 0;
+        for(Marine marine: marines)
+            hpLeft += marine.getUnit().getHitPoints();
+        boldingManager.gameFin(hpLeft);
     }
 
     @Override

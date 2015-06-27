@@ -1,4 +1,4 @@
-package myStupidAI;
+package myStupidAI.bolding;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,7 +19,9 @@ public class ParamSet {
     private final int coulumFormationFileNumber;
     private final int lineFormationRankNumber;
 
-    private final int reward;
+
+
+    private int reward;
 
     public ParamSet(double w1, double w3, double w4, int rangeOfNeighborhood, int coulumFormationFileNumber, int lineFormationRankNumber, int reward) {
         this.w1 = w1;
@@ -84,6 +86,10 @@ public class ParamSet {
         memberAsMap.put("reward", Integer.toString(this.reward)+ delimiter + "I" );
 
         return memberAsMap;
+    }
+
+    public void setReward(int reward) {
+        this.reward = reward;
     }
 
 

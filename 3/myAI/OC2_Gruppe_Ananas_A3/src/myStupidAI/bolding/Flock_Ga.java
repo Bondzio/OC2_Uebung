@@ -1,4 +1,4 @@
-package myStupidAI;
+package myStupidAI.bolding;
 
 import java.util.*;
 
@@ -8,15 +8,19 @@ import java.util.*;
  */
 public class Flock_Ga {
 
-    Random r = new Random();
+    Random r;
+
+    public Flock_Ga() {
+        this.r = new Random();
+    }
 
     void doGa(ParamSetCollection p_collaction){
         ParamSet[] parents = findRouletParents(p_collaction);
-        System.out.println("Parents are: " + Arrays.toString(parents));
+        //System.out.println("Parents are: " + Arrays.toString(parents));
         List<HashMap<String,String>> crossovered = doCrossOver(parents);
-        System.out.println("Children after crossover: " +crossovered);
+        //System.out.println("Children after crossover: " +crossovered);
         doMutation(crossovered);
-        System.out.println("Children after mutation: " + crossovered);
+        //System.out.println("Children after mutation: " + crossovered);
         calcNewReward(crossovered);
 
         p_collaction.addNewParamSet(new ParamSet(crossovered.get(0)));
@@ -60,11 +64,11 @@ public class Flock_Ga {
         int memberSize = fathersMemberMap.keySet().size(); // mother is the same
 
         int numToSwap = r.nextInt(memberSize); // so we dont swap all members
-        System.out.println("Crossover: how many to Crossover? " + numToSwap);
+        //System.out.println("Crossover: how many to Crossover? " + numToSwap);
 
         String[] copyOf = Arrays.copyOf(fathersMemberMap.keySet().toArray(), fathersMemberMap.keySet().toArray().length, String[].class);
         String[] memberNamesToSwap = getRndMembersToSwap( copyOf ,numToSwap);
-        System.out.println("Crossover: which members to swap? " + Arrays.toString(memberNamesToSwap));
+        //System.out.println("Crossover: which members to swap? " + Arrays.toString(memberNamesToSwap));
 
         for(String member: memberNamesToSwap){
             String tmp = fathersMemberMap.get(member);

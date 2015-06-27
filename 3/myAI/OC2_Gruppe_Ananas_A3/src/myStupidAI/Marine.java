@@ -3,6 +3,7 @@ package myStupidAI;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.model.Unit;
 import jnibwapi.types.WeaponType;
+import myStupidAI.bolding.RuleMachine;
 
 
 import java.util.ArrayList;
@@ -19,22 +20,15 @@ public class Marine {
     private final  Unit unit;
     private int id;
 
-    private final int rangeOfNeighborhood = 100; // r_sig from the paper
-    private final int coulumFormationFileNumber = 4;
-    private final double widthOfColumnFormation = (2*rangeOfNeighborhood)/coulumFormationFileNumber; // r_col from the paper
+    RuleMachine ruleMachine;
 
-    private final int lineFormationRankNumber = 2;
-    private final double heightOfLineFormation = (2*rangeOfNeighborhood)/lineFormationRankNumber; // r_lin from the paper
 
-    private double w1 = 1;
-    private double w3 = 1;
-    private double w4 = 1;
-
-    public Marine(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id) {
+    public Marine(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id, RuleMachine ruleMachine) {
         this.unit = unit;
         this.bwapi = bwapi;
         this.enemyUnits = enemyUnits;
         this.id = id;
+        this.ruleMachine = ruleMachine;
     }
     
     public Marine(){ 
@@ -57,199 +51,30 @@ public class Marine {
     }
     
     public void move(Unit target,HashSet<Marine> marines){
-    	int myCurrentX = unit.getX();
-        int myCurrentY = unit.getY();
-        
+        HashSet<Unit> units = new HashSet<>();
+        for(Marine marine: marines){
+            units.add(marine.getUnit());
+        }
+
+
     	//TODO: Implement the GA
     	//rule 1
-        int[] vector_ruleOne = moveToEnemy(target);
+        int[] vector_ruleOne = ruleMachine.moveToEnemy(unit, target);
 
         //rule 2 not needed
 
         //rule 3
-        int[] vector_ruleThree = moveToCentroidColumnFormation(marines);
+        int[] vector_ruleThree = ruleMachine.moveToCentroidColumnFormation(unit, units);
 
         //rule 4
-        int[] vector_ruleFour = moveToCentroidOfLineFormation(marines);
+        int[] vector_ruleFour = ruleMachine.moveToCentroidOfLineFormation(unit, units);
+
+        int[] ownPos = new int[]{unit.getX(), unit.getY()};
+        double[] final_vector = ruleMachine.calcFinalVector(ownPos, vector_ruleOne, vector_ruleThree, vector_ruleFour);
 
 
-        double final_vector_x = myCurrentX + w1 * vector_ruleOne[0] + w3 * vector_ruleThree[0] + w4 * vector_ruleFour[0];
-        double final_vector_y = myCurrentY + w1 * vector_ruleOne[1] + w3 * vector_ruleThree[1] + w4 * vector_ruleFour[1];
-
-        bwapi.move(unit.getID(), (int) final_vector_x, (int) final_vector_y );
-    }
-
-    // ################## FOR RULE ONE ########################################
-    public int[] moveToEnemy(Unit target){
-        int x = unit.getX();
-        int y = unit.getY();
-
-        int enemy_x = target.getX();
-        int enemy_y = target.getY();
-
-        int vector_x = enemy_x - x;
-        int vector_y = enemy_y - y;
-
-        //System.out.println("enemy: (" + vector_x + ", " + vector_y + ")");
-        return new int[] {vector_x,vector_y};
-    }
-
-
-    // ################## FOR RULE THREE ######################################
-    public int[] moveToCentroidColumnFormation(HashSet<Marine> marines){
-
-        //1.Step find all my Neighbors within the range of r_sig
-        ArrayList<Unit> myNeighbors = findMyNeighbors(marines);
-
-        //2.Step create all the sets of Characters ( S_j )
-        ArrayList<ArrayList<Unit>> setOfSets = createSetsOfCharactersForRuleThree(myNeighbors);
-
-        //3.Step find the best cohesion vector
-        int[] maxCohDelta = findMaxCohVector(setOfSets, calculateCentroid(myNeighbors));
-
-        //4.Step calculate a separation Delta in order to diversify the resultant formation
-        //int[] sepDelta = calculateSeparationDelta(myNeighbors);
-        int[] sepDelta = {0,0};
-
-        //Last step add both results from 3.Step and 4.Step and we are finished
-        int[] result = addVector(maxCohDelta,sepDelta);
-
-
-        //System.out.println("centerCol: (" + result[0] + ", " + result[1] + ")");
-        return result;
-    }
-
-    private ArrayList<Unit> findMyNeighbors(HashSet<Marine> marines){
-        ArrayList<Unit> myNeighbors = new ArrayList<Unit>();
-        double distance = 0;
-        for (Marine marine : marines){
-            Unit m = marine.getUnit();
-            distance = getDistance(m);
-            if(distance <= rangeOfNeighborhood)
-                myNeighbors.add(m);
-        }
-        return myNeighbors;
-    }
-
-    private ArrayList<ArrayList<Unit>> createSetsOfCharactersForRuleThree(ArrayList<Unit> myNeighbors){
-        ArrayList<ArrayList<Unit>> setOfSets = new ArrayList<ArrayList<Unit>>();
-
-        // determin the boarder to look in
-        double topCirclePos = unit.getY() - rangeOfNeighborhood;
-        double bottomCirclePos = unit.getY() + rangeOfNeighborhood;
-
-        // The Frame represents the red rectangle or one of the scanning windows, from the paper
-        double currentFramePosTop = topCirclePos;
-        double currentFramePosBottom;
-
-
-        while(currentFramePosTop < bottomCirclePos){
-            //keep the coulum width
-            currentFramePosBottom = currentFramePosTop + widthOfColumnFormation;
-
-            ArrayList<Unit> set = new ArrayList<>();
-            // search the frame for neighbors
-            for(Unit neighbor: myNeighbors){
-                if(currentFramePosTop <= neighbor.getY() && neighbor.getY() < currentFramePosBottom)
-                    // add the neighbors to the coresponding S_j set
-                    set.add(neighbor);
-            }
-            //add the S_j set to a collection where all the other S_j sets are kept
-            setOfSets.add(set);
-
-            // move the frame downwards
-            currentFramePosTop += widthOfColumnFormation;
-        }
-        return setOfSets;
-    }
-
-
-    // ################## FOR RULE FOUR ######################################
-    private int[] moveToCentroidOfLineFormation(HashSet<Marine> marines){
-        //1.Step find all my Neighbors within the range of r_sig
-        ArrayList<Unit> myNeighbors = findMyNeighbors(marines);
-
-
-        //2.Step create all the sets of Characters ( S_j )
-        ArrayList<ArrayList<Unit>> setOfSets = createSetsOfCharactersForRuleFour(myNeighbors);
-
-
-        //3.Step find the best cohesion vector
-        int[] maxCohDelta = findMaxCohVector(setOfSets,calculateCentroid(myNeighbors));
-
-
-        //4.Step calculate a separation Delta in order to diversify the resultant formation
-        //int[] sepDelta = calculateSeparationDelta(myNeighbors);
-        int[] sepDelta = {0,0};
-
-        //Last step add both results from 3.Step and 4.Step and we are finished
-        int[] result = addVector(maxCohDelta, sepDelta);
-
-        //System.out.println("centerLine: (" + result[0] + ", " + result[1] + ")");
-        return result;
-    }
-
-    private ArrayList<ArrayList<Unit>> createSetsOfCharactersForRuleFour(ArrayList<Unit> myNeighbors){
-        ArrayList<ArrayList<Unit>> setOfSets = new ArrayList<ArrayList<Unit>>();
-
-        // determin the boarder to look in
-        double rightCirclePos = unit.getX() + rangeOfNeighborhood;
-        double leftCirclePos = unit.getX() - rangeOfNeighborhood;
-
-        // The Frame represents the red rectangle or one of the scanning windows, from the paper
-        double currentFramePosLeft = leftCirclePos;
-        double currentFramePosRight;
-
-
-        while(currentFramePosLeft < rightCirclePos){
-            //keep the formation height
-            currentFramePosRight = currentFramePosLeft + heightOfLineFormation;
-
-            ArrayList<Unit> set = new ArrayList<>();
-            // search the frame for neighbors
-            for(Unit neighbor: myNeighbors){
-                if( currentFramePosLeft <= neighbor.getX() && neighbor.getX() < currentFramePosRight)
-                    // add the neighbors to the coresponding S_j set
-                    set.add(neighbor);
-            }
-            //add the S_j set to a collection where all the other S_j sets are kept
-            setOfSets.add(set);
-
-            // move the frame rightwards
-            currentFramePosLeft += heightOfLineFormation;
-        }
-        return setOfSets;
-    }
-
-    // ################## FOR RULE THREE & FOUR ##############################
-
-    private int[] findMaxCohVector(ArrayList<ArrayList<Unit>> setOfSets,int[] centroidPos){
-        double maxValue = 0.;
-        double result;
-
-        int[] winningChoesionDelta = {0,0};
-
-        // search through all sets of charecters
-        for (ArrayList<Unit> S: setOfSets){
-
-            // search the spesific S_j set
-            for (Unit neighborInS: S){
-
-                int[] cohesionDelta = caclulateCohesionDelta(centroidPos,new int[]{neighborInS.getX(), neighborInS.getY()});
-                int[] tempVector = addVector(new int[]{unit.getX(),unit.getY()},cohesionDelta);
-                // calc the max
-                result = S.size() / calcVectorLength(tempVector[0],tempVector[1]);
-
-
-                if(result >= maxValue){
-
-                    maxValue = result;
-                    // save the best choesionDelta of them all
-                    winningChoesionDelta = cohesionDelta;
-                }
-            }
-        }
-        return winningChoesionDelta;
+        System.out.println("Marine "+ id + ": V1:" + Arrays.toString(vector_ruleOne)+" V3:" + Arrays.toString(vector_ruleThree) +" V4:" + Arrays.toString(vector_ruleFour) + " Final:" +  Arrays.toString(final_vector));
+        bwapi.move(unit.getID(), (int) final_vector[0], (int) final_vector[1] );
     }
 
 
@@ -289,55 +114,7 @@ public class Marine {
     public Unit getUnit(){ return this.unit; }
 
 
-    // ######################## UTIL ################################
-    /**
-     *  One - Two
-     */
-    private int[] calculateVector(int pos_one_x, int pos_one_y, int pos_two_x, int pos_two_y){
-        int diffX = pos_one_x - pos_two_x;
-        int diffY = pos_one_y - pos_two_y;
-        return new int[]{diffX,diffY};
-    }
 
-    private int[] addVector(int[] vector_one, int[] vector_two){
-        int x = vector_one[0] + vector_two[0];
-        int y = vector_one[1] + vector_two[1];
-        return new int[]{x,y};
-    }
 
-    private double calcVectorLength(int vector_x, int vectro_y){
-        double result = Math.pow(vector_x, 2) + Math.pow(vectro_y, 2);
-        return Math.sqrt(result);
-    }
 
-    private int[] calculateCentroid(ArrayList<Unit> neighbors){
-        int[] vector_sum = {0,0};
-
-        for(Unit neighbor: neighbors){
-            int[] currentVector = {neighbor.getX(),neighbor.getY()};
-            vector_sum = addVector(vector_sum,currentVector);
-        }
-
-        int centroid_x = (1/neighbors.size()) * vector_sum[0];
-        int centroid_y = (1/neighbors.size()) * vector_sum[1];
-        return new int[]{centroid_x,centroid_y};
-    }
-
-    private int[] calculateSeparationDelta(ArrayList<Unit> myNeighbors){
-        int[] seperationDelta = {0,0};
-        int[] temp = {0,0};
-        for(Unit neighbor: myNeighbors){
-            int [] currentV = calculateVector(neighbor.getX(),neighbor.getY(),unit.getX(),unit.getY());
-            temp = addVector(temp,currentV);
-        }
-        seperationDelta[0] = (-1)* temp[0];
-        seperationDelta[1] = (-1)* temp[1];
-        return seperationDelta;
-    }
-
-    private int[] caclulateCohesionDelta(int[] centroidPos, int[] poiPos){
-        int cohesionDelta_x = centroidPos[0] - poiPos[0];
-        int cohesionDelta_y = centroidPos[1] - poiPos[1];
-        return new int[]{cohesionDelta_x,cohesionDelta_y};
-    }
 }

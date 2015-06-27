@@ -1,4 +1,4 @@
-package myStupidAI;
+package myStupidAI.bolding;
 
 /**
  * Created by Rolle on 26.06.2015.
