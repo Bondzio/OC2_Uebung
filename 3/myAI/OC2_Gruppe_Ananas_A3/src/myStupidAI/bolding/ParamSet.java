@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Created by Rolle on 26.06.2015.
  */
-public class ParamSet {
+public class ParamSet{
 
     private final double w1;
     private final double w3;
@@ -91,6 +91,5 @@ public class ParamSet {
     public void setReward(int reward) {
         this.reward = reward;
     }
-
 
 }

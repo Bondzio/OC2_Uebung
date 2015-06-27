@@ -40,17 +40,20 @@ public class myAi implements BWAPIEventListener, Runnable {
 
     @Override
     public void matchStart() {
+        bwapi.printText("Im a ANANAS!");
+
         marines = new HashSet<>();
         enemyUnits = new HashSet<>();
 
         this.boldingManager  = new BoldingManager();
+        System.out.println("Current P-Set: " + boldingManager.getRuleMachine().getpSet().getMembersAsMap());
 
         frame = 0;
 
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(30);
-        bwapi.printText("Im a ANANAS!");
+        bwapi.setGameSpeed(1);
+
         int color = bwapi.getSelf().getColor();
         if(color == 111)
         	System.out.println("I'm the red Player!");

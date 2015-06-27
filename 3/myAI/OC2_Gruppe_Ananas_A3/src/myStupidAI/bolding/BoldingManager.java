@@ -12,7 +12,7 @@ public class BoldingManager {
     private final Flock_Ga flock_ga= new Flock_Ga();
     private RuleMachine ruleMachine;
 
-    private String createRuleMachineType = "fix";
+    private String createRuleMachineType = "roulet"; // "fix", "roulet"
 
 
     public BoldingManager() {

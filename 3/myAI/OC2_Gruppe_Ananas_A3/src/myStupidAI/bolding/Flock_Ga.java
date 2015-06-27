@@ -124,24 +124,13 @@ public class Flock_Ga {
 
             if(tmp[1].equals("D")){
                 double currentValue =  Double.valueOf(tmp[0]);
-                double chance = r.nextDouble();
-                if(chance < 0.5)
-                    currentValue += 0.05;
-                else
-                    currentValue -= 0.05;
-
-                if(currentValue >= 0 && currentValue <= 1)
-                    membersAsMap.put(mutationMemberName,Double.toString(currentValue));
+                double mutatedValue = mutationForDoubleValue(currentValue);
+                membersAsMap.put(mutationMemberName,Double.toString(mutatedValue));
             }
             else if(tmp[1].equals("I")){
                 int currentValue = Integer.valueOf(tmp[0]);
-                int chance = r.nextInt();
-                if(chance < 0.5)
-                    currentValue += 1;
-                else
-                    currentValue -= 1;
-                if(currentValue >= 0)
-                    membersAsMap.put(mutationMemberName, Integer.toString(currentValue));
+                int mutatedValue = mutationForIntValue(currentValue);
+                membersAsMap.put(mutationMemberName, Integer.toString(mutatedValue));
             }
         }
     }
@@ -153,6 +142,45 @@ public class Flock_Ga {
 
         childernAsMemberMap.get(0).put("reward",Integer.toString(newReward));
         childernAsMemberMap.get(1).put("reward",Integer.toString(newReward));
+
+    }
+
+    private double mutationForDoubleValue(double currentValue){
+        double retValue;
+        double chance = r.nextDouble();
+        double highestLimit = 1.0;
+        double lowestLimit = 0;
+
+        if(chance < 0.5)
+            retValue = currentValue + (r.nextDouble() * (highestLimit - currentValue));
+        else
+            retValue = lowestLimit + (r.nextDouble() * (currentValue - lowestLimit));
+
+        if(retValue < lowestLimit || retValue > highestLimit){
+            System.out.println("Flock_GA: mutation value was not in defined limit!");
+            return currentValue;
+        }
+
+        return retValue;
+    }
+
+    private int mutationForIntValue(int currentValue){
+        int retValue;
+        int lowestLimit = 0;
+
+        double chance = r.nextDouble();
+
+        if(chance < 0.5)
+            retValue = currentValue + r.nextInt(100);
+        else
+            retValue = r.nextInt(currentValue - lowestLimit + 1) + lowestLimit;
+
+        if(retValue < lowestLimit){
+            System.out.println("Flock_GA: mutation value was not in defined limit!");
+            return currentValue;
+        }
+
+        return retValue;
 
     }
 }

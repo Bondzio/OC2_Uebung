@@ -52,8 +52,8 @@ public class RuleMachine {
 
         double[] final_vector = {final_vector_x,final_vector_y};
 
-        if(vector_ruleThree[0] != vector_ruleFour[0] || vector_ruleThree[1] != vector_ruleFour[1])
-            System.out.println("Marine " + ownUnit.getID() + ": V1:" + Arrays.toString(vector_ruleOne)+" V3:" + Arrays.toString(vector_ruleThree) +" V4:" + Arrays.toString(vector_ruleFour) + " Final:" +  Arrays.toString(final_vector));
+        //if(vector_ruleThree[0] != vector_ruleFour[0] || vector_ruleThree[1] != vector_ruleFour[1])
+            //System.out.println("Marine " + ownUnit.getID() + ": V1:" + Arrays.toString(vector_ruleOne)+" V3:" + Arrays.toString(vector_ruleThree) +" V4:" + Arrays.toString(vector_ruleFour) + " Final:" +  Arrays.toString(final_vector));
         return final_vector;
     }
 
