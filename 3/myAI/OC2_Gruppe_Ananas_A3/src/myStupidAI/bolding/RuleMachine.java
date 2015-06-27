@@ -52,7 +52,8 @@ public class RuleMachine {
 
         double[] final_vector = {final_vector_x,final_vector_y};
 
-        System.out.println("V1:" + Arrays.toString(vector_ruleOne)+" V3:" + Arrays.toString(vector_ruleThree) +" V4:" + Arrays.toString(vector_ruleFour) + " Final:" +  Arrays.toString(final_vector));
+        if(vector_ruleThree[0] != vector_ruleFour[0] || vector_ruleThree[1] != vector_ruleFour[1])
+            System.out.println("Marine " + ownUnit.getID() + ": V1:" + Arrays.toString(vector_ruleOne)+" V3:" + Arrays.toString(vector_ruleThree) +" V4:" + Arrays.toString(vector_ruleFour) + " Final:" +  Arrays.toString(final_vector));
         return final_vector;
     }
 
@@ -75,9 +76,13 @@ public class RuleMachine {
 
     // ################## FOR RULE THREE ######################################
     public double[] moveToCentroidColumnFormation(Unit ownUnit, HashSet<Unit> units){
-
+        double[] result = {0.0,0.0};
         //1.Step find all my Neighbors within the range of r_sig
         ArrayList<Unit> myNeighbors = findMyNeighbors(ownUnit, units);
+
+        if(myNeighbors.size() <= 0)
+            // no need to go on
+            return result;
 
         //2.Step create all the sets of Characters ( S_j )
         ArrayList<ArrayList<Unit>> setOfSets = createSetsOfCharactersForRuleThree(ownUnit,myNeighbors);
@@ -86,11 +91,11 @@ public class RuleMachine {
         double[] maxCohDelta = findMaxCohVector(ownUnit, setOfSets, calculateCentroid(myNeighbors));
 
         //4.Step calculate a separation Delta in order to diversify the resultant formation
-        //double[] sepDelta = calculateSeparationDelta(ownUnit, myNeighbors);
-        double[] sepDelta = {0,0};
+        double[] sepDelta = calculateSeparationDelta(ownUnit, myNeighbors);
+
 
         //Last step add both results from 3.Step and 4.Step and we are finished
-        double[] result = addVector(maxCohDelta,sepDelta);
+        result = addVector(maxCohDelta,sepDelta);
 
 
         //System.out.println("centerCol: (" + result[0] + ", " + result[1] + ")");
@@ -144,9 +149,14 @@ public class RuleMachine {
 
     // ################## FOR RULE FOUR ######################################
     public double[] moveToCentroidOfLineFormation(Unit ownUnit, HashSet<Unit> units){
+        double[] result = {0.0,0.0};
+
         //1.Step find all my Neighbors within the range of r_sig
         ArrayList<Unit> myNeighbors = findMyNeighbors(ownUnit, units);
 
+        if(myNeighbors.size() <= 0)
+            // no need to go on
+            return result;
 
         //2.Step create all the sets of Characters ( S_j )
         ArrayList<ArrayList<Unit>> setOfSets = createSetsOfCharactersForRuleFour(ownUnit, myNeighbors);
@@ -157,11 +167,10 @@ public class RuleMachine {
 
 
         //4.Step calculate a separation Delta in order to diversify the resultant formation
-        //double[] sepDelta = calculateSeparationDelta(ownUnit, myNeighbors);
-        double[] sepDelta = {0,0};
+        double[] sepDelta = calculateSeparationDelta(ownUnit, myNeighbors);
 
         //Last step add both results from 3.Step and 4.Step and we are finished
-        double[] result = addVector(maxCohDelta, sepDelta);
+        result = addVector(maxCohDelta, sepDelta);
 
         //System.out.println("centerLine: (" + result[0] + ", " + result[1] + ")");
         return result;

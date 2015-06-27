@@ -57,8 +57,8 @@ public class BoldingManager {
         double w4 = 1;
 
         int rangeOfN = 100;
-        int lines = 3;
-        int columns = 1;
+        int lines = 5;
+        int columns = 2;
 
         ParamSet pSet = new ParamSet(
                 w1,
