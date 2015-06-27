@@ -42,29 +42,52 @@ public class fileAnalyser {
         sortPSetCol(paramSetCollection);
 
         int offSet = 5;
+        int counter = 0;
 
-        int currentReward = paramSetCollection.getParams().get(0).getReward();
-        int rewardUpperLimit = currentReward + offSet;
-        ParamSetCollection tempPSetCol = new ParamSetCollection();
-        ArrayList<ParamSetCollection> tmp = new ArrayList<>();
-        for(ParamSet pSet : paramSetCollection.getParams()){
-            currentReward = pSet.getReward();
+        ArrayList<int[]> ranges = new ArrayList<>();
+        int[] currentIntArray = new int[offSet];
+        int upperLimit = paramSetCollection.getParams().get(paramSetCollection.getParams().size()-1).getReward() + (offSet - (paramSetCollection.getParams().get(paramSetCollection.getParams().size()-1).getReward() % offSet));
+        for (int i = 1 ; i <= upperLimit ; i++){
 
-            if(currentReward <= rewardUpperLimit){
-                tempPSetCol.addNewParamSet(pSet);
+            if( i % offSet != 0)
+                currentIntArray[counter++] = i;
+            else {
+                currentIntArray[counter] = i;
+                ranges.add(currentIntArray);
+                currentIntArray = new int[offSet];
+                counter = 0;
             }
-            else{
-                if(tempPSetCol.getParams().size() > 0){
-                    tmp.add(tempPSetCol);
-                    tempPSetCol = new ParamSetCollection();
-                }
-                rewardUpperLimit = currentReward + offSet;
-            }
+
         }
+
+
+        ArrayList<ParamSetCollection> tmp = new ArrayList<>();
+
+        ParamSetCollection copy = new ParamSetCollection(new ArrayList<>(paramSetCollection.getParams()));
+
+        for(int[] range: ranges){
+            ParamSetCollection tempPSetCol = new ParamSetCollection();
+            for(int rew: range){
+                for(ParamSet pSet : copy.getParams()){
+                    if(rew == pSet.getReward())
+                        tempPSetCol.addNewParamSet(pSet);
+                    else
+                        break;
+                }
+                if(tempPSetCol.getParams().size() > 0){
+                    for (ParamSet pSet: tempPSetCol.getParams())
+                        copy.getParams().remove(pSet);
+                }
+            }
+            if(tempPSetCol.getParams().size() > 0)
+                tmp.add(tempPSetCol);
+        }
+
+
 
         for (ParamSetCollection pSetCol : tmp){
             String key;
-            if (pSetCol.getParams().size() == 1)
+            if (pSetCol.getParams().get(0).getReward() == pSetCol.getParams().get(pSetCol.getParams().size() - 1).getReward())
                 key = Integer.toString(pSetCol.getParams().get(0).getReward());
             else
                 key = Integer.toString(pSetCol.getParams().get(0).getReward()) + "-" + Integer.toString(pSetCol.getParams().get(pSetCol.getParams().size() - 1).getReward());
