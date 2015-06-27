@@ -7,23 +7,69 @@ import java.util.Random;
  */
 public class BoldingManager {
 
-    private final SimpleFileHandler fileHandler;
+    private final SimpleFileHandler fileHandler = new SimpleFileHandler();
     private ParamSetCollection pSetColl;
     private final Flock_Ga flock_ga= new Flock_Ga();
     private RuleMachine ruleMachine;
 
+    private String createRuleMachineType = "fix";
+
 
     public BoldingManager() {
-        this.fileHandler = new SimpleFileHandler();
-        this.pSetColl = fileHandler.loadParamSetCollection();
-        if(this.pSetColl == null){
-            this.pSetColl = new ParamSetCollection();
-        }
-        createRuleMachineWithRouletParamSet();
+        loadOldParamSetCollection();
+        createRulemachine();
     }
 
     public RuleMachine getRuleMachine() {
         return ruleMachine;
+    }
+
+
+    private void loadOldParamSetCollection(){
+        switch (createRuleMachineType){
+            case "roulet":
+                this.pSetColl = fileHandler.loadParamSetCollection();
+                if(this.pSetColl == null){
+                    this.pSetColl = new ParamSetCollection();
+                }
+                break;
+            case "fix":
+                this.pSetColl = new ParamSetCollection();
+                break;
+        }
+    }
+
+    private void createRulemachine(){
+        switch (createRuleMachineType){
+            case "roulet":
+                createRuleMachineWithRouletParamSet();
+                break;
+            case "fix":
+                createRuleMachineWithFixParamSet();
+                break;
+        }
+
+    }
+
+    private void createRuleMachineWithFixParamSet(){
+        double w1 = 1;
+        double w3 = 1;
+        double w4 = 1;
+
+        int rangeOfN = 100;
+        int lines = 3;
+        int columns = 1;
+
+        ParamSet pSet = new ParamSet(
+                w1,
+                w3,
+                w4,
+                rangeOfN,
+                lines,
+                columns,
+                1
+        );
+       this.ruleMachine = new RuleMachine(pSet);
     }
 
     private void createRuleMachineWithRouletParamSet(){
@@ -52,6 +98,7 @@ public class BoldingManager {
         }
        return pSetColl.getParams().get(pos);
     }
+
 
     private void execGa(){
         if(pSetColl.getParams().size() < 2){

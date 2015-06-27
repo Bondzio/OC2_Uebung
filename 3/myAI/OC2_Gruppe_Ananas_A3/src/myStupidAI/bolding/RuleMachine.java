@@ -4,6 +4,7 @@ import jnibwapi.model.Unit;
 import myStupidAI.Marine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -23,22 +24,43 @@ public class RuleMachine {
         this.pSet = pSet;
         this.widthOfColumnFormation = (2*pSet.getRangeOfNeighborhood())/pSet.getCoulumFormationFileNumber();
         this.heightOfLineFormation = (2*pSet.getRangeOfNeighborhood())/pSet.getLineFormationRankNumber();
+
+        Unit test = new Unit(0);
+
     }
 
 
-    public double[] calcFinalVector(int[] ownUnitPos, int[] vector_rule_one, int[] vector_rule_three,int[] vector_rule_four){
 
-        double final_vector_x = ownUnitPos[0] + pSet.getW1() * vector_rule_one[0] + pSet.getW3() * vector_rule_three[0] + pSet.getW4() * vector_rule_four[0];
-        double final_vector_y = ownUnitPos[1] + pSet.getW1() * vector_rule_one[1] + pSet.getW3() * vector_rule_three[1] + pSet.getW4() * vector_rule_four[1];
 
-        return new double[]{final_vector_x,final_vector_y};
+
+    public double[] calcFinalVector(Unit ownUnit,  HashSet<Unit> ownUnits, Unit nearestEnemy){
+        //rule 1
+        double[] vector_ruleOne = moveToEnemy(ownUnit, nearestEnemy);
+
+        //rule 2 not needed
+
+        //rule 3
+        double[] vector_ruleThree = moveToCentroidColumnFormation(ownUnit, ownUnits);
+
+        //rule 4
+        double[] vector_ruleFour = moveToCentroidOfLineFormation(ownUnit, ownUnits);
+
+        double[] ownUnitPos = new double[]{ownUnit.getX(), ownUnit.getY()};
+
+        double final_vector_x = ownUnitPos[0] + pSet.getW1() * vector_ruleOne[0] + pSet.getW3() * vector_ruleThree[0] + pSet.getW4() * vector_ruleFour[0];
+        double final_vector_y = ownUnitPos[1] + pSet.getW1() * vector_ruleOne[1] + pSet.getW3() * vector_ruleThree[1] + pSet.getW4() * vector_ruleFour[1];
+
+        double[] final_vector = {final_vector_x,final_vector_y};
+
+        System.out.println("V1:" + Arrays.toString(vector_ruleOne)+" V3:" + Arrays.toString(vector_ruleThree) +" V4:" + Arrays.toString(vector_ruleFour) + " Final:" +  Arrays.toString(final_vector));
+        return final_vector;
     }
 
     // ################## FOR RULE ONE ########################################
-    public int[] moveToEnemy(Unit self, Unit target){
+    public double[] moveToEnemy(Unit ownUnit, Unit target){
 
-        int x = self.getX();
-        int y = self.getY();
+        int x = ownUnit.getX();
+        int y = ownUnit.getY();
 
         int enemy_x = target.getX();
         int enemy_y = target.getY();
@@ -47,12 +69,12 @@ public class RuleMachine {
         int vector_y = enemy_y - y;
 
         //System.out.println("enemy: (" + vector_x + ", " + vector_y + ")");
-        return new int[] {vector_x,vector_y};
+        return new double[] {vector_x,vector_y};
     }
 
 
     // ################## FOR RULE THREE ######################################
-    public int[] moveToCentroidColumnFormation(Unit ownUnit, HashSet<Unit> units){
+    public double[] moveToCentroidColumnFormation(Unit ownUnit, HashSet<Unit> units){
 
         //1.Step find all my Neighbors within the range of r_sig
         ArrayList<Unit> myNeighbors = findMyNeighbors(ownUnit, units);
@@ -61,26 +83,27 @@ public class RuleMachine {
         ArrayList<ArrayList<Unit>> setOfSets = createSetsOfCharactersForRuleThree(ownUnit,myNeighbors);
 
         //3.Step find the best cohesion vector
-        int[] maxCohDelta = findMaxCohVector(ownUnit, setOfSets, calculateCentroid(myNeighbors));
+        double[] maxCohDelta = findMaxCohVector(ownUnit, setOfSets, calculateCentroid(myNeighbors));
 
         //4.Step calculate a separation Delta in order to diversify the resultant formation
-        int[] sepDelta = calculateSeparationDelta(ownUnit, myNeighbors);
-        //int[] sepDelta = {0,0};
+        //double[] sepDelta = calculateSeparationDelta(ownUnit, myNeighbors);
+        double[] sepDelta = {0,0};
 
         //Last step add both results from 3.Step and 4.Step and we are finished
-        int[] result = addVector(maxCohDelta,sepDelta);
+        double[] result = addVector(maxCohDelta,sepDelta);
 
 
         //System.out.println("centerCol: (" + result[0] + ", " + result[1] + ")");
         return result;
     }
 
+
     private ArrayList<Unit> findMyNeighbors(Unit ownUnit, HashSet<Unit> units){
         ArrayList<Unit> myNeighbors = new ArrayList<Unit>();
         double distance = 0;
         for (Unit unit : units){
             distance = getDistance(ownUnit, unit);
-            if(distance <= pSet.getRangeOfNeighborhood())
+            if(distance <= pSet.getRangeOfNeighborhood() && unit.getID() != ownUnit.getID())
                 myNeighbors.add(unit);
         }
         return myNeighbors;
@@ -120,7 +143,7 @@ public class RuleMachine {
 
 
     // ################## FOR RULE FOUR ######################################
-    public int[] moveToCentroidOfLineFormation(Unit ownUnit, HashSet<Unit> units){
+    public double[] moveToCentroidOfLineFormation(Unit ownUnit, HashSet<Unit> units){
         //1.Step find all my Neighbors within the range of r_sig
         ArrayList<Unit> myNeighbors = findMyNeighbors(ownUnit, units);
 
@@ -130,15 +153,15 @@ public class RuleMachine {
 
 
         //3.Step find the best cohesion vector
-        int[] maxCohDelta = findMaxCohVector(ownUnit, setOfSets,calculateCentroid(myNeighbors));
+        double[] maxCohDelta = findMaxCohVector(ownUnit, setOfSets,calculateCentroid(myNeighbors));
 
 
         //4.Step calculate a separation Delta in order to diversify the resultant formation
-        int[] sepDelta = calculateSeparationDelta(ownUnit, myNeighbors);
-        //int[] sepDelta = {0,0};
+        //double[] sepDelta = calculateSeparationDelta(ownUnit, myNeighbors);
+        double[] sepDelta = {0,0};
 
         //Last step add both results from 3.Step and 4.Step and we are finished
-        int[] result = addVector(maxCohDelta, sepDelta);
+        double[] result = addVector(maxCohDelta, sepDelta);
 
         //System.out.println("centerLine: (" + result[0] + ", " + result[1] + ")");
         return result;
@@ -178,11 +201,11 @@ public class RuleMachine {
 
     // ################## FOR RULE THREE & FOUR ##############################
 
-    private int[] findMaxCohVector(Unit ownUnit,ArrayList<ArrayList<Unit>> setOfSets,int[] centroidPos){
+    private double[] findMaxCohVector(Unit ownUnit,ArrayList<ArrayList<Unit>> setOfSets,double[] centroidPos){
         double maxValue = 0.;
         double result;
 
-        int[] winningChoesionDelta = {0,0};
+        double[] winningChoesionDelta = {0,0};
 
         // search through all sets of charecters
         for (ArrayList<Unit> S: setOfSets){
@@ -190,8 +213,8 @@ public class RuleMachine {
             // search the spesific S_j set
             for (Unit neighborInS: S){
 
-                int[] cohesionDelta = caclulateCohesionDelta(centroidPos,new int[]{neighborInS.getX(), neighborInS.getY()});
-                int[] tempVector = addVector(new int[]{ownUnit.getX(),ownUnit.getY()},cohesionDelta);
+                double[] cohesionDelta = caclulateCohesionDelta(centroidPos,new double[]{neighborInS.getX(), neighborInS.getY()});
+                double[] tempVector = addVector(new double[]{ownUnit.getX(),ownUnit.getY()},cohesionDelta);
                 // calc the max
                 result = S.size() / calcVectorLength(tempVector[0],tempVector[1]);
 
@@ -231,51 +254,51 @@ public class RuleMachine {
     /**
      *  One - Two
      */
-    private int[] calculateVector(int pos_one_x, int pos_one_y, int pos_two_x, int pos_two_y){
-        int diffX = pos_one_x - pos_two_x;
-        int diffY = pos_one_y - pos_two_y;
-        return new int[]{diffX,diffY};
+    private double[] calculateVector(double pos_one_x, double pos_one_y, double pos_two_x, double pos_two_y){
+        double diffX = pos_one_x - pos_two_x;
+        double diffY = pos_one_y - pos_two_y;
+        return new double[]{diffX,diffY};
     }
 
-    private int[] addVector(int[] vector_one, int[] vector_two){
-        int x = vector_one[0] + vector_two[0];
-        int y = vector_one[1] + vector_two[1];
-        return new int[]{x,y};
+    private double[] addVector(double[] vector_one, double[] vector_two){
+        double x = vector_one[0] + vector_two[0];
+        double y = vector_one[1] + vector_two[1];
+        return new double[]{x,y};
     }
 
-    private double calcVectorLength(int vector_x, int vectro_y){
+    private double calcVectorLength(double vector_x, double vectro_y){
         double result = Math.pow(vector_x, 2) + Math.pow(vectro_y, 2);
         return Math.sqrt(result);
     }
 
-    private int[] calculateCentroid(ArrayList<Unit> neighbors){
-        int[] vector_sum = {0,0};
+    private double[] calculateCentroid(ArrayList<Unit> neighbors){
+        double[] vector_sum = {0,0};
 
         for(Unit neighbor: neighbors){
-            int[] currentVector = {neighbor.getX(),neighbor.getY()};
+            double[] currentVector = {neighbor.getX(),neighbor.getY()};
             vector_sum = addVector(vector_sum,currentVector);
         }
 
-        int centroid_x = (1/neighbors.size()) * vector_sum[0];
-        int centroid_y = (1/neighbors.size()) * vector_sum[1];
-        return new int[]{centroid_x,centroid_y};
+        double centroid_x = (1.0/neighbors.size()) * vector_sum[0];
+        double centroid_y = (1.0/neighbors.size()) * vector_sum[1];
+        return new double[]{centroid_x,centroid_y};
     }
 
-    private int[] calculateSeparationDelta(Unit ownUnit, ArrayList<Unit> myNeighbors){
-        int[] seperationDelta = {0,0};
-        int[] temp = {0,0};
+    private double[] calculateSeparationDelta(Unit ownUnit, ArrayList<Unit> myNeighbors){
+        double[] seperationDelta = {0,0};
+        double[] temp = {0,0};
         for(Unit neighbor: myNeighbors){
-            int [] currentV = calculateVector(neighbor.getX(),neighbor.getY(),ownUnit.getX(),ownUnit.getY());
+            double[] currentV = calculateVector(neighbor.getX(),neighbor.getY(),ownUnit.getX(),ownUnit.getY());
             temp = addVector(temp,currentV);
         }
-        seperationDelta[0] = (-1)* temp[0];
-        seperationDelta[1] = (-1)* temp[1];
+        seperationDelta[0] = (-1.)* temp[0];
+        seperationDelta[1] = (-1.)* temp[1];
         return seperationDelta;
     }
 
-    private int[] caclulateCohesionDelta(int[] centroidPos, int[] poiPos){
-        int cohesionDelta_x = centroidPos[0] - poiPos[0];
-        int cohesionDelta_y = centroidPos[1] - poiPos[1];
-        return new int[]{cohesionDelta_x,cohesionDelta_y};
+    private double[] caclulateCohesionDelta(double[] centroidPos, double[] poiPos){
+        double cohesionDelta_x = centroidPos[0] - poiPos[0];
+        double cohesionDelta_y = centroidPos[1] - poiPos[1];
+        return new double[]{cohesionDelta_x,cohesionDelta_y};
     }
 }

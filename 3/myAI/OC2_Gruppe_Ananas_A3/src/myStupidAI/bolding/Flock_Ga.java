@@ -14,7 +14,12 @@ public class Flock_Ga {
         this.r = new Random();
     }
 
-    void doGa(ParamSetCollection p_collaction){
+    public void doGa(ParamSetCollection p_collaction){
+        if(p_collaction.getParams().size() < 2){
+            System.out.println("Flock_Ga: there are not enough ParamSets for GA");
+            return;
+        }
+
         ParamSet[] parents = findRouletParents(p_collaction);
         //System.out.println("Parents are: " + Arrays.toString(parents));
         List<HashMap<String,String>> crossovered = doCrossOver(parents);

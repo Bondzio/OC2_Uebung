@@ -56,24 +56,9 @@ public class Marine {
             units.add(marine.getUnit());
         }
 
-
-    	//TODO: Implement the GA
-    	//rule 1
-        int[] vector_ruleOne = ruleMachine.moveToEnemy(unit, target);
-
-        //rule 2 not needed
-
-        //rule 3
-        int[] vector_ruleThree = ruleMachine.moveToCentroidColumnFormation(unit, units);
-
-        //rule 4
-        int[] vector_ruleFour = ruleMachine.moveToCentroidOfLineFormation(unit, units);
-
-        int[] ownPos = new int[]{unit.getX(), unit.getY()};
-        double[] final_vector = ruleMachine.calcFinalVector(ownPos, vector_ruleOne, vector_ruleThree, vector_ruleFour);
+        double[] final_vector = ruleMachine.calcFinalVector(unit,units,target);
 
 
-        System.out.println("Marine "+ id + ": V1:" + Arrays.toString(vector_ruleOne)+" V3:" + Arrays.toString(vector_ruleThree) +" V4:" + Arrays.toString(vector_ruleFour) + " Final:" +  Arrays.toString(final_vector));
         bwapi.move(unit.getID(), (int) final_vector[0], (int) final_vector[1] );
     }
 
