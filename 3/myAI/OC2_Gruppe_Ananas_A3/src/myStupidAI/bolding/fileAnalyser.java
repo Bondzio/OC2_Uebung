@@ -13,12 +13,8 @@ public class fileAnalyser {
 
 
         printStatMap(createStatsMap(paramSetCollection));
-
-
-
-
-
-
+        System.out.println("############################### ALL PARAM_SETS ###############################################");
+        printParamSetCollection(paramSetCollection);
     }
 
     private static void sortPSetCol(ParamSetCollection paramSetCollection){
