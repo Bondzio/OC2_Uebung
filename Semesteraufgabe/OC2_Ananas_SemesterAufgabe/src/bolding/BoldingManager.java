@@ -1,4 +1,4 @@
-package myStupidAI.bolding;
+package bolding;
 
 import java.util.Random;
 
