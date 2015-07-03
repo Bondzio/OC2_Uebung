@@ -1,81 +1,87 @@
-package stupidMarineAI;
-
 import jnibwapi.BWAPIEventListener;
 import jnibwapi.JNIBWAPI;
-import jnibwapi.model.Unit;
+import jnibwapi.Position;
+import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
 
 import java.util.HashSet;
 
-/**
- * Created by Stefan Rudolph on 17.02.14.
- */
-public class StupidMarineAI implements BWAPIEventListener, Runnable {
+public class AnanasAI implements BWAPIEventListener, Runnable {
 
     private final JNIBWAPI bwapi;
 
-    private HashSet<Marine> marines;
+    private final int LEARNING_MATCHES = 100;
+    private final String[] LEARNING_GA = new String[]{"ga1", "ga2", "ga3", "ga4"};
+    private final boolean stop_learning = false;
+    
+    private Vulture vulture;
+    private int matches = 0;
+    private int gaSelector = 0;
 
     private HashSet<Unit> enemyUnits;
 
     private int frame;
-    private int marineID = 0;
+//    private int marineID = 0; // from old Version
 
-    public StupidMarineAI() {
-        System.out.println("This is the StupidMarineAI! :)");
+    public AnanasAI() {
+        System.out.println("This is the ANANAS_AI ! :)");
 
         bwapi = new JNIBWAPI(this, false);
     }
 
     public static void main(String[] args) {
-        new StupidMarineAI().run();
+        new AnanasAI().run();
     }
 
     @Override
     public void matchStart() {
-        marines = new HashSet<>();
-        enemyUnits = new HashSet<>();
+        enemyUnits = new HashSet<Unit>();
 
         frame = 0;
-
+        
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(1);
-        bwapi.printText("Im the stupid MarineAI!");
-        int color = bwapi.getSelf().getColor();
-        if(color == 111)
-        	System.out.println("I'm the red Player!");
-        else if(color == 165)
-        	System.out.println("I'm the blue Player!");
+        bwapi.setGameSpeed(0);
     }
 
     @Override
     public void matchFrame() {
 
-        for (Marine m : marines) {
-            m.step();
-        }
+    	if (matches >= LEARNING_MATCHES){
+    		matches = 0;
+    		gaSelector++;
+    		
+    		if(gaSelector >= LEARNING_GA.length){
+    			System.out.println("LEARNING FINISHED!");
+    			System.exit(1);
+       		}
+    	}
 
-        if (frame % 1000 == 0) {
-            System.out.println("Frame: " + frame);
+        try {
+        	vulture.step(LEARNING_GA[gaSelector],stop_learning);
+                
+
+            if (frame % 1000 == 0) {
+                System.out.println("Frame: " + frame);
+            }
+            frame++;
+
+        }catch (NullPointerException np){
+            System.out.println("Game is restarting...");
         }
-        frame++;
     }
 
     @Override
     public void unitDiscover(int unitID) {
         Unit unit = bwapi.getUnit(unitID);
-        int typeID = unit.getTypeID();
+        UnitType type = unit.getType();
 
-        if (typeID == UnitType.UnitTypes.Terran_Marine.getID()) {
-            if (unit.getPlayerID() == bwapi.getSelf().getID()) {
-                marines.add(new Marine(unit, bwapi, enemyUnits, marineID));
-                marineID++;
-            } else {
-                enemyUnits.add(unit);
+        if (type == UnitType.UnitTypes.Terran_Vulture) {
+            if (unit.getPlayer() == bwapi.getSelf()) {
+                this.vulture = new Vulture(unit, bwapi, enemyUnits);
             }
-        } else if (typeID == UnitType.UnitTypes.Terran_Vulture.getID()) {
-            if (unit.getPlayerID() != bwapi.getSelf().getID()) {
+        } else if (type == UnitType.UnitTypes.Protoss_Zealot) {
+            if (unit.getPlayer() != bwapi.getSelf()) {
                 enemyUnits.add(unit);
             }
         }
@@ -83,15 +89,6 @@ public class StupidMarineAI implements BWAPIEventListener, Runnable {
 
     @Override
     public void unitDestroy(int unitID) {
-        Marine rm = null;
-        for (Marine marine : marines) {
-            if (marine.getID() == unitID) {
-                rm = marine;
-                break;
-            }
-        }
-        marines.remove(rm);
-
         Unit rmUnit = null;
         for (Unit u : enemyUnits) {
             if (u.getID() == unitID) {
@@ -109,6 +106,17 @@ public class StupidMarineAI implements BWAPIEventListener, Runnable {
 
     @Override
     public void matchEnd(boolean winner) {
+        Unit vultureUnit = vulture.getMyUnit();
+        int hpVulture = vultureUnit.getHitPoints();
+        int kills= vultureUnit.getKillCount();
+
+        int cAttackMove = vulture.getCountAttackMove();
+        int cKite = vulture.getCountKite();
+
+        vulture.xcs_Manager.makeNewMatchStat(frame,hpVulture,kills,cAttackMove,cKite);
+        vulture.xcs_Manager.cleanUp();
+        matches++;
+        System.out.println("MatchOver - Matches:" + matches);
     }
 
     @Override
@@ -132,7 +140,7 @@ public class StupidMarineAI implements BWAPIEventListener, Runnable {
     }
 
     @Override
-    public void nukeDetect(int x, int y) {
+    public void nukeDetect(Position position) {
 
     }
 
@@ -156,6 +164,8 @@ public class StupidMarineAI implements BWAPIEventListener, Runnable {
 
     }
 
+   
+    
     @Override
     public void unitCreate(int unitID) {
     }
@@ -190,5 +200,3 @@ public class StupidMarineAI implements BWAPIEventListener, Runnable {
         bwapi.start();
     }
 }
-
-

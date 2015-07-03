@@ -218,24 +218,24 @@ public class MazeEnvironment implements Environment, Serializable
      */
     public double executeAction(int action)
     {
-	if(action<0 || action>7){
-	    System.out.println("Not an action!");
-	    System.exit(0);
-	}
-	/* Test if new position is empty!!! */
-	int xaim=(( xcurrent + (int)(((Math.ceil((double)(action-3)/4.)*2)-1)*(-1)* Math.ceil((double)(action%4)/4.)))+xsize)%xsize;
-	int yaim=((ycurrent + (int)(((Math.ceil(Math.floor((double)(action%7)/2.)/4.)*2)-1.)*Math.ceil((double)((action+2)%4)/4.)))
-		  +ysize) % ysize; 
-	if(maze[xaim*attributeLength][yaim]!=obstacleO[0] || maze[1+ xaim*attributeLength][yaim]!=obstacleO[1]){
-	    xcurrent=xaim;
-	    ycurrent=yaim;
-	    if(maze[xcurrent*attributeLength][ycurrent]==foodF[0] && maze[1+ xcurrent*attributeLength][ycurrent]==foodF[1]){
-		reset=true;
-		return maxPayoff;
-	    }
-	    return 0.;
-	}
-	return 0.;
+        if(action<0 || action>7){
+            System.out.println("Not an action!");
+            System.exit(0);
+        }
+        /* Test if new position is empty!!! */
+        int xaim=(( xcurrent + (int)(((Math.ceil((double)(action-3)/4.)*2)-1)*(-1)* Math.ceil((double)(action%4)/4.)))+xsize)%xsize;
+        int yaim=((ycurrent + (int)(((Math.ceil(Math.floor((double)(action%7)/2.)/4.)*2)-1.)*Math.ceil((double)((action+2)%4)/4.)))
+              +ysize) % ysize;
+        if(maze[xaim*attributeLength][yaim]!=obstacleO[0] || maze[1+ xaim*attributeLength][yaim]!=obstacleO[1]){
+            xcurrent=xaim;
+            ycurrent=yaim;
+            if(maze[xcurrent*attributeLength][ycurrent]==foodF[0] && maze[1+ xcurrent*attributeLength][ycurrent]==foodF[1]){
+            reset=true;
+            return maxPayoff;
+            }
+            return 0.;
+        }
+        return 0.;
     }
 
     /**
