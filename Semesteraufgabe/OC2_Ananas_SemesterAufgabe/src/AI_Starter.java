@@ -1,3 +1,4 @@
+
 import AI.AnanasAI;
 import jnibwapi.BWAPIEventListener;
 import jnibwapi.JNIBWAPI;
@@ -27,9 +28,9 @@ public class AI_Starter implements BWAPIEventListener, Runnable {
 
         frame = 0;
         
-        bwapi.enablePerfectInformation();
+        //bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(0);
+        bwapi.setGameSpeed(60);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class AI_Starter implements BWAPIEventListener, Runnable {
         try {
         	//vulture.step(LEARNING_GA[gaSelector],stop_learning);
               this.ananasAI.doStepAll();
-            System.out.println("ID IS:" + bwapi.getSelf().getID());
+            //System.out.println("ID IS:" + bwapi.getSelf().getID());
 
             if (frame % 1000 == 0) {
                 System.out.println("Frame: " + frame);

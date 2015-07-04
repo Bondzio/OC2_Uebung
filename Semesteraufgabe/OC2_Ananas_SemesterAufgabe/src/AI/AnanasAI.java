@@ -17,7 +17,7 @@ public class AnanasAI {
     private final JNIBWAPI bwapi;
     public static HashSet<Unit> enemyUnits;
     public static HashSet<IMyUnit> myUnits;
-
+    private int frame = 0;
 
     private RuleMachine ruleMachine;
 
@@ -28,10 +28,11 @@ public class AnanasAI {
         enemyUnits = new HashSet<>();
         myUnits = new HashSet<>();
 
-        this.ruleMachine = new RuleMachine(new ParamSet(1,0.3,0.3,30,3,4,1));
+        this.ruleMachine = new RuleMachine(new ParamSet(1,0.3,0.3,10,3,4,1));
     }
 
     public void doStepAll(){
+
         for (IMyUnit u : myUnits) {
             u.step();
         }
@@ -43,13 +44,10 @@ public class AnanasAI {
 
         if(unit.getPlayer() != bwapi.getSelf()){
             enemyUnits.add(unit);
-            System.out.println(bwapi.getSelf().getID());
-            System.out.println(unit.getPlayer().getID());
-            System.out.println("ENEMY ZERG");
         }
         else{
             UnitType type = unit.getType();
-            if(type == UnitType.UnitTypes.Zerg_Broodling){
+            if(type == UnitType.UnitTypes.Zerg_Zergling){
                 Zergling zergling = new Zergling(unit,this.bwapi,this.ruleMachine);
                 myUnits.add(zergling);
                 System.out.println("ADDED ZERG");
@@ -57,18 +55,22 @@ public class AnanasAI {
             else if(type == UnitType.UnitTypes.Zerg_Hydralisk){
                 Hydralisk hydralisk = new Hydralisk(unit,this.bwapi);
                 myUnits.add(hydralisk);
+                System.out.println("ADDED Hydralisk");
             }
             else if(type == UnitType.UnitTypes.Zerg_Ultralisk){
                 Ultralisk ultralisk = new Ultralisk(unit,this.bwapi);
                 myUnits.add(ultralisk);
+                System.out.println("ADDED Ultralisk");
             }
             else if(type == UnitType.UnitTypes.Zerg_Queen){
                 Queen queen = new Queen(unit,this.bwapi);
                 myUnits.add(queen);
+                System.out.println("ADDED Queen");
             }
             else if(type == UnitType.UnitTypes.Zerg_Scourge){
                 Scourge scourge = new Scourge(unit,this.bwapi);
                 myUnits.add(scourge);
+                System.out.println("ADDED Scourge");
             }
         }
 

@@ -3,8 +3,10 @@ package Units;
 import AI.AnanasAI;
 import bolding.RuleMachine;
 import jnibwapi.JNIBWAPI;
+import jnibwapi.Position;
 import jnibwapi.Unit;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -14,6 +16,8 @@ public class Zergling implements IMyUnit{
     final private JNIBWAPI bwapi;
     final private Unit unit;
     private final RuleMachine ruleMachine;
+
+    private HashSet<Unit> units = new HashSet<>();
 
     public Zergling(Unit unit, JNIBWAPI bwapi, RuleMachine ruleMachine) {
         this.unit = unit;
@@ -28,16 +32,19 @@ public class Zergling implements IMyUnit{
     }
 
     public void move(Unit target){
-        HashSet<Unit> units = new HashSet<>();
+
+        units.clear();
         for(IMyUnit myUnit: AnanasAI.myUnits){
             if(myUnit instanceof Zergling)
                 units.add(myUnit.getUnit());
         }
 
-        double[] final_vector = ruleMachine.calcFlockVectorToPos(unit,units,new int[]{1,1});
 
+        double[] final_vector = ruleMachine.calcFlockVectorToPos(unit,units,new int[]{4000,1000});
+        //double[] final_vector = {1000,1000};
 
-        bwapi.move(unit.getID(), (int) final_vector[0], (int) final_vector[1] );
+        //System.out.println("Z ID:" + unit.getID() + " UnitsSize:" + units.size() + " Vec:" + Arrays.toString(final_vector));
+        unit.move(new Position((int) final_vector[0],(int) final_vector[1]),false);
     }
 
 
