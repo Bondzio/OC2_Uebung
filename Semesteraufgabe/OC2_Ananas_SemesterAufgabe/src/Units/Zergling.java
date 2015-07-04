@@ -8,6 +8,7 @@ import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
 import jnibwapi.util.BWColor;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -18,6 +19,8 @@ public class Zergling implements IMyUnit{
     final private Unit unit;
     private final RuleMachine ruleMachine;
     private int mission;
+
+    private HashSet<Unit> units = new HashSet<>();
 
 
     private Position topRightHatchery = new Position(3520, 368);
@@ -37,7 +40,6 @@ public class Zergling implements IMyUnit{
         this.ruleMachine = ruleMachine;
         this.mission = mission;
     }
-
 
     public void step() {
         //Unit enemy = getClosestEnemy();
@@ -84,16 +86,19 @@ public class Zergling implements IMyUnit{
     }
 
     public void move(Unit target){
-        HashSet<Unit> units = new HashSet<>();
+
+        units.clear();
         for(IMyUnit myUnit: AnanasAI.myUnits){
             if(myUnit instanceof Zergling)
                 units.add(myUnit.getUnit());
         }
 
-        double[] final_vector = ruleMachine.calcFlockVectorToPos(unit,units,new int[]{1,1});
 
+        double[] final_vector = ruleMachine.calcFlockVectorToPos(unit,units,new int[]{4000,1000});
+        //double[] final_vector = {1000,1000};
 
-        bwapi.move(unit.getID(), (int) final_vector[0], (int) final_vector[1]);
+        //System.out.println("Z ID:" + unit.getID() + " UnitsSize:" + units.size() + " Vec:" + Arrays.toString(final_vector));
+        unit.move(new Position((int) final_vector[0],(int) final_vector[1]),false);
     }
 
     private Unit getClosestEnemyZergHatchery() {

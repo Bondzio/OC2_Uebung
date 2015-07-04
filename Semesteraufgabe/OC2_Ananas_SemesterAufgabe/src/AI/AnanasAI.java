@@ -20,7 +20,6 @@ public class AnanasAI {
 
     private int counter = 0;
 
-
     private RuleMachine ruleMachine;
 
     public AnanasAI(JNIBWAPI bwapi) {
