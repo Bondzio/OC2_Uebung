@@ -5,6 +5,8 @@ import bolding.RuleMachine;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
+import jnibwapi.types.UnitType;
+import jnibwapi.util.BWColor;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -28,7 +30,27 @@ public class Zergling implements IMyUnit{
 
     public void step() {
         Unit enemy = getClosestEnemy();
-        move(enemy);
+        //move(enemy);
+        //specialMission();
+
+        Position targetPosition = unit.getTargetPosition();
+
+        Unit closestZergHatchery = getClosestZergHatchery();
+        Position closestZergHatcheryPosition = closestZergHatchery.getPosition();
+
+        bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
+
+        String tP = "X:" + Integer.toString(targetPosition.getPX()) + " | " + "Y:" + Integer.toString(targetPosition.getPY());
+        String hP = "X:" + Integer.toString(closestZergHatcheryPosition.getPX()) + " | " + "Y:" + Integer.toString(closestZergHatcheryPosition.getPY());
+
+        if (unit.isMoving()){
+            bwapi.printText(hP);
+            //bwapi.printText(tP);
+        }
+    }
+
+    public void specialMission(){
+
     }
 
     public void move(Unit target){
@@ -47,7 +69,32 @@ public class Zergling implements IMyUnit{
         unit.move(new Position((int) final_vector[0],(int) final_vector[1]),false);
     }
 
+    private Unit getClosestZergHatchery() {
+        Unit result = null;
+        double minDistance = Double.POSITIVE_INFINITY;
 
+        for (Unit enemy : AnanasAI.enemyUnits) {
+            double distance = getDistance(enemy);
+            if (enemy.getType() == UnitType.UnitTypes.Zerg_Hatchery) {
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    result = enemy;
+                }
+            }
+        }
+
+        for (IMyUnit myUnit : AnanasAI.myUnits) {
+            double distance = getDistance(myUnit.getUnit());
+            if (myUnit instanceof Hatchery) {
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    result = myUnit.getUnit();
+                }
+            }
+        }
+
+        return result;
+    }
 
     private Unit getClosestEnemy() {
         Unit result = null;

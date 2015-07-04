@@ -1,4 +1,3 @@
-
 import AI.AnanasAI;
 import jnibwapi.BWAPIEventListener;
 import jnibwapi.JNIBWAPI;
@@ -28,9 +27,9 @@ public class AI_Starter implements BWAPIEventListener, Runnable {
 
         frame = 0;
         
-        //bwapi.enablePerfectInformation();
+        bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
-        bwapi.setGameSpeed(60);
+        bwapi.setGameSpeed(30);
     }
 
     @Override
