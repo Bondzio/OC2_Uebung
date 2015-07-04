@@ -43,16 +43,17 @@ public class AnanasAI {
 
         if(unit.getPlayer() != bwapi.getSelf()){
             enemyUnits.add(unit);
-            System.out.println(bwapi.getSelf().getID());
-            System.out.println(unit.getPlayer().getID());
-            System.out.println("ENEMY ZERG");
+            //System.out.println(bwapi.getSelf().getID());
+            //System.out.println(unit.getPlayer().getID());
+            System.out.println(unit.getType());
+            //System.out.println("ENEMY ZERG");
         }
         else{
             UnitType type = unit.getType();
-            if(type == UnitType.UnitTypes.Zerg_Broodling){
-                Zergling zergling = new Zergling(unit,this.bwapi,this.ruleMachine);
+            if(type == UnitType.UnitTypes.Zerg_Zergling){
+                Zergling zergling = new Zergling(unit,this.bwapi, this.ruleMachine);
                 myUnits.add(zergling);
-                System.out.println("ADDED ZERG");
+                //System.out.println("ADDED ZERG");
             }
             else if(type == UnitType.UnitTypes.Zerg_Hydralisk){
                 Hydralisk hydralisk = new Hydralisk(unit,this.bwapi);
@@ -70,8 +71,11 @@ public class AnanasAI {
                 Scourge scourge = new Scourge(unit,this.bwapi);
                 myUnits.add(scourge);
             }
+            else if(type == UnitType.UnitTypes.Zerg_Hatchery){
+                Hatchery hatchery = new Hatchery(unit,this.bwapi);
+                myUnits.add(hatchery);
+            }
         }
-
     }
 
 
