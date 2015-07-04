@@ -18,6 +18,8 @@ public class AnanasAI {
     public static HashSet<Unit> enemyUnits;
     public static HashSet<IMyUnit> myUnits;
 
+    private int counter = 0;
+
 
     private RuleMachine ruleMachine;
 
@@ -45,15 +47,29 @@ public class AnanasAI {
             enemyUnits.add(unit);
             //System.out.println(bwapi.getSelf().getID());
             //System.out.println(unit.getPlayer().getID());
-            System.out.println(unit.getType());
+            //System.out.println(unit.getType());
             //System.out.println("ENEMY ZERG");
         }
         else{
             UnitType type = unit.getType();
             if(type == UnitType.UnitTypes.Zerg_Zergling){
-                Zergling zergling = new Zergling(unit,this.bwapi, this.ruleMachine);
-                myUnits.add(zergling);
-                //System.out.println("ADDED ZERG");
+                if (counter == 0){
+                    counter++;
+                    Zergling zerglingSpecial1 = new Zergling(unit, this.bwapi, this.ruleMachine, 1);
+                    myUnits.add(zerglingSpecial1);
+                   // System.out.println("ADDED SPECIAL1 ZERG");
+                }
+                else if (counter == 1){
+                    counter++;
+                    Zergling zerglingSpecial2 = new Zergling(unit, this.bwapi, this.ruleMachine, 2);
+                    myUnits.add(zerglingSpecial2);
+                    //System.out.println("ADDED SPECIAL2 ZERG");
+                }
+                else {
+                    Zergling zergling = new Zergling(unit, this.bwapi, this.ruleMachine);
+                    myUnits.add(zergling);
+                    //System.out.println("ADDED ZERG");
+                }
             }
             else if(type == UnitType.UnitTypes.Zerg_Hydralisk){
                 Hydralisk hydralisk = new Hydralisk(unit,this.bwapi);

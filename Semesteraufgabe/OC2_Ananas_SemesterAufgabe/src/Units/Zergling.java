@@ -17,6 +17,13 @@ public class Zergling implements IMyUnit{
     final private JNIBWAPI bwapi;
     final private Unit unit;
     private final RuleMachine ruleMachine;
+    private int mission;
+
+
+    private Position topRightHatchery = new Position(3520, 368);
+    private Position botRightHatchery = new Position(3520, 2704);
+    private Position topLeftHatchery = new Position(576, 368);
+    private Position botLeftHatchery = new Position(576, 2704);
 
     public Zergling(Unit unit, JNIBWAPI bwapi, RuleMachine ruleMachine) {
         this.unit = unit;
@@ -24,30 +31,56 @@ public class Zergling implements IMyUnit{
         this.ruleMachine = ruleMachine;
     }
 
-
-    public void step() {
-        Unit enemy = getClosestEnemy();
-        //move(enemy);
-        //specialMission();
-
-        Position targetPosition = unit.getTargetPosition();
-
-        Unit closestZergHatchery = getClosestZergHatchery();
-        Position closestZergHatcheryPosition = closestZergHatchery.getPosition();
-
-        bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
-
-        String tP = "X:" + Integer.toString(targetPosition.getPX()) + " | " + "Y:" + Integer.toString(targetPosition.getPY());
-        String hP = "X:" + Integer.toString(closestZergHatcheryPosition.getPX()) + " | " + "Y:" + Integer.toString(closestZergHatcheryPosition.getPY());
-
-        if (unit.isMoving()){
-            bwapi.printText(hP);
-            //bwapi.printText(tP);
-        }
+    public Zergling(Unit unit, JNIBWAPI bwapi, RuleMachine ruleMachine, int mission) {
+        this.unit = unit;
+        this.bwapi = bwapi;
+        this.ruleMachine = ruleMachine;
+        this.mission = mission;
     }
 
-    public void specialMission(){
 
+    public void step() {
+        //Unit enemy = getClosestEnemy();
+        //move(enemy);
+
+        Position targetPosition = unit.getTargetPosition();
+        bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
+
+        if (mission == 1) {
+            specialMission(mission);
+        }
+        else if (mission == 2) {
+            specialMission(mission);
+        }
+
+//        String tP = "X:" + Integer.toString(targetPosition.getPX()) + " | " + "Y:" + Integer.toString(targetPosition.getPY());
+//
+//        Unit closestEnemyZergHatchery = getClosestEnemyZergHatchery();
+//        Position closestEnemyZergHatcheryPosition = closestEnemyZergHatchery.getPosition();
+//        closestEnemyZergHatcheryPosition.makeValid();
+//        String cEZHP = "X:" + Integer.toString(closestEnemyZergHatcheryPosition.getPX()) + " | " + "Y:" + Integer.toString(closestEnemyZergHatcheryPosition.getPY());
+//
+//        Unit closestFriendlyZergHatchery = getClosestFriendlyZergHatchery();
+//        Position closestFriendlyZergHatcheryPosition = closestFriendlyZergHatchery.getPosition();
+//        closestFriendlyZergHatcheryPosition.makeValid();
+//        String cFZHP = "X:" + Integer.toString(closestFriendlyZergHatcheryPosition.getPX()) + " | " + "Y:" + Integer.toString(closestFriendlyZergHatcheryPosition.getPY());
+//
+//        if (unit.isMoving()){
+//            bwapi.printText(cFZHP);
+//            bwapi.printText(cEZHP);
+//            bwapi.printText(tP);
+//        }
+    }
+
+    public void specialMission(int mission){
+        if (mission == 1) {
+            topRightHatchery.makeValid();
+            unit.attack(topRightHatchery, false);
+        }
+        else if (mission == 2) {
+            botRightHatchery.makeValid();
+            unit.attack(botRightHatchery, false);
+        }
     }
 
     public void move(Unit target){
@@ -60,10 +93,10 @@ public class Zergling implements IMyUnit{
         double[] final_vector = ruleMachine.calcFlockVectorToPos(unit,units,new int[]{1,1});
 
 
-        bwapi.move(unit.getID(), (int) final_vector[0], (int) final_vector[1] );
+        bwapi.move(unit.getID(), (int) final_vector[0], (int) final_vector[1]);
     }
 
-    private Unit getClosestZergHatchery() {
+    private Unit getClosestEnemyZergHatchery() {
         Unit result = null;
         double minDistance = Double.POSITIVE_INFINITY;
 
@@ -76,6 +109,13 @@ public class Zergling implements IMyUnit{
                 }
             }
         }
+
+        return result;
+    }
+
+    private Unit getClosestFriendlyZergHatchery() {
+        Unit result = null;
+        double minDistance = Double.POSITIVE_INFINITY;
 
         for (IMyUnit myUnit : AnanasAI.myUnits) {
             double distance = getDistance(myUnit.getUnit());
