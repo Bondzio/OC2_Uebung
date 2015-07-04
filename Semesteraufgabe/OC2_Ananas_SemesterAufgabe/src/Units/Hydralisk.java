@@ -29,15 +29,13 @@ import static java.util.Arrays.asList;
 /**
  * Created by Rolle on 03.07.2015.
  */
-public class Hydralisk {
+public class Hydralisk implements IMyUnit{
     final private JNIBWAPI bwapi;
-    final private HashSet<Unit> enemyUnits;
     final private Unit unit;
 
-    public Hydralisk(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
+    public Hydralisk(Unit unit, JNIBWAPI bwapi) {
         this.unit = unit;
         this.bwapi = bwapi;
-        this.enemyUnits = enemyUnits;
     }
 
 
@@ -47,7 +45,7 @@ public class Hydralisk {
 
 
 
-    public Unit getMyUnit(){
+    public Unit getUnit(){
         return this.unit;
     }
 

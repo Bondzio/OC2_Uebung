@@ -7,6 +7,7 @@ public class StarCraftBW_XCS extends XCS{
     private PredictionArray currentPArray;
     private ActionSet currentASet;
 
+
     public StarCraftBW_XCS(String[] actionSet, IEffector effector, IDetector detector) {
         super(actionSet, effector, detector);
     }

@@ -8,15 +8,15 @@ import java.util.HashSet;
 /**
  * Created by Rolle on 03.07.2015.
  */
-public class Queen {
+public class Queen implements IMyUnit{
     final private JNIBWAPI bwapi;
-    final private HashSet<Unit> enemyUnits;
+
     final private Unit unit;
 
-    public Queen(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
+    public Queen(Unit unit, JNIBWAPI bwapi) {
         this.unit = unit;
         this.bwapi = bwapi;
-        this.enemyUnits = enemyUnits;
+
     }
 
 
@@ -26,7 +26,7 @@ public class Queen {
 
 
 
-    public Unit getMyUnit(){
+    public Unit getUnit(){
         return this.unit;
     }
 }

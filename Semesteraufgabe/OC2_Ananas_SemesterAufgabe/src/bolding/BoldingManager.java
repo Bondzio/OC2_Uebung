@@ -1,6 +1,7 @@
 package bolding;
 
 import java.util.Random;
+import FileHandler.SimpleFileHandler;
 
 /**
  * Created by Rolle on 27.06.2015.

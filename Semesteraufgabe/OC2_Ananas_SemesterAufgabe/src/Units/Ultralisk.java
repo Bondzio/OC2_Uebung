@@ -8,15 +8,14 @@ import java.util.HashSet;
 /**
  * Created by Rolle on 03.07.2015.
  */
-public class Ultralisk {
+public class Ultralisk implements IMyUnit {
     final private JNIBWAPI bwapi;
-    final private HashSet<Unit> enemyUnits;
     final private Unit unit;
 
-    public Ultralisk(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
+    public Ultralisk(Unit unit, JNIBWAPI bwapi) {
         this.unit = unit;
         this.bwapi = bwapi;
-        this.enemyUnits = enemyUnits;
+
     }
 
 
@@ -26,7 +25,7 @@ public class Ultralisk {
 
 
 
-    public Unit getMyUnit(){
+    public Unit getUnit(){
         return this.unit;
     }
 }

@@ -8,15 +8,15 @@ import java.util.HashSet;
 /**
  * Created by Rolle on 03.07.2015.
  */
-public class Scourge {
+public class Scourge implements IMyUnit {
     final private JNIBWAPI bwapi;
-    final private HashSet<Unit> enemyUnits;
+
     final private Unit unit;
 
-    public Scourge(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
+    public Scourge(Unit unit, JNIBWAPI bwapi) {
         this.unit = unit;
         this.bwapi = bwapi;
-        this.enemyUnits = enemyUnits;
+
     }
 
 
@@ -26,7 +26,7 @@ public class Scourge {
 
 
 
-    public Unit getMyUnit(){
+    public Unit getUnit(){
         return this.unit;
     }
 }

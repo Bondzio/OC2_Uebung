@@ -1,7 +1,7 @@
 package bolding;
 
-import jnibwapi.model.Unit;
-import myStupidAI.Marine;
+import jnibwapi.Unit;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,18 +24,38 @@ public class RuleMachine {
         this.pSet = pSet;
         this.widthOfColumnFormation = (2*pSet.getRangeOfNeighborhood())/pSet.getCoulumFormationFileNumber();
         this.heightOfLineFormation = (2*pSet.getRangeOfNeighborhood())/pSet.getLineFormationRankNumber();
-
-        Unit test = new Unit(0);
-
     }
 
 
 
-
-
-    public double[] calcFinalVector(Unit ownUnit,  HashSet<Unit> ownUnits, Unit nearestEnemy){
+    public double[] calcFlockVectorToPos(Unit ownUnit,  HashSet<Unit> ownUnits, int[] pos){
         //rule 1
-        double[] vector_ruleOne = moveToEnemy(ownUnit, nearestEnemy);
+        double[] vector_ruleOne = calculateVector(pos[0],pos[1], ownUnit.getPosition().getPX(),ownUnit.getPosition().getPY());
+
+        //rule 2 not needed
+
+        //rule 3
+        double[] vector_ruleThree = moveToCentroidColumnFormation(ownUnit, ownUnits);
+
+        //rule 4
+        double[] vector_ruleFour = moveToCentroidOfLineFormation(ownUnit, ownUnits);
+
+        double[] ownUnitPos = new double[]{ownUnit.getX(), ownUnit.getY()};
+
+        double final_vector_x = ownUnitPos[0] + pSet.getW1() * vector_ruleOne[0] + pSet.getW3() * vector_ruleThree[0] + pSet.getW4() * vector_ruleFour[0];
+        double final_vector_y = ownUnitPos[1] + pSet.getW1() * vector_ruleOne[1] + pSet.getW3() * vector_ruleThree[1] + pSet.getW4() * vector_ruleFour[1];
+
+        double[] final_vector = {final_vector_x,final_vector_y};
+
+        //if(vector_ruleThree[0] != vector_ruleFour[0] || vector_ruleThree[1] != vector_ruleFour[1])
+        //System.out.println("Marine " + ownUnit.getID() + ": V1:" + Arrays.toString(vector_ruleOne)+" V3:" + Arrays.toString(vector_ruleThree) +" V4:" + Arrays.toString(vector_ruleFour) + " Final:" +  Arrays.toString(final_vector));
+        return final_vector;
+    }
+
+
+    public double[] calcFlockVectorToEnemy(Unit ownUnit,  HashSet<Unit> ownUnits, Unit enemy){
+        //rule 1
+        double[] vector_ruleOne = moveToEnemy(ownUnit, enemy);
 
         //rule 2 not needed
 
