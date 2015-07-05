@@ -27,7 +27,7 @@ public class AI_Starter implements BWAPIEventListener, Runnable {
 
         frame = 0;
         
-        bwapi.enablePerfectInformation();
+        //bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
         bwapi.setGameSpeed(30);
     }

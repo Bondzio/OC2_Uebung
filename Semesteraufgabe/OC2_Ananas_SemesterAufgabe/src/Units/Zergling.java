@@ -22,12 +22,6 @@ public class Zergling implements IMyUnit{
 
     private HashSet<Unit> units = new HashSet<>();
 
-
-    private Position topRightHatchery = new Position(3520, 368);
-    private Position botRightHatchery = new Position(3520, 2704);
-    private Position topLeftHatchery = new Position(576, 368);
-    private Position botLeftHatchery = new Position(576, 2704);
-
     public Zergling(Unit unit, JNIBWAPI bwapi, RuleMachine ruleMachine) {
         this.unit = unit;
         this.bwapi = bwapi;
@@ -42,46 +36,32 @@ public class Zergling implements IMyUnit{
     }
 
     public void step() {
-        //Unit enemy = getClosestEnemy();
-        //move(enemy);
+        Unit enemy = getClosestEnemy();
 
         Position targetPosition = unit.getTargetPosition();
         bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
 
-        if (mission == 1) {
-            specialMission(mission);
-        }
-        else if (mission == 2) {
-            specialMission(mission);
-        }
+       // move(enemy);
 
-//        String tP = "X:" + Integer.toString(targetPosition.getPX()) + " | " + "Y:" + Integer.toString(targetPosition.getPY());
-//
-//        Unit closestEnemyZergHatchery = getClosestEnemyZergHatchery();
-//        Position closestEnemyZergHatcheryPosition = closestEnemyZergHatchery.getPosition();
-//        closestEnemyZergHatcheryPosition.makeValid();
-//        String cEZHP = "X:" + Integer.toString(closestEnemyZergHatcheryPosition.getPX()) + " | " + "Y:" + Integer.toString(closestEnemyZergHatcheryPosition.getPY());
-//
-//        Unit closestFriendlyZergHatchery = getClosestFriendlyZergHatchery();
-//        Position closestFriendlyZergHatcheryPosition = closestFriendlyZergHatchery.getPosition();
-//        closestFriendlyZergHatcheryPosition.makeValid();
-//        String cFZHP = "X:" + Integer.toString(closestFriendlyZergHatcheryPosition.getPX()) + " | " + "Y:" + Integer.toString(closestFriendlyZergHatcheryPosition.getPY());
-//
-//        if (unit.isMoving()){
-//            bwapi.printText(cFZHP);
-//            bwapi.printText(cEZHP);
-//            bwapi.printText(tP);
-//        }
+        specialMissions(mission);
+
     }
 
-    public void specialMission(int mission){
-        if (mission == 1) {
-            topRightHatchery.makeValid();
-            unit.attack(topRightHatchery, false);
-        }
-        else if (mission == 2) {
-            botRightHatchery.makeValid();
-            unit.attack(botRightHatchery, false);
+    public void specialMissions(int mission){
+        Position[] hatcheries = getEnemyHatcheries();
+
+        if (mission == 1 || mission == 2) {
+            if (unit.isIdle()) {
+                if (bwapi.getEnemyUnits().isEmpty()) {
+                    unit.attack(hatcheries[mission-1], false);
+                }
+                else {
+                    for (Unit enemy : bwapi.getEnemyUnits()) {
+                        unit.attack(enemy.getPosition(), false);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -98,7 +78,19 @@ public class Zergling implements IMyUnit{
         //double[] final_vector = {1000,1000};
 
         //System.out.println("Z ID:" + unit.getID() + " UnitsSize:" + units.size() + " Vec:" + Arrays.toString(final_vector));
-        unit.move(new Position((int) final_vector[0],(int) final_vector[1]),false);
+        Position tragetPosition = new Position((int) final_vector[0],(int) final_vector[1]);
+        tragetPosition.makeValid();
+        unit.move(tragetPosition, false);
+    }
+
+    private Position[] getEnemyHatcheries(){
+        Position[] redHatcheries = new Position[] {new Position(516, 368), new Position(516, 2704)};
+        Position[] blueHatcheries = new Position[] {new Position(3420,368),  new Position(3420, 2704)};
+
+        if(bwapi.getSelf().getID() == 0)
+            return blueHatcheries;
+        else
+            return redHatcheries;
     }
 
     private Unit getClosestEnemyZergHatchery() {
