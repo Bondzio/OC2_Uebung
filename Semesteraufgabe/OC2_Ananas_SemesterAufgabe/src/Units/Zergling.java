@@ -29,6 +29,8 @@ public class Zergling implements IMyUnit{
 
     //for GOING_TO_DEF_POINT
     private Position myPersonelDefencePoint;
+    private Position tmpPoint;
+    private String phase = "start";
 //    private boolean initPDefenacePoint = true;
 //    private boolean initTmpPoint = true;
     private boolean initTmpPoint = false;
@@ -56,8 +58,9 @@ public class Zergling implements IMyUnit{
                 currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
                 break;
             case GOING_TO_DEF_POINT:
-                if(!unit.isIdle())
-                    break;
+                //drawMyLine();
+//                if(!unit.isIdle())
+//                    break;
                 if(goingToDefPointFin()){
                     unit.burrow();
                     if(unit.isBurrowed()) {
@@ -81,8 +84,8 @@ public class Zergling implements IMyUnit{
      */
 
     private boolean goingToDefPointFin(){
-        drawMyLine();
 
+        //v1
 //        if(prepareForGoingToPersonalDefPos())
 //            return false;
 //
@@ -100,31 +103,63 @@ public class Zergling implements IMyUnit{
 //            return false;
 //        }
 
-        if(!initPDefenacePoint ){
-            if(prepareForGoingToPersonalDefPos()) {
-                myPersonelDefencePoint = null;
-                myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.defancePoint, AnanasAI.defancePointRadius);
-                initPDefenacePoint = true;
-            }
+        //v2
+//        if(!initPDefenacePoint ){
+//            if(prepareForGoingToPersonalDefPos()) {
+//                myPersonelDefencePoint = null;
+//                myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.defancePoint, AnanasAI.defancePointRadius);
+//                initPDefenacePoint = true;
+//            }
+//        }
+//        else{
+//            if (isAtPersonalDefPoint()) {
+//                unit.stop(false);
+//                return true;
+//            } else {
+//                swarmMoveToPosition(myPersonelDefencePoint);
+//            }
+//        }
+//        return false;
+
+        //v3
+        if(unit.getID() % 2 == 0 && AnanasAI.currentFrame <= 100){
+            phase = "goToMyPersonalPointOfDefance";
+            return false;
         }
-        else{
-            if (isAtPersonalDefPoint()) {
-                unit.stop(false);
-                return true;
-            } else {
-                swarmMoveToPosition(myPersonelDefencePoint);
-            }
+
+        Position target = null;
+        switch (phase){
+            case "start":
+                target = createStartPoint();
+                if(gotToPoint(target)){
+                    unit.stop(false);
+                    initTmpPoint = false;
+                    phase = "goToTmpPoint";
+                }
+                break;
+            case "goToTmpPoint":
+                target = creatTmpPoint();
+                if(gotToPoint(target)){
+                    unit.stop(false);
+                    phase = "goToMyPersonalPointOfDefance";
+                }
+                break;
+            case "goToMyPersonalPointOfDefance":
+                target = createPersonalDefPoint();
+                if(gotToPoint(target)){
+                    unit.stop(false);
+                    return true;
+                }
         }
         return false;
-
-
     }
 
     private boolean prepareForGoingToPersonalDefPos(){
 
         if(!initTmpPoint) {
             double[] vec = CommonFunctions.calculateVector(AnanasAI.middleOfMap.getPX(),AnanasAI.middleOfMap.getPY(),AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX(),AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY());
-            myPersonelDefencePoint = new Position(AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX() + (int) vec[0]/2,AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY() + (int) vec[1]/2);
+            Position tmpPos = new Position(AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX() + (int) vec[0]/2,AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY() + (int) vec[1]/2);
+            myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(tmpPos,150);
             initTmpPoint = true;
         }
 
@@ -137,13 +172,94 @@ public class Zergling implements IMyUnit{
         }
     }
 
-    private boolean isAtPersonalDefPoint(){
-        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),myPersonelDefencePoint)<=myPersonelDefencePointRadius)
+    private boolean isAtPersonalDefPoint(Position target,int radius){
+        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),target) <=radius)
             return true;
         else
             return false;
     }
 
+    private boolean gotToPoint(Position target){
+        int ackRadius = 0;
+        switch (phase){
+            case "start":
+                ackRadius = 100;
+                break;
+            case "goToTmpPoint":
+                ackRadius = 70;
+                break;
+            case "goToMyPersonalPointOfDefance":
+                ackRadius = myPersonelDefencePointRadius;
+                break;
+        }
+
+        if(isAtPersonalDefPoint(target,ackRadius)){
+            return true;
+        }
+        else{
+            if(unit.isIdle()){
+                switch (phase){
+                    case "start":
+                    case "goToTmpPoint":
+                        CommonFunctions.simpleUnitMove(unit,target);
+                        break;
+                    case "goToMyPersonalPointOfDefance":
+                        swarmMoveToPosition(target);
+                        break;
+                }
+            }
+            return false;
+        }
+    }
+
+
+    private Position creatSplitUpPoint(){
+        if(!initTmpPoint){
+            if(unit.getID() % 2 == 0)
+                tmpPoint = new Position(unit.getPosition().getPX()+15,unit.getPosition().getPY()+15);
+            else
+                tmpPoint = new Position(unit.getPosition().getPX()-15,unit.getPosition().getPY()-15);
+
+            initTmpPoint = true;
+        }
+        return tmpPoint;
+    }
+
+    private Position createStartPoint(){
+        if(!initTmpPoint){
+            double[] vec = CommonFunctions.calculateVector(AnanasAI.middleOfMap.getPX(), AnanasAI.middleOfMap.getPY(), unit.getPosition().getPX(), unit.getPosition().getPY());
+            Position tmpPos = new Position(unit.getPosition().getPX() + (int) vec[0]/2, unit.getPosition().getPY() + (int) vec[1]/2);
+            //tmpPoint = CommonFunctions.getRndPosInDefCircle(tmpPos,40);
+            tmpPoint = tmpPos;
+            initTmpPoint = true;
+        }
+        return tmpPoint;
+    }
+
+
+    private Position creatTmpPoint(){
+        if(!initTmpPoint){
+            double[] vec = CommonFunctions.calculateVector(AnanasAI.middleOfMap.getPX(),AnanasAI.middleOfMap.getPY(),AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX(),AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY());
+            Position tmpPos = new Position(AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX() + (int) vec[0]/2,AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY() + (int) vec[1]/2);
+            //tmpPoint = CommonFunctions.getRndPosInDefCircle(tmpPos,40);
+            initTmpPoint = true;
+        }
+        return tmpPoint;
+    }
+
+    private Position createPersonalDefPoint(){
+        if(!initPDefenacePoint){
+            myPersonelDefencePoint = null;
+            myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.defancePoint, AnanasAI.defancePointRadius);
+            initPDefenacePoint = true;
+        }
+        return myPersonelDefencePoint;
+    }
+    /*
+        #################################################
+        ########### For IN_DEF_MODE #####################
+        #################################################
+    */
 
     private void defMode(){
 //        if(!unit.isBurrowed())

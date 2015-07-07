@@ -25,17 +25,17 @@ public class AnanasAI {
     public static RuleMachine ruleMachine;
 
 
-    private int counter = 0;
-    public static int currentFrame = 0;
+    private int counter;
+    public static int currentFrame;
 
 
 
     //Defance Mod Params
-    public static Position defancePoint = null;
+    public static Position defancePoint;
     public static int defancePointRadius = 190;
     public static Position middleOfMap = new Position(2048,1536);
     private int vectorReducingFactor = 9;
-    public static Hatchery hatcheryToDefend = null;
+    public static Hatchery hatcheryToDefend;
 
 
 
@@ -43,11 +43,24 @@ public class AnanasAI {
         System.out.println("This is the ANANAS_AI ! :)");
 
         this.bwapi = bwapi;
+
+        init();
+    }
+
+    private void init(){
         enemyUnits = new HashSet<>();
         myUnits = new HashSet<>();
+        counter = 0;
+        currentFrame = 0;
+
+        defancePoint = null;
+        defancePointRadius = 190;
+        //middleOfMap = new Position(2048,1536);
+        vectorReducingFactor = 9;
+        hatcheryToDefend = null;
+
 
         this.ruleMachine = new RuleMachine(new ParamSet(1,0.3,0.3,30,3,4,1));
-
     }
 
     public void doStepAll(){
@@ -68,8 +81,10 @@ public class AnanasAI {
     private void initDefancePoint(){
         for (IMyUnit u : myUnits) {
             if(u instanceof Hatchery){
-                hatcheryToDefend = (Hatchery) u;
-                //break;
+                if(u.getUnit().getPosition().getPY() <= 500){
+                    hatcheryToDefend = (Hatchery) u;
+                    break;
+                }
             }
         }
 
@@ -149,11 +164,13 @@ public class AnanasAI {
         myUnits.remove(rmUnit);
     }
 
+
+    private void cleanUpForNextMatch(){
+        init();
+    }
+
     public void matchEnd(boolean winner){
-        currentFrame = 0;
-        counter = 0;
-        myUnits.clear();
-        enemyUnits.clear();
+        cleanUpForNextMatch();
 //        Unit vultureUnit = vulture.getMyUnit();
 //        int hpVulture = vultureUnit.getHitPoints();
 //        int kills= vultureUnit.getKillCount();
