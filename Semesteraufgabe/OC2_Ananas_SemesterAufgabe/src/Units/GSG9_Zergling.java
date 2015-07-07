@@ -29,7 +29,6 @@ public class GSG9_Zergling implements IMyUnit{
     }
 
     public void step() {
-        Unit enemy = CommonFunctions.getClosestEnemy(unit);
 
         Position targetPosition = unit.getTargetPosition();
         bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
@@ -106,5 +105,7 @@ public class GSG9_Zergling implements IMyUnit{
     public Unit getUnit(){
         return this.unit;
     }
+
+
 
 }

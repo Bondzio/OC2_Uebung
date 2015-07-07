@@ -29,4 +29,5 @@ public class Hatchery implements IMyUnit {
     public Unit getUnit(){
         return this.unit;
     }
+
 }

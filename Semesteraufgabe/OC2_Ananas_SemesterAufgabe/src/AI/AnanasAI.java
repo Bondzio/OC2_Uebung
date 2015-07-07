@@ -1,12 +1,16 @@
 package AI;
 
+import Common.CommonFunctions;
 import Units.*;
 import bolding.ParamSet;
 import bolding.RuleMachine;
 import jnibwapi.JNIBWAPI;
+import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -18,9 +22,22 @@ public class AnanasAI {
     public static HashSet<Unit> enemyUnits;
     public static HashSet<IMyUnit> myUnits;
 
-    private int counter = 0;
+    public static RuleMachine ruleMachine;
 
-    private RuleMachine ruleMachine;
+
+    private int counter = 0;
+    private int currentFrame = 0;
+
+
+
+    //Defance Mod Params
+    public static Position defancePoint = null;
+    public static int defancePointRadius = 190;
+    public static Position middleOfMap = new Position(2048,1536);
+    private int vectorReducingFactor = 9;
+    public static Hatchery hatcheryToDefend = null;
+
+
 
     public AnanasAI(JNIBWAPI bwapi) {
         System.out.println("This is the ANANAS_AI ! :)");
@@ -30,12 +47,31 @@ public class AnanasAI {
         myUnits = new HashSet<>();
 
         this.ruleMachine = new RuleMachine(new ParamSet(1,0.3,0.3,30,3,4,1));
+
     }
 
     public void doStepAll(){
+        currentFrame++;
+        if(defancePoint == null)
+            initDefancePoint();
+
         for (IMyUnit u : myUnits) {
             u.step();
         }
+    }
+
+
+
+    private void initDefancePoint(){
+        for (IMyUnit u : myUnits) {
+            if(u instanceof Hatchery){
+                hatcheryToDefend = (Hatchery) u;
+                break;
+            }
+        }
+
+        double[] vec = CommonFunctions.calculateVector(middleOfMap.getPX(),middleOfMap.getPY(),hatcheryToDefend.getUnit().getPosition().getPX(),hatcheryToDefend.getUnit().getPosition().getPY());
+        defancePoint = new Position(hatcheryToDefend.getUnit().getPosition().getPX() + (int) vec[0]/vectorReducingFactor,hatcheryToDefend.getUnit().getPosition().getPY() + (int) vec[1]/vectorReducingFactor);
     }
 
 

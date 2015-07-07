@@ -1,11 +1,13 @@
 package Units;
 
 import AI.AnanasAI;
+import AI.MyUnitStatus;
 import Common.CommonFunctions;
 import bolding.RuleMachine;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
+import jnibwapi.types.TechType;
 import jnibwapi.types.UnitType;
 import jnibwapi.util.BWColor;
 
@@ -19,9 +21,24 @@ public class Zergling implements IMyUnit{
     final private JNIBWAPI bwapi;
     final private Unit unit;
     private final RuleMachine ruleMachine;
+    private static HashSet<Unit> units = new HashSet<>();
 
 
-    private HashSet<Unit> units = new HashSet<>();
+    private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
+
+
+    //for GOING_TO_DEF_POINT
+    private Position myPersonelDefencePoint;
+//    private boolean initPDefenacePoint = true;
+//    private boolean initTmpPoint = true;
+    private boolean initTmpPoint = false;
+    private boolean initPDefenacePoint = false;
+
+    private int myPersonelDefencePointRadius = 60; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
+
+    //for IN_DEF_MODE
+
+
 
     public Zergling(Unit unit, JNIBWAPI bwapi, RuleMachine ruleMachine) {
         this.unit = unit;
@@ -29,20 +46,102 @@ public class Zergling implements IMyUnit{
         this.ruleMachine = ruleMachine;
     }
 
+
+
+    @Override
     public void step() {
-        Unit enemy = CommonFunctions.getClosestEnemy(unit);
 
-        Position targetPosition = unit.getTargetPosition();
-        bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
+        switch(currentUnitStatus){
+            case START:
+                currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
+                break;
+            case GOING_TO_DEF_POINT:
+                if(goingToDefPointFin())
+                    currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
+                break;
+            case IN_DEF_MODE:
+                defMode();
+                break;
+        }
 
-        move(enemy);
+    }
+
+    /*
+        #################################################
+        ########### For GOING_TO_DEF_POINT ##############
+        #################################################
+     */
+
+    private boolean goingToDefPointFin(){
+        drawMyLine();
+
+//        if(prepareForGoingToPersonalDefPos())
+//            return false;
+//
+//        if(initPDefenacePoint) {
+//            myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.defancePoint, AnanasAI.defancePointRadius);
+//            initPDefenacePoint = false;
+//        }
+//
+//        if(isAtPersonalDefPoint()){
+//            CommonFunctions.simpleUnitMove(unit, unit.getPosition());
+//            return true;
+//        }
+//        else{
+//            swarmMoveToPosition(myPersonelDefencePoint);
+//            return false;
+//        }
+
+        if(!initPDefenacePoint ){
+            if(prepareForGoingToPersonalDefPos()) {
+                myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.defancePoint, AnanasAI.defancePointRadius);
+                initPDefenacePoint = true;
+            }
+        }
+        else{
+            if (isAtPersonalDefPoint()) {
+                return true;
+            } else {
+                swarmMoveToPosition(myPersonelDefencePoint);
+            }
+        }
+        return false;
+
 
     }
 
 
 
-    public void move(Unit target){
+    private boolean prepareForGoingToPersonalDefPos(){
 
+        if(!initTmpPoint) {
+            double[] vec = CommonFunctions.calculateVector(AnanasAI.middleOfMap.getPX(),AnanasAI.middleOfMap.getPY(),AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX(),AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY());
+            myPersonelDefencePoint = new Position(AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX() + (int) vec[0]/2,AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY() + (int) vec[1]/2);
+            initTmpPoint = true;
+        }
+
+        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),myPersonelDefencePoint) <= 150){
+            return true;
+        }
+        else{
+            CommonFunctions.simpleUnitMove(unit, myPersonelDefencePoint);
+            return false;
+        }
+    }
+
+    private void defMode(){
+        if(!unit.isBurrowed())
+            unit.burrow();
+    }
+
+
+    public void swarmMoveToTarget(Unit target){
+        swarmMoveToPosition(target.getPosition());
+    }
+
+
+
+    public void swarmMoveToPosition(Position target){
         units.clear();
         for(IMyUnit myUnit: AnanasAI.myUnits){
             if(myUnit instanceof Zergling)
@@ -50,7 +149,7 @@ public class Zergling implements IMyUnit{
         }
 
 
-        double[] final_vector = ruleMachine.calcFlockVectorToPos(unit,units,new int[]{2000,2000});
+        double[] final_vector = ruleMachine.calcFlockVectorToPos(unit,units,new int[]{target.getPX(),target.getPY()});
         //double[] final_vector = {1000,1000};
 
         //System.out.println("Z ID:" + unit.getID() + " UnitsSize:" + units.size() + " Vec:" + Arrays.toString(final_vector));
@@ -61,10 +160,24 @@ public class Zergling implements IMyUnit{
 
 
 
-
-
+    private boolean isAtPersonalDefPoint(){
+        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),myPersonelDefencePoint)<=myPersonelDefencePointRadius)
+            return true;
+        else
+            return false;
+    }
 
     public Unit getUnit(){
         return this.unit;
     }
+
+
+
+    private void drawMyLine(){
+        CommonFunctions.drawLine(bwapi,unit,unit.getTargetPosition(),BWColor.Green);
+    }
+
+
+
+
 }

@@ -171,7 +171,7 @@ public class Flock_Ga {
         double chance = r.nextDouble();
 
         if(chance < 0.5)
-            retValue = currentValue + r.nextInt(100);
+            retValue = currentValue + r.nextInt(10);
         else
             retValue = r.nextInt(currentValue - lowestLimit + 1) + lowestLimit;
 
