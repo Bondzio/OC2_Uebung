@@ -44,23 +44,19 @@ public class AnanasAI {
 
         if(unit.getPlayer() != bwapi.getSelf()){
             enemyUnits.add(unit);
-            //System.out.println(bwapi.getSelf().getID());
-            //System.out.println(unit.getPlayer().getID());
-            //System.out.println(unit.getType());
-            //System.out.println("ENEMY ZERG");
         }
         else{
             UnitType type = unit.getType();
             if(type == UnitType.UnitTypes.Zerg_Zergling){
                 if (counter == 0){
                     counter++;
-                    Zergling zerglingSpecial1 = new Zergling(unit, this.bwapi, this.ruleMachine, 1);
+                    GSG9_Zergling zerglingSpecial1 = new GSG9_Zergling(unit, this.bwapi,1);
                     myUnits.add(zerglingSpecial1);
                    // System.out.println("ADDED SPECIAL1 ZERG");
                 }
                 else if (counter == 1){
                     counter++;
-                    Zergling zerglingSpecial2 = new Zergling(unit, this.bwapi, this.ruleMachine, 2);
+                    GSG9_Zergling zerglingSpecial2 = new GSG9_Zergling(unit, this.bwapi,2);
                     myUnits.add(zerglingSpecial2);
                     //System.out.println("ADDED SPECIAL2 ZERG");
                 }
@@ -102,6 +98,8 @@ public class AnanasAI {
                 break;
             }
         }
+        enemyUnits.remove(rmUnit);
+
         for (IMyUnit u : myUnits) {
 
             if (u.getUnit().getID() == unitID) {
@@ -109,8 +107,7 @@ public class AnanasAI {
                 break;
             }
         }
-
-        enemyUnits.remove(rmUnit);
+        myUnits.remove(rmUnit);
     }
 
     public void matchEnd(boolean winner){
