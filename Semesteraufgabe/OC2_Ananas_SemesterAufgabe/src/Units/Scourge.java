@@ -18,7 +18,7 @@ public class Scourge implements IMyUnit {
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
 
     //for GOING_TO_DEF_POINT
-    private int ackRadius = 30; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
+    private int ackRadius = 40; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
 
 
 

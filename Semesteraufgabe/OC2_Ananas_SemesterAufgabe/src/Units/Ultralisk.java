@@ -37,8 +37,10 @@ public class Ultralisk implements IMyUnit {
                 currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
                 break;
             case GOING_TO_DEF_POINT:
-                if(goingToDefPointFin())
+                if(goingToDefPointFin()){
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
+                System.out.println( this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
+                }
                 break;
             case IN_DEF_MODE:
                 defMode();

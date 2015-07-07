@@ -19,9 +19,9 @@ import java.util.HashSet;
  */
 public class Zergling implements IMyUnit{
     final private JNIBWAPI bwapi;
-    final private Unit unit;
+    private final  Unit unit;
     private final RuleMachine ruleMachine;
-    private static HashSet<Unit> units = new HashSet<>();
+    private HashSet<Unit> units = new HashSet<>();
 
 
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
@@ -34,7 +34,7 @@ public class Zergling implements IMyUnit{
     private boolean initTmpPoint = false;
     private boolean initPDefenacePoint = false;
 
-    private int myPersonelDefencePointRadius = 60; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
+    private int myPersonelDefencePointRadius = 70; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
 
     //for IN_DEF_MODE
 
@@ -56,8 +56,16 @@ public class Zergling implements IMyUnit{
                 currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
                 break;
             case GOING_TO_DEF_POINT:
-                if(goingToDefPointFin())
-                    currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
+                if(!unit.isIdle())
+                    break;
+                if(goingToDefPointFin()){
+                    unit.burrow();
+                    if(unit.isBurrowed()) {
+                        currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
+                        System.out.println(this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
+                    }
+                }
+
                 break;
             case IN_DEF_MODE:
                 defMode();
@@ -78,9 +86,9 @@ public class Zergling implements IMyUnit{
 //        if(prepareForGoingToPersonalDefPos())
 //            return false;
 //
-//        if(initPDefenacePoint) {
+//        if(!initPDefenacePoint) {
 //            myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.defancePoint, AnanasAI.defancePointRadius);
-//            initPDefenacePoint = false;
+//            initPDefenacePoint = true;
 //        }
 //
 //        if(isAtPersonalDefPoint()){
@@ -94,12 +102,14 @@ public class Zergling implements IMyUnit{
 
         if(!initPDefenacePoint ){
             if(prepareForGoingToPersonalDefPos()) {
+                myPersonelDefencePoint = null;
                 myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.defancePoint, AnanasAI.defancePointRadius);
                 initPDefenacePoint = true;
             }
         }
         else{
             if (isAtPersonalDefPoint()) {
+                unit.stop(false);
                 return true;
             } else {
                 swarmMoveToPosition(myPersonelDefencePoint);
@@ -110,8 +120,6 @@ public class Zergling implements IMyUnit{
 
     }
 
-
-
     private boolean prepareForGoingToPersonalDefPos(){
 
         if(!initTmpPoint) {
@@ -120,7 +128,7 @@ public class Zergling implements IMyUnit{
             initTmpPoint = true;
         }
 
-        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),myPersonelDefencePoint) <= 150){
+        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),myPersonelDefencePoint) <= 200){
             return true;
         }
         else{
@@ -129,9 +137,17 @@ public class Zergling implements IMyUnit{
         }
     }
 
+    private boolean isAtPersonalDefPoint(){
+        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),myPersonelDefencePoint)<=myPersonelDefencePointRadius)
+            return true;
+        else
+            return false;
+    }
+
+
     private void defMode(){
-        if(!unit.isBurrowed())
-            unit.burrow();
+//        if(!unit.isBurrowed())
+//            unit.burrow();
     }
 
 
@@ -154,18 +170,13 @@ public class Zergling implements IMyUnit{
 
         //System.out.println("Z ID:" + unit.getID() + " UnitsSize:" + units.size() + " Vec:" + Arrays.toString(final_vector));
         Position tragetPosition = new Position((int) final_vector[0],(int) final_vector[1]);
-        tragetPosition.makeValid();
+        //tragetPosition.makeValid();
         CommonFunctions.simpleUnitMove(unit,tragetPosition);
     }
 
 
 
-    private boolean isAtPersonalDefPoint(){
-        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),myPersonelDefencePoint)<=myPersonelDefencePointRadius)
-            return true;
-        else
-            return false;
-    }
+
 
     public Unit getUnit(){
         return this.unit;

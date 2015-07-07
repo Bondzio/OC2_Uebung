@@ -26,7 +26,7 @@ public class AnanasAI {
 
 
     private int counter = 0;
-    private int currentFrame = 0;
+    public static int currentFrame = 0;
 
 
 
@@ -57,6 +57,9 @@ public class AnanasAI {
 
         for (IMyUnit u : myUnits) {
             u.step();
+//            if(u instanceof Zergling)
+//                u.step();
+
         }
     }
 
@@ -66,7 +69,7 @@ public class AnanasAI {
         for (IMyUnit u : myUnits) {
             if(u instanceof Hatchery){
                 hatcheryToDefend = (Hatchery) u;
-                break;
+                //break;
             }
         }
 
@@ -147,6 +150,10 @@ public class AnanasAI {
     }
 
     public void matchEnd(boolean winner){
+        currentFrame = 0;
+        counter = 0;
+        myUnits.clear();
+        enemyUnits.clear();
 //        Unit vultureUnit = vulture.getMyUnit();
 //        int hpVulture = vultureUnit.getHitPoints();
 //        int kills= vultureUnit.getKillCount();

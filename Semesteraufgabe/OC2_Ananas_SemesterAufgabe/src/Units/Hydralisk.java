@@ -39,7 +39,7 @@ public class Hydralisk implements IMyUnit{
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
 
     //for GOING_TO_DEF_POINT
-    private int ackRadius = 30; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
+    private int ackRadius = 60; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
 
 
 
@@ -55,8 +55,15 @@ public class Hydralisk implements IMyUnit{
                 currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
                 break;
             case GOING_TO_DEF_POINT:
-                if(goingToDefPointFin())
-                    currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
+                if(!unit.isIdle())
+                    break;
+                if(goingToDefPointFin()){
+                    unit.burrow();
+                    if(unit.isBurrowed()) {
+                        currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
+                        System.out.println(this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
+                    }
+                }
                 break;
             case IN_DEF_MODE:
                 defMode();
@@ -69,6 +76,7 @@ public class Hydralisk implements IMyUnit{
 
         CommonFunctions.simpleUnitMove(unit, AnanasAI.defancePoint);
         if(isAtPersonalDefPoint()){
+            unit.stop(false);
             return true;
         }
         else{
