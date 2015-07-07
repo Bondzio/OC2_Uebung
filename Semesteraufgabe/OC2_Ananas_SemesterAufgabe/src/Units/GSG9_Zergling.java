@@ -4,6 +4,7 @@ import AI.AnanasAI;
 import Common.CommonFunctions;
 import bolding.RuleMachine;
 import jnibwapi.JNIBWAPI;
+import jnibwapi.Map;
 import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
@@ -36,36 +37,28 @@ public class GSG9_Zergling implements IMyUnit{
 
 
         specialMissions(mission);
+//        Map map = bwapi.getMap();
+//        Position mapSize = map.getSize();
+//        System.out.println("Map Size: X: " + mapSize.getPX() + " Y: " + mapSize.getPY());
 
     }
 
     public void specialMissions(int mission){
-        Position[] hatcheries = getEnemyHatcheries();
+        Position[] hatcheries = CommonFunctions.getEnemyHatcheries(bwapi);
 
         if (mission == 1 || mission == 2) {
             if (unit.isIdle()) {
-                if (bwapi.getEnemyUnits().isEmpty()) {
+                if (AnanasAI.enemyUnits.isEmpty()) {
                     unit.attack(hatcheries[mission-1], false);
                 }
                 else {
-                    for (Unit enemy : bwapi.getEnemyUnits()) {
+                    for (Unit enemy : AnanasAI.enemyUnits) {
                         unit.attack(enemy.getPosition(), false);
                         break;
                     }
                 }
             }
         }
-    }
-
-
-    private Position[] getEnemyHatcheries(){
-        Position[] redHatcheries = new Position[] {new Position(516, 368), new Position(516, 2704)};
-        Position[] blueHatcheries = new Position[] {new Position(3420,368),  new Position(3420, 2704)};
-
-        if(bwapi.getSelf().getID() == 0)
-            return blueHatcheries;
-        else
-            return redHatcheries;
     }
 
     private Unit getClosestEnemyZergHatchery() {
@@ -101,7 +94,6 @@ public class GSG9_Zergling implements IMyUnit{
 
         return result;
     }
-
 
     public Unit getUnit(){
         return this.unit;
