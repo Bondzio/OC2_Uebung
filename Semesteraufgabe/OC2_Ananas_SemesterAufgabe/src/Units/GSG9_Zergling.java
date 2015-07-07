@@ -29,7 +29,6 @@ public class GSG9_Zergling implements IMyUnit{
     }
 
     public void step() {
-
         Position targetPosition = unit.getTargetPosition();
         bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
 
@@ -39,73 +38,22 @@ public class GSG9_Zergling implements IMyUnit{
     }
 
     public void specialMissions(int mission){
-        Position[] hatcheries = getEnemyHatcheries();
+        Position[] hatcheries = CommonFunctions.getEnemyHatcheries(bwapi);
 
         if (mission == 1 || mission == 2) {
             if (unit.isIdle()) {
-                if (bwapi.getEnemyUnits().isEmpty()) {
-                    unit.attack(hatcheries[mission-1], false);
+                if (unit.getDistance(CommonFunctions.getClosestEnemyZergHatchery(unit)) > 200) {
+                    unit.move(hatcheries[mission - 1], false);
                 }
-                else {
-                    for (Unit enemy : bwapi.getEnemyUnits()) {
-                        unit.attack(enemy.getPosition(), false);
-                        break;
-                    }
+                else{
+                    unit.attack(CommonFunctions.getClosestEnemyZergHatchery(unit), false);
                 }
             }
         }
     }
-
-
-    private Position[] getEnemyHatcheries(){
-        Position[] redHatcheries = new Position[] {new Position(516, 368), new Position(516, 2704)};
-        Position[] blueHatcheries = new Position[] {new Position(3420,368),  new Position(3420, 2704)};
-
-        if(bwapi.getSelf().getID() == 0)
-            return blueHatcheries;
-        else
-            return redHatcheries;
-    }
-
-    private Unit getClosestEnemyZergHatchery() {
-        Unit result = null;
-        double minDistance = Double.POSITIVE_INFINITY;
-
-        for (Unit enemy : AnanasAI.enemyUnits) {
-            double distance = CommonFunctions.getDistanceBetweenUnits(unit,enemy);
-            if (enemy.getType() == UnitType.UnitTypes.Zerg_Hatchery) {
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    result = enemy;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private Unit getClosestFriendlyZergHatchery() {
-        Unit result = null;
-        double minDistance = Double.POSITIVE_INFINITY;
-
-        for (IMyUnit myUnit : AnanasAI.myUnits) {
-            double distance = CommonFunctions.getDistanceBetweenUnits(unit,myUnit.getUnit());
-            if (myUnit instanceof Hatchery) {
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    result = myUnit.getUnit();
-                }
-            }
-        }
-
-        return result;
-    }
-
 
     public Unit getUnit(){
         return this.unit;
     }
-
-
 
 }
