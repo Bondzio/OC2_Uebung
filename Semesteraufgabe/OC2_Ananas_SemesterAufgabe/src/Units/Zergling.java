@@ -35,7 +35,7 @@ public class Zergling implements IMyUnit{
         Position targetPosition = unit.getTargetPosition();
         bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
 
-        move(enemy);
+        //move(enemy);
 
     }
 
