@@ -1,6 +1,7 @@
 package AI;
 
 import Common.CommonFunctions;
+import Hydralisk_XCS.AllHydralisk_XCS_Manager;
 import Units.*;
 import bolding.ParamSet;
 import bolding.RuleMachine;
@@ -18,12 +19,14 @@ import java.util.HashSet;
  */
 public class AnanasAI {
 
-    private final JNIBWAPI bwapi;
+
     public static HashSet<Unit> enemyUnits;
     public static HashSet<IMyUnit> myUnits;
-
     public static RuleMachine ruleMachine;
 
+
+    private final JNIBWAPI bwapi;
+    private AllHydralisk_XCS_Manager allHydralisk_xcs_manager;
 
     private int counter;
     public static int currentFrame;
@@ -61,6 +64,7 @@ public class AnanasAI {
 
 
         this.ruleMachine = new RuleMachine(new ParamSet(1,0.3,0.3,30,3,4,1));
+        this.allHydralisk_xcs_manager = new AllHydralisk_XCS_Manager(this.bwapi);
     }
 
     public void doStepAll(){
@@ -121,7 +125,7 @@ public class AnanasAI {
                 }
             }
             else if(type == UnitType.UnitTypes.Zerg_Hydralisk){
-                Hydralisk hydralisk = new Hydralisk(unit,this.bwapi);
+                Hydralisk hydralisk = this.allHydralisk_xcs_manager.createHydralisk(unit);
                 myUnits.add(hydralisk);
             }
             else if(type == UnitType.UnitTypes.Zerg_Ultralisk){

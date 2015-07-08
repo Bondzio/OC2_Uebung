@@ -9,8 +9,14 @@ import bolding.ParamSetCollection;
 public class Test {
 
     public static void main(String[] args){
-        SimpleFileHandler sH = new SimpleFileHandler();
+        double distance = 300;
+        int convDistance = (int) distance;
+//        if (convDistance > 160)
+//            convDistance = 161; // as Binary 10100001
 
-        sH.saveParamSetCollection(new ParamSetCollection());
+
+        String ret = Integer.toBinaryString(convDistance);
+        System.out.println(ret);
+        System.out.println(ret.length());
     }
 }
