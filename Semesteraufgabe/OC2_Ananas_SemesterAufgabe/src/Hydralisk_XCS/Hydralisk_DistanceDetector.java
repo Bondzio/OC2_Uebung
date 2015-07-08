@@ -3,7 +3,7 @@ package Hydralisk_XCS;
 import General_XCS.IDetector;
 
 
-public class StarCraftBW_DistanceDetector implements IDetector{
+public class Hydralisk_DistanceDetector implements IDetector{
     
     private double currentDistance = 0;
     private int maxBinaryStringLength = 9;

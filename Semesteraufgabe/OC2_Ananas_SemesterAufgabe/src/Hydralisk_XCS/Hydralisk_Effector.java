@@ -3,7 +3,7 @@ package Hydralisk_XCS;
 import General_XCS.IEffector;
 import jnibwapi.Unit;
 
-public class StarCraftBW_Effector implements IEffector{
+public class Hydralisk_Effector implements IEffector{
 
     private String currentActionToExecute;
 	private Unit unit;
@@ -120,7 +120,7 @@ public class StarCraftBW_Effector implements IEffector{
     private int rewardIt(){
         int calcReward = 0;
 
-        if(this.distance <= StarCraftBW_Unit_Constants.Hydralisk_WEAPONRANGE)
+        if(this.distance <= Hydralisk_Unit_Constants.Hydralisk_WEAPONRANGE)
             calcReward += 50;
 
 

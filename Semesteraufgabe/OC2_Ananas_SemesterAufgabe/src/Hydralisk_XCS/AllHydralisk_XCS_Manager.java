@@ -113,14 +113,14 @@ public class AllHydralisk_XCS_Manager {
 
     private class Managed_Hydralisk {
 
-        private final StarCraftBW_DistanceDetector dDetector;
-        private final StarCraftBW_Effector theEffector;
+        private final Hydralisk_DistanceDetector dDetector;
+        private final Hydralisk_Effector theEffector;
         private final The_Hydralisk_XCS hydralisk_xcs;
         private final int managedUnitID;
 
         public Managed_Hydralisk(int unitId, String[] actionSet) {
-            this.dDetector = new StarCraftBW_DistanceDetector();
-            this.theEffector = new StarCraftBW_Effector();
+            this.dDetector = new Hydralisk_DistanceDetector();
+            this.theEffector = new Hydralisk_Effector();
             this.hydralisk_xcs = new The_Hydralisk_XCS(actionSet,theEffector,dDetector);
 
             this.managedUnitID = unitId;
@@ -135,11 +135,11 @@ public class AllHydralisk_XCS_Manager {
             pSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
         }
 
-        public StarCraftBW_DistanceDetector getdDetector() {
+        public Hydralisk_DistanceDetector getdDetector() {
             return dDetector;
         }
 
-        public StarCraftBW_Effector getTheEffector() {
+        public Hydralisk_Effector getTheEffector() {
             return theEffector;
         }
 

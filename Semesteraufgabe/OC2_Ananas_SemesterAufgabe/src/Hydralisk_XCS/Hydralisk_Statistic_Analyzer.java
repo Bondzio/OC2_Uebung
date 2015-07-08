@@ -14,9 +14,9 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-public class StarCraftBW_Statistic_Analyzer extends Application{
+public class Hydralisk_Statistic_Analyzer extends Application{
 	
-	private ArrayList<StarCraftBW_MatchStat> mStats = new ArrayList<StarCraftBW_MatchStat>();
+	private ArrayList<Hydralisk_MatchStat> mStats = new ArrayList<Hydralisk_MatchStat>();
     private final String[] LEARNING_GA = new String[]{"ga1", "ga2","ga3","ga4"};
     private LineChart<Number, Number> frameChart;
     private String actualGA;
@@ -126,9 +126,9 @@ public class StarCraftBW_Statistic_Analyzer extends Application{
 	}
 
 	private void setMatchStats(){
-		StarCraftBW_FileThread fileThread = new StarCraftBW_FileThread();
+		Hydralisk_FileThread fileThread = new Hydralisk_FileThread();
 		fileThread.setFilePath_mStats(this.actualGA + "_stats");
-		StarCraftBW_MatchStats matchStats = fileThread.getSavedMatchStats();
+		Hydralisk_MatchStats matchStats = fileThread.getSavedMatchStats();
 		try{
 			this.mStats = matchStats.getMatchStats();
 		}catch(NullPointerException np){

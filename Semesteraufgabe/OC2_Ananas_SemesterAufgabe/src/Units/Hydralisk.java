@@ -40,7 +40,7 @@ public class Hydralisk implements IMyUnit{
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
 
     //for GOING_TO_DEF_POINT
-    private int ackRadius = 60; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
+    private int ackRadius = 65; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
 
 
     //for IN_DEF_MODE
@@ -69,7 +69,7 @@ public class Hydralisk implements IMyUnit{
                 }
                 break;
             case IN_DEF_MODE:
-                defMode();
+                //defMode();
                 break;
         }
     }
@@ -86,8 +86,11 @@ public class Hydralisk implements IMyUnit{
             return false;
         }
 
-        CommonFunctions.simpleUnitMove(unit, AnanasAI.defancePoint);
-        if(isAtPersonalDefPoint()){
+        Position defPoint = AnanasAI.defancePoint;
+        //Position defPoint = AnanasAI.hatcheryToDefend.getUnit().getPosition(); // slower!
+
+        CommonFunctions.simpleUnitMove(unit, defPoint);
+        if(isAtPersonalDefPoint(defPoint)){
             unit.stop(false);
             return true;
         }
@@ -137,8 +140,8 @@ public class Hydralisk implements IMyUnit{
         }
     }
 
-    private boolean isAtPersonalDefPoint(){
-        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),AnanasAI.defancePoint)<=ackRadius)
+    private boolean isAtPersonalDefPoint(Position defPoint){
+        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),defPoint)<=ackRadius)
             return true;
         else
             return false;

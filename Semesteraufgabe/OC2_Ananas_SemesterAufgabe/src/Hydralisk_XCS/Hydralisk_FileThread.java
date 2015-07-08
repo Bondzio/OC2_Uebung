@@ -10,13 +10,13 @@ import java.io.*;
 /**
  * Created by Rolle on 25.05.2015.
  */
-public class StarCraftBW_FileThread extends Thread{
+public class Hydralisk_FileThread extends Thread{
 
 
     private ClassifierSet cSet = null;
     private String filePath_cSet = "saves.txt";
 
-    private StarCraftBW_MatchStats mStats = null;
+    private Hydralisk_MatchStats mStats = null;
     private String filePath_mStats = "stats.txt";
 
 
@@ -77,7 +77,7 @@ public class StarCraftBW_FileThread extends Thread{
         //Later, when the necessary event happens, the thread that is running it calls notify() from a block synchronized on the same object.
     }
 
-    public synchronized void putMatchStatsToSave(StarCraftBW_MatchStats mStats) throws InterruptedException {
+    public synchronized void putMatchStatsToSave(Hydralisk_MatchStats mStats) throws InterruptedException {
         if(stop)
             return;
 
@@ -155,7 +155,7 @@ public class StarCraftBW_FileThread extends Thread{
         return null;
     }
 
-    public synchronized StarCraftBW_MatchStats getSavedMatchStats() {
+    public synchronized Hydralisk_MatchStats getSavedMatchStats() {
 //        System.out.println("FileThread: Try to load MatchStats File");
         Gson gson = new Gson();
 
@@ -164,7 +164,7 @@ public class StarCraftBW_FileThread extends Thread{
 
         try{
             BufferedReader br = new BufferedReader(new FileReader(filePath_mStats));
-            StarCraftBW_MatchStats mStats = gson.fromJson(br, StarCraftBW_MatchStats.class);
+            Hydralisk_MatchStats mStats = gson.fromJson(br, Hydralisk_MatchStats.class);
             System.out.println("FileThread: MatchStats File loaded");
             return mStats;
         } catch (FileNotFoundException e) {
