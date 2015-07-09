@@ -7,8 +7,11 @@ import bolding.RuleMachine;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
+import jnibwapi.types.UnitType;
+import jnibwapi.types.UnitType.UnitTypes;
 import jnibwapi.util.BWColor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -32,7 +35,9 @@ public class Zergling implements IMyUnit{
 //    private boolean initTmpPoint = true;
     private boolean initTmpPoint = false;
     private boolean initPDefenacePoint = false;
-
+    private Unit nearEnemy = null;
+    private ArrayList<IMyUnit> unitsUnderAttack = new ArrayList<IMyUnit>();
+    
     private int myPersonelDefencePointRadius = 70; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
 
     //for IN_DEF_MODE
@@ -82,43 +87,6 @@ public class Zergling implements IMyUnit{
 
     private boolean goingToDefPointFin(){
 
-        //v1
-//        if(prepareForGoingToPersonalDefPos())
-//            return false;
-//
-//        if(!initPDefenacePoint) {
-//            myPersonalRallyPoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.rallyPoint, AnanasAI.rallyPointRadius);
-//            initPDefenacePoint = true;
-//        }
-//
-//        if(isAtPersonalDefPoint()){
-//            CommonFunctions.simpleUnitMove(unit, unit.getPosition());
-//            return true;
-//        }
-//        else{
-//            swarmMoveToPosition(myPersonalRallyPoint);
-//            return false;
-//        }
-
-        //v2
-//        if(!initPDefenacePoint ){
-//            if(prepareForGoingToPersonalDefPos()) {
-//                myPersonalRallyPoint = null;
-//                myPersonalRallyPoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.rallyPoint, AnanasAI.rallyPointRadius);
-//                initPDefenacePoint = true;
-//            }
-//        }
-//        else{
-//            if (isAtPersonalDefPoint()) {
-//                unit.stop(false);
-//                return true;
-//            } else {
-//                swarmMoveToPosition(myPersonalRallyPoint);
-//            }
-//        }
-//        return false;
-
-        //v3
         if(unit.getID() % 2 == 0 && AnanasAI.currentFrame <= 100){
             phase = "goToMyPersonalRallyPoint";
             return false;
@@ -151,23 +119,6 @@ public class Zergling implements IMyUnit{
         return false;
     }
 
-    private boolean prepareForGoingToPersonalDefPos(){
-
-        if(!initTmpPoint) {
-            double[] vec = CommonFunctions.calculateVector(AnanasAI.middleOfMap.getPX(),AnanasAI.middleOfMap.getPY(),AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX(),AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY());
-            Position tmpPos = new Position(AnanasAI.hatcheryToDefend.getUnit().getPosition().getPX() + (int) vec[0]/2,AnanasAI.hatcheryToDefend.getUnit().getPosition().getPY() + (int) vec[1]/2);
-            myPersonalRallyPoint = CommonFunctions.getRndPosInDefCircle(tmpPos,150);
-            initTmpPoint = true;
-        }
-
-        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(), myPersonalRallyPoint) <= 200){
-            return true;
-        }
-        else{
-            CommonFunctions.simpleUnitMove(unit, myPersonalRallyPoint);
-            return false;
-        }
-    }
 
     private boolean isAtPersonalDefPoint(Position target,int radius){
         if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),target) <=radius)
@@ -209,19 +160,6 @@ public class Zergling implements IMyUnit{
         }
     }
 
-
-    private Position creatSplitUpPoint(){
-        if(!initTmpPoint){
-            if(unit.getID() % 2 == 0)
-                tmpPoint = new Position(unit.getPosition().getPX()+15,unit.getPosition().getPY()+15);
-            else
-                tmpPoint = new Position(unit.getPosition().getPX()-15,unit.getPosition().getPY()-15);
-
-            initTmpPoint = true;
-        }
-        return tmpPoint;
-    }
-
     private Position createStartPoint(){
         if(!initTmpPoint){
             double[] vec = CommonFunctions.calculateVector(AnanasAI.middleOfMap.getPX(), AnanasAI.middleOfMap.getPY(), unit.getPosition().getPX(), unit.getPosition().getPY());
@@ -258,11 +196,82 @@ public class Zergling implements IMyUnit{
         #################################################
     */
 
+    
     private void defMode(){
-//        if(!unit.isBurrowed())
-//            unit.burrow();
+
+    	
+    	if(unit.isIdle()){    		
+	    	if(isUnitUnderAttack() || isEnemyUnitInRange()){
+	    		if (nearEnemy != null)
+		    		if(unit.getDistance(nearEnemy) < unit.getDistance(AnanasAI.enemyToAttack) && isEnemyAttackable(nearEnemy)){
+		    			AnanasAI.enemyToAttack = nearEnemy;
+		    		}
+	    	}
+	    	if(AnanasAI.enemyToAttack != null && AnanasAI.enemyToAttack.getDistance(AnanasAI.defencePoint) < 500 ){
+	    		if(unit.isBurrowed())
+	    			unit.unburrow();
+	    		else
+	    			swarmMoveToTarget(AnanasAI.enemyToAttack);
+	    	}else{
+	    		unit.burrow();
+	    	}
+    	}
     }
 
+    
+    private boolean isEnemyAttackable(Unit enemy){
+    	boolean attackable = false;
+    	
+    	ArrayList<UnitType> attackableEnemys = new ArrayList<UnitType>();
+    	attackableEnemys.add(UnitTypes.Zerg_Zergling);
+    	attackableEnemys.add(UnitTypes.Zerg_Ultralisk);
+    	attackableEnemys.add(UnitTypes.Zerg_Hydralisk);
+    
+    	for(UnitType ut : attackableEnemys){
+    		if(ut.equals(enemy.getType())){
+    			attackable = true;
+    		}
+    	}
+    	return attackable;
+    }
+    
+
+    // Returns true, if an ally Unit is under attack
+    private boolean isUnitUnderAttack(){
+    	boolean unitUnderAttack = false;
+    	unitsUnderAttack.clear();
+    	
+    	for(IMyUnit ally : AnanasAI.myUnits){
+    		if(ally.getUnit().isUnderAttack() && unit.getDistance(ally.getUnit()) < 600){
+    			unitsUnderAttack.add(ally);
+    			unitUnderAttack = true;
+    		}
+    	}
+    	return unitUnderAttack;
+    }
+    
+    // Returns true, if an Enemy is in Range of the current Unit
+    private boolean isEnemyUnitInRange(){
+    	nearEnemy = null;
+    	boolean enemyUnitInRange = false;
+    	Unit nearest = null;
+    	double minDistance = Double.POSITIVE_INFINITY;
+    	
+    	for(Unit enemy : bwapi.getEnemyUnits()){
+    		double distance = enemy.getDistance(AnanasAI.defencePoint);
+    		
+    		if(distance < 600){
+    			enemyUnitInRange = true;
+                 if (distance < minDistance) {
+                     minDistance = distance;
+                     nearest = enemy;
+                 }
+    		}
+    	}
+    	nearEnemy = nearest;
+    	return enemyUnitInRange;
+    }
+    
 
     public void swarmMoveToTarget(Unit target){
         swarmMoveToPosition(target.getPosition());
@@ -297,9 +306,9 @@ public class Zergling implements IMyUnit{
 
 
 
-    private void drawMyLine(){
-        CommonFunctions.drawLine(bwapi,unit,unit.getTargetPosition(),BWColor.Green);
-    }
+//    private void drawMyLine(){
+//        CommonFunctions.drawLine(bwapi,unit,unit.getTargetPosition(),BWColor.Green);
+//    }
 
 
 

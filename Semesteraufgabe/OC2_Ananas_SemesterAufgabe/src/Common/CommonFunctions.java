@@ -78,7 +78,8 @@ public class CommonFunctions {
 
 
     public static void simpleUnitMove(Unit unitToMove, Position destination){
-        unitToMove.move(destination,false);
+    	if(unitToMove.isIdle())
+    		unitToMove.attack(destination,false);
     }
 
     public static Position[] getEnemyHatcheries(JNIBWAPI bwapi){
