@@ -3,11 +3,10 @@ package Units;
 import AI.AnanasAI;
 import AI.MyUnitStatus;
 import Common.CommonFunctions;
+import StarCraftBW_XCS_Queen.StarCraftBW_Queen_XCS_Manager;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
-
-
 import java.util.HashSet;
 
 /**
@@ -22,12 +21,14 @@ public class Queen implements IMyUnit{
     //for GOING_TO_DEF_POINT
     private int ackRadius = 40; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
 
+    //for IN_DEF_MODE
+    private StarCraftBW_Queen_XCS_Manager queen_xcs_manager;
+    private boolean isThereSomethingToReward = false;
 
-
-    public Queen(Unit unit, JNIBWAPI bwapi) {
+    public Queen(Unit unit, JNIBWAPI bwapi, StarCraftBW_Queen_XCS_Manager queen_xcs_manager ) {
         this.unit = unit;
         this.bwapi = bwapi;
-
+        this.queen_xcs_manager = queen_xcs_manager;
     }
 
     @Override
@@ -47,12 +48,19 @@ public class Queen implements IMyUnit{
         }
     }
 
-
+    /*
+    #################################################
+    ########### For GOING_TO_DEF_POINT ##############
+    #################################################
+    */
     private boolean goingToDefPointFin(){
 
-        CommonFunctions.simpleUnitMove(unit, AnanasAI.hatcheryToDefend.getUnit().getPosition());
+        Position defPoint = AnanasAI.defancePoint;
+        //Position defPoint = AnanasAI.hatcheryToDefend.getUnit().getPosition(); // slower!
 
-        if(isAtPersonalDefPoint()){
+        CommonFunctions.simpleUnitMove(unit, defPoint);
+        if(isAtPersonalDefPoint(defPoint)){
+            unit.stop(false);
             return true;
         }
         else{
@@ -60,9 +68,42 @@ public class Queen implements IMyUnit{
         }
     }
 
+    /*
+    #################################################
+    ########### For IN_DEF_MODE #####################
+    #################################################
+    */
 
-    private boolean isAtPersonalDefPoint(){
-        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),AnanasAI.hatcheryToDefend.getUnit().getPosition())<=ackRadius)
+    private void defMode(){
+//        Unit target = getClosestEnemy();
+        double distance = CommonFunctions.getDistanceBetweenUnits(unit,AnanasAI.hatcheryToDefend.getUnit());
+
+        queen_xcs_manager.getDetector().setDistance(distance);
+
+//        if (isThereSomethingToReward)
+//            allHydraManager.actionExecutionFin(unit, target, distance);
+
+
+        String action = queen_xcs_manager.getNextPredictedAction();
+
+        if (!isThereSomethingToReward)
+            isThereSomethingToReward = true;
+
+
+        if (action.equals("kite")) {
+//            //kite(target);
+//            dummKite(target);
+//            //kiteInOppositeDir(target,distance);
+//            this.countKite++;
+        }
+        else if (action.equals("attackMove")) {
+//            attackMove(target);
+//            this.countAttackMove++;
+        }
+    }
+
+    private boolean isAtPersonalDefPoint(Position defPoint){
+        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),defPoint)<=ackRadius)
             return true;
         else
             return false;
@@ -71,6 +112,4 @@ public class Queen implements IMyUnit{
     public Unit getUnit(){
         return this.unit;
     }
-
-
 }

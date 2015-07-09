@@ -32,32 +32,11 @@ public class StarCraftBW_Queen_XCS_Manager {
         xcs.rewardCurrentAction();
     }
 
-    public void setGA_Type(String typeName){
-        PopulationSet populationSet = xcs.getPopulationSet();
-        switch (typeName){
-            case "ga1":
-                populationSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_FIND_BEST);
-                populationSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_ONE_POINT);
-                populationSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
-                break;
-            case "ga2":
-                populationSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
-                populationSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_ONE_POINT);
-                populationSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
-                break;
-            case "ga3":
-                populationSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
-                populationSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_RANDOM_ONE_POINT);
-                populationSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
-                break;
-            case "ga4":
-                populationSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
-                populationSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_ONE_POINT);
-                populationSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_NONE);
-                break;
-        }
-        fileThread.setFilePath_cSet(typeName + "_saves");
-        fileThread.setFilePath_mStats(typeName + "_stats");
+    private void setGA_Type(){
+        PopulationSet pSet = xcs.getPopulationSet();
+        pSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
+        pSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_RANDOM_ONE_POINT);
+        pSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
     }
 
     public StarCraftBW_QueenDetector getDetector(){
