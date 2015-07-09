@@ -32,7 +32,7 @@ public class StarCraftBW_Queen_XCS_Manager {
         xcs.rewardCurrentAction();
     }
 
-    private void setGA_Type(){
+    public void setGA_Type(){
         PopulationSet pSet = xcs.getPopulationSet();
         pSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
         pSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_RANDOM_ONE_POINT);

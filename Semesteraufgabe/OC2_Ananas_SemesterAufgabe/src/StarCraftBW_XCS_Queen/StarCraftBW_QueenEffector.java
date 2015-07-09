@@ -2,6 +2,7 @@ package StarCraftBW_XCS_Queen;
 
 import General_XCS.IEffector;
 import jnibwapi.Unit;
+import jnibwapi.types.OrderType;
 
 /**
  * Created by Papa on 07.07.2015.
@@ -12,9 +13,11 @@ public class StarCraftBW_QueenEffector  implements IEffector {
     private Unit target;
     private Double distance;
     private int currentHP = 0;
-    private int currentMP = 0;
+    private int currentEnergy = 0;
     private int prevHP = -1;
+    private int prevEnergy = -1;
     private int hpLost = 0;
+    private int EnergyDelta = 0;
 
     public String getCurrentActionToExecute() {
         return currentActionToExecute;
@@ -29,14 +32,24 @@ public class StarCraftBW_QueenEffector  implements IEffector {
         this.target = target;
         this.distance = distance;
         currentHP = unit.getHitPoints();
-        currentMP = unit.getEnergy();
+        currentEnergy = unit.getEnergy();
         hpLost = 0;
+        EnergyDelta = 0;
 
-        if (prevHP == -1)
+        if (prevHP == -1) {
             prevHP = currentHP;
+        }
         else if(currentHP != prevHP) {
             hpLost = prevHP - currentHP;
             prevHP = currentHP;
+        }
+
+        if (prevEnergy == -1) {
+            prevEnergy = currentEnergy;
+        }
+        else if(currentEnergy != prevEnergy) {
+            EnergyDelta = prevEnergy - currentEnergy;
+            prevEnergy = currentEnergy;
         }
     }
 
@@ -66,7 +79,7 @@ public class StarCraftBW_QueenEffector  implements IEffector {
     private int rewardIt(){
         int calcReward = 0;
 
-        if(this.distance <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2)
+        if(this.distance >= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2)
             calcReward += 50;
 
         if(hpLost > 0 && currentActionToExecute.equals("cast")) {
@@ -74,10 +87,18 @@ public class StarCraftBW_QueenEffector  implements IEffector {
         }
         else if (hpLost > 0 && currentActionToExecute.equals("kite")){
 
-            calcReward += 200;
+            calcReward += -200;
         }
 
-        if(unit.isStartingAttack())
+        if(EnergyDelta > 0 && currentActionToExecute.equals("cast")) {
+            calcReward += 100;
+        }
+
+        if(EnergyDelta < 0 && currentActionToExecute.equals("cast")) {
+            calcReward += -10;
+        }
+
+        if(currentEnergy < StarCraftBW_Queen_Constants.OWN_MAXENERGY)
             calcReward += 50;
 
         return calcReward;

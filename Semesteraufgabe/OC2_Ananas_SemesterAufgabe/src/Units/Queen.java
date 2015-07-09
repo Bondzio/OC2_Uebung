@@ -8,6 +8,7 @@ import StarCraftBW_XCS_Queen.StarCraftBW_Queen_Constants;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
+import jnibwapi.types.OrderType;
 import jnibwapi.types.TechType;
 import jnibwapi.types.UnitType;
 import jnibwapi.util.BWColor;
@@ -24,6 +25,7 @@ public class Queen implements IMyUnit{
     private int countCastShit = 0;
     private int countKite = 0;
     private Unit parasitedUnit = null;
+    private boolean start = true;
 
     //for GOING_TO_DEF_POINT
     private int ackRadius = 40;
@@ -100,9 +102,14 @@ public class Queen implements IMyUnit{
 
         queen_xcs_manager.getDetector().setDistance(distanceClosestEnemy);
 
-//        if (isThereSomethingToReward)
-//            allHydraManager.actionExecutionFin(unit, target, distance);
-
+        if (!start) {
+            queen_xcs_manager.actionExecutionFin(unit, closestEnemy, distanceClosestEnemy);
+        }
+        else {
+            queen_xcs_manager.setGA_Type();
+            queen_xcs_manager.loadOldProgress();
+            start = false;
+        }
 
         String action = queen_xcs_manager.getNextPredictedAction();
 
@@ -110,12 +117,11 @@ public class Queen implements IMyUnit{
             isThereSomethingToReward = true;
 
         if (action.equals("kite")) {
-            if (true) {
-                if (distanceClosestEnemy <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2) {
-                    System.out.print("Distance: " + distanceClosestEnemy + "\n");
-                    CommonFunctions.advancedKiteQueen(bwapi, unit, closestEnemy, StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE, 300);
-                }
-            }
+
+//            if (distanceClosestEnemy <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2 && unit.isIdle()) {
+                System.out.print("Distance: " + distanceClosestEnemy + "\n");
+                CommonFunctions.advancedKiteQueen(bwapi, unit, closestEnemy, StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE, 300);
+//            }
 
             this.countKite++;
         }
@@ -162,8 +168,6 @@ public class Queen implements IMyUnit{
 
                     if (scourge.getEnsnareTimer() <= 0) {
                         unit.useTech(TechType.TechTypes.Ensnare, scourge);
-                        while (!scourge.isEnsnared()){
-                        }
                     }
                 }
             }
