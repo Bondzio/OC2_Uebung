@@ -49,7 +49,7 @@ public class Queen implements IMyUnit{
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
                 break;
             case IN_DEF_MODE:
-                defMode();
+                //defMode();
                 break;
         }
     }

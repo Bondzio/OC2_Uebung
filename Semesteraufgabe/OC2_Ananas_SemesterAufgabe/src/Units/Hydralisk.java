@@ -4,6 +4,7 @@ import AI.AnanasAI;
 import AI.MyUnitStatus;
 import Common.CommonFunctions;
 import Hydralisk_XCS.AllHydralisk_XCS_Manager;
+import Hydralisk_XCS.Hydralisk_Unit_Constants;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
@@ -48,13 +49,15 @@ public class Hydralisk implements IMyUnit{
                     break;
                 if(goingToDefPointFin()){
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
-                    System.out.println(this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
+                    //System.out.println(this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
                 }
                 break;
             case IN_DEF_MODE:
+                if(AnanasAI.currentFrame % 2 == 0)
+                    return;
                 if(pointToDefend == null)
                     createMyDefPoint();
-                //defMode();
+                defMode();
                 break;
         }
     }
@@ -170,7 +173,7 @@ public class Hydralisk implements IMyUnit{
             }
             else{
                 double distance = CommonFunctions.getDistanceBetweenUnits(unit, friendAsUnit);
-                if (distance < minDistance && friendAsUnit.getTarget() != null) {
+                if (distance < minDistance && friendAsUnit.getTarget() != null && distance <= (Hydralisk_Unit_Constants.Hydralisk_WEAPONRANGE*2)) {
                     minDistance = distance;
                     closestFriendlyUnit = friendAsUnit;
                 }

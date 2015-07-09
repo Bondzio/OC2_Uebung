@@ -160,6 +160,27 @@ public class PopulationSet extends ClassifierSet{
         return;
     }
 
+    public void addClassifierToPopulationSet (Classifier classifier){
+        String cName = classifier.getId();
+        int index = cName.lastIndexOf("_");
+        if(index != -1){
+            String newIDString = cName.substring(0,index);
+            newIDString += "_" + Integer.toString(idCounter++);
+            createAndAddClassifier(
+                    newIDString,
+                    classifier.getPrediction(),
+                    classifier.getPredictionError(),
+                    classifier.getFitness(),
+                    classifier.getCondition(),
+                    classifier.getAction()
+            );
+        }
+        else
+            System.out.println("COULD NOT Last Index Of \"_\" ");
+
+    }
+
+
 //    private void ga_OnePoint_Crossover(){
 //
 //        ArrayList<ArrayList<Classifier>> parentList = new ArrayList<ArrayList<Classifier>>();

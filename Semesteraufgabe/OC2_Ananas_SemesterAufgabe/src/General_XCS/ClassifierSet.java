@@ -24,7 +24,7 @@ public class ClassifierSet {
     }
 
     
-    public boolean addNewClassifier(Classifier newClassifier){
+    protected boolean addNewClassifier(Classifier newClassifier){
         return myCollection.add(newClassifier);
     }
 

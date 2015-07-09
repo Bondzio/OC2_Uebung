@@ -24,6 +24,7 @@ public class AnanasAI {
     public static HashSet<IMyUnit> myUnits;
     public static RuleMachine ruleMachine;
 
+    private boolean matchStart;
 
     private final JNIBWAPI bwapi;
     private AllHydralisk_XCS_Manager allHydralisk_xcs_manager;
@@ -64,7 +65,7 @@ public class AnanasAI {
         //middleOfMap = new Position(2048,1536);
         vectorReducingFactor = 9;
         hatcheryToDefend = null;
-
+        matchStart = true;
 
         this.ruleMachine = new RuleMachine(new ParamSet(1,0.3,0.3,30,3,4,1));
         this.allHydralisk_xcs_manager = new AllHydralisk_XCS_Manager(this.bwapi);
@@ -73,11 +74,9 @@ public class AnanasAI {
 
     public void doStepAll(){
         currentFrame++;
-        if(rallyPoint == null)
-            initRallyPoint();
 
-        if(defencePoint == null)
-            initDefencePoint();
+        if(matchStart)
+            matchStart();
 
         for (IMyUnit u : myUnits) {
             u.step();
@@ -87,7 +86,28 @@ public class AnanasAI {
         }
     }
 
+    /*
+        #################################################
+        ########### For MatchStart  #####################
+        #################################################
+    */
+    private void matchStart(){
 
+        if(rallyPoint == null)
+            initRallyPoint();
+
+        if(defencePoint == null)
+            initDefencePoint();
+
+
+        loadProgress();
+
+        matchStart = false;
+    }
+
+    private void loadProgress(){
+        this.allHydralisk_xcs_manager.loadProcess();
+    }
 
     private void initRallyPoint(){
         for (IMyUnit u : myUnits) {
@@ -116,6 +136,11 @@ public class AnanasAI {
     }
 
 
+    /*
+        #################################################
+        ########### During Match  #######################
+        #################################################
+    */
     public void addUnit(int unitID){
         Unit unit = bwapi.getUnit(unitID);
 
@@ -192,22 +217,26 @@ public class AnanasAI {
     }
 
 
+    /*
+        #################################################
+        ########### for MatchEnd  #######################
+        #################################################
+    */
+    public void matchEnd(boolean winner){
+        /*
+            REINFOLGE BEACHTEN !!!!!
+        */
+        saveProgressForNextMatch();
+        cleanUpForNextMatch(); // sollte immer letzte sein
+    }
+
     private void cleanUpForNextMatch(){
         init();
     }
 
-    public void matchEnd(boolean winner){
-        cleanUpForNextMatch();
-//        Unit vultureUnit = vulture.getMyUnit();
-//        int hpVulture = vultureUnit.getHitPoints();
-//        int kills= vultureUnit.getKillCount();
-//
-//        int cAttackMove = vulture.getCountAttackMove();
-//        int cKite = vulture.getCountKite();
-//
-//        vulture.xcs_Manager.makeNewMatchStat(frame,hpVulture,kills,cAttackMove,cKite);
-//        vulture.xcs_Manager.cleanUp();
-//        matches++;
-//        System.out.println("MatchOver - Matches:" + matches);
+    private void saveProgressForNextMatch(){
+        allHydralisk_xcs_manager.saveProgress();
     }
+
+
 }

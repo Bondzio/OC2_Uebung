@@ -62,7 +62,7 @@ public class Zergling implements IMyUnit{
                     unit.burrow();
                     if(unit.isBurrowed()) {
                         currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
-                        System.out.println(this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
+                        //System.out.println(this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
                     }
                 }
 

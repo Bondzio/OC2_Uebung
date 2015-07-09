@@ -22,8 +22,20 @@ public class SimpleFileHandler {
     private String fileName_XCS_PopulationSet = "XCS_Population.txt";
 
 
-    public SimpleFileHandler(){};
 
+    public SimpleFileHandler(String fileName_Bolding_Saves, String fileName_MatchStats, String fileName_XCS_PopulationSet) {
+
+        if(fileName_Bolding_Saves != null)
+            this.fileName_Bolding_Saves = fileName_Bolding_Saves;
+        if(fileName_MatchStats != null)
+            this.fileName_MatchStats = fileName_MatchStats;
+        if(fileName_XCS_PopulationSet != null)
+            this.fileName_XCS_PopulationSet = fileName_XCS_PopulationSet;
+    }
+
+    public SimpleFileHandler() {
+
+    }
 
     public String getFilePath() {
         return filePath;
@@ -52,7 +64,7 @@ public class SimpleFileHandler {
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath + fileName_Bolding_Saves));
             ParamSetCollection pSetCol = gson.fromJson(br, ParamSetCollection.class);
-            System.out.println("FileHandler.SimpleFileHandler: File loaded");
+            System.out.println("FileHandler.SimpleFileHandler: File "+filePath + fileName_Bolding_Saves+" loaded");
             return pSetCol;
         } catch (FileNotFoundException e) {
             System.out.println("FileHandler.SimpleFileHandler: no file found under path: " + filePath + fileName_Bolding_Saves);
@@ -61,10 +73,10 @@ public class SimpleFileHandler {
         return null;
     }
 
-    public void saveClassifierSet(ClassifierSet cSet) {
+    public void saveClassifierSet(PopulationSet populationSet) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        String jString = gson.toJson(cSet);
+        String jString = gson.toJson(populationSet);
         try {
             PrintWriter writer = new PrintWriter(filePath + fileName_XCS_PopulationSet);
             writer.println(jString);
@@ -76,7 +88,7 @@ public class SimpleFileHandler {
     }
 
     public void saveMatchStats(StarCraftBW_MatchStats mStats){
-        System.out.println("FileThread: save file");
+        System.out.println("SimpleFileHandler: save file");
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         String jString = gson.toJson(mStats);
@@ -100,10 +112,11 @@ public class SimpleFileHandler {
         try{
             BufferedReader br = new BufferedReader(new FileReader(filePath + fileName_XCS_PopulationSet));
             PopulationSet pSet = gson.fromJson(br, PopulationSet.class);
-            System.out.println("FileThread: File loaded");
+            System.out.println("SimpleFileHandler: File "+ filePath + fileName_XCS_PopulationSet +" loaded");
             return pSet;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("SimpleFileHandler: File "+ filePath + fileName_XCS_PopulationSet +" not Found");
+            //e.printStackTrace();
         }
         return null;
     }

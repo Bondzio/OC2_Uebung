@@ -9,4 +9,5 @@ public enum MyUnitStatus {
     START(),
     GOING_TO_RALLY_POINT(),
     IN_DEF_MODE();
+
 }

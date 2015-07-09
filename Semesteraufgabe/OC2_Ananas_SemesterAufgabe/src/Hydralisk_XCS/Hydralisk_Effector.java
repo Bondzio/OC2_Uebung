@@ -157,7 +157,7 @@ public class Hydralisk_Effector implements IEffector{
         if(distanceToHatchery <= 270)
             reward += standard;
         else{
-            reward -= veryBad;
+            reward -= theWorest;
         }
 
         return reward;
@@ -171,11 +171,11 @@ public class Hydralisk_Effector implements IEffector{
 
         if(hydraAsUnit.isAccelerating()) {
             if (currentActionToExecute.equals("attackMoveToClosestFlyingEnemy"))
-                reward += theBest;
+                reward += veryGood;
             else if (currentActionToExecute.equals("supportFriend"))
-                reward += veryGood;
+                reward += good;
             else if(currentActionToExecute.equals("attackMoveToClosestEnemy"))
-                reward += veryGood;
+                reward += good;
             else
                 reward += standard;
         }
