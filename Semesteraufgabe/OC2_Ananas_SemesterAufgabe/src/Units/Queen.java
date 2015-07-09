@@ -119,7 +119,7 @@ public class Queen implements IMyUnit{
         if (action.equals("kite")) {
 
 //            if (distanceClosestEnemy <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2 && unit.isIdle()) {
-                System.out.print("Distance: " + distanceClosestEnemy + "\n");
+                //System.out.print("Distance: " + distanceClosestEnemy + "\n");
                 CommonFunctions.advancedKiteQueen(bwapi, unit, closestEnemy, StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE, 300);
 //            }
 
