@@ -28,11 +28,23 @@ public class CommonFunctions {
     public static Random r = new Random();
     private static HashSet<Unit> units = new HashSet<>();
 
-    public static Unit getClosestEnemy(Unit friendly) {
+    public static int getParasitedEnemysCount(JNIBWAPI bwapi) {
+        int result = 0;
+
+        for (Unit enemy : bwapi.getEnemyUnits()) {
+            if (enemy.isParasited()){
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+    public static Unit getClosestEnemy(JNIBWAPI bwapi, Unit friendly) {
         Unit result = null;
         double minDistance = Double.POSITIVE_INFINITY;
 
-        for (Unit enemy : AnanasAI.enemyUnits) {
+        for (Unit enemy : bwapi.getEnemyUnits()) {
             double distance = getDistanceBetweenUnits(friendly, enemy);
 
             if (distance < minDistance) {
@@ -79,11 +91,11 @@ public class CommonFunctions {
             return redHatcheries;
     }
 
-    public static HashSet<Unit> getScourgesInCastrange(Unit unit, int castrange) {
+    public static HashSet<Unit> getScourgesInCastrange(JNIBWAPI bwapi, Unit unit, int castrange) {
         HashSet<Unit> result = new HashSet<>();
         int castrangeInPixel = castrange * 32;
 
-        for (Unit enemy : AnanasAI.enemyUnits) {
+        for (Unit enemy : bwapi.getEnemyUnits()) {
             double distance = getDistanceBetweenUnits(unit, enemy);
             if (enemy.getType() == UnitTypes.Zerg_Scourge) {
                 if (distance <= castrangeInPixel) {
