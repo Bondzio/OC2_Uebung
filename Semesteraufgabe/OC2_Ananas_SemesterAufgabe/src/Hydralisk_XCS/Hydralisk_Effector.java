@@ -36,6 +36,8 @@ public class Hydralisk_Effector implements IEffector{
     private int bad = standard *  -5;
     private int veryBad = standard * -15;
     private int theWorest = standard * -25;
+    private int endOfWorld = standard * -50;
+
 
     public String getCurrentActionToExecute() {
         return currentActionToExecute;
@@ -97,13 +99,16 @@ public class Hydralisk_Effector implements IEffector{
 
         int reward = 0;
 
-        reward += rewards_UnderAttack();
-        reward += rewards_isAttacking();
-        reward += rewards_DisToHatchery();
-        reward += rewards_isMoving();
+        int reward_UnderAttack = rewards_UnderAttack();
+        int reward_isAttacking= rewards_isAttacking();
+        int reward_DisToHatchery= rewards_DisToHatchery();
+        int reward_isMoving = rewards_isMoving();
 
+        reward += reward_UnderAttack + reward_isAttacking + reward_DisToHatchery + reward_isMoving;
         if(reward <= 0 )
             reward = 0;
+
+
 
         return reward;
 
@@ -120,7 +125,7 @@ public class Hydralisk_Effector implements IEffector{
             else if (currentActionToExecute.equals("burrow"))
                 reward += good;
             else
-                reward -= bad;
+                reward += bad;
         }
 
         if( hatcheryToDef_hpLost > 0){
@@ -129,7 +134,7 @@ public class Hydralisk_Effector implements IEffector{
             else if (currentActionToExecute.equals("protectDefPoint"))
                 reward += theBest;
             else
-                reward -= veryBad;
+                reward += veryBad;
         }
 
         return reward;
@@ -157,7 +162,10 @@ public class Hydralisk_Effector implements IEffector{
         if(distanceToHatchery <= 270)
             reward += standard;
         else{
-            reward -= theWorest;
+            if(currentActionToExecute.equals("moveToDefPoint")|| currentActionToExecute.equals("protectDefPoint") )
+                reward += theBest;
+            else
+                reward += theWorest;
         }
 
         return reward;

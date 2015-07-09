@@ -18,7 +18,7 @@ public class AllHydralisk_XCS_Manager {
     private final JNIBWAPI bwapi;
     private SimpleFileHandler simpleFileHandler = new SimpleFileHandler(null,null,"Hydralisk_XCS_PopulationSet");
     private ArrayList<Managed_Hydralisk>  managedHyd = new ArrayList<>();
-    private String[] actionSet = {"attackMoveToClosestEnemy","attackMoveToClosestFlyingEnemy","moveToHatchery", "supportFriend" , "protectHatchery", "burrow"};
+    private String[] actionSet = {"attackMoveToClosestEnemy","attackMoveToClosestFlyingEnemy","moveToDefPoint", "supportFriend" , "protectHatchery", "burrow"};
     private PopulationSet loadedPopSetForAllHydras = null;
 
     private int maxPopulationSize = 35000;
