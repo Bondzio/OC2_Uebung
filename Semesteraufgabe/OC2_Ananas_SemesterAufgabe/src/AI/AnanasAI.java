@@ -2,6 +2,7 @@ package AI;
 
 import Common.CommonFunctions;
 import Hydralisk_XCS.AllHydralisk_XCS_Manager;
+import StarCraftBW_XCS_Queen.StarCraftBW_Queen_XCS_Manager;
 import Units.*;
 import bolding.ParamSet;
 import bolding.RuleMachine;
@@ -27,6 +28,7 @@ public class AnanasAI {
 
     private final JNIBWAPI bwapi;
     private AllHydralisk_XCS_Manager allHydralisk_xcs_manager;
+    private StarCraftBW_Queen_XCS_Manager queen_xcs_manager;
 
     private int counter;
     public static int currentFrame;
@@ -65,6 +67,7 @@ public class AnanasAI {
 
         this.ruleMachine = new RuleMachine(new ParamSet(1,0.3,0.3,30,3,4,1));
         this.allHydralisk_xcs_manager = new AllHydralisk_XCS_Manager(this.bwapi);
+        this.queen_xcs_manager = new StarCraftBW_Queen_XCS_Manager();
     }
 
     public void doStepAll(){
@@ -133,7 +136,7 @@ public class AnanasAI {
                 myUnits.add(ultralisk);
             }
             else if(type == UnitType.UnitTypes.Zerg_Queen){
-                Queen queen = new Queen(unit,this.bwapi);
+                Queen queen = new Queen(unit,this.bwapi,this.queen_xcs_manager);
                 myUnits.add(queen);
             }
             else if(type == UnitType.UnitTypes.Zerg_Scourge){
