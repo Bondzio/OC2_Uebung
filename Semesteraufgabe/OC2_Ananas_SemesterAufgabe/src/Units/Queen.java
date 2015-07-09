@@ -42,9 +42,9 @@ public class Queen implements IMyUnit{
     public void step() {
         switch(currentUnitStatus){
             case START:
-                currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
+                currentUnitStatus = MyUnitStatus.GOING_TO_RALLY_POINT;
                 break;
-            case GOING_TO_DEF_POINT:
+            case GOING_TO_RALLY_POINT:
                 if(goingToDefPointFin())
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
                 break;
@@ -60,7 +60,7 @@ public class Queen implements IMyUnit{
     #################################################
     */
     private boolean goingToDefPointFin(){
-        Position defPoint = AnanasAI.defancePoint;
+        Position defPoint = AnanasAI.rallyPoint;
 
         CommonFunctions.simpleUnitMove(unit, defPoint);
         if(isAtPersonalDefPoint(defPoint)){
