@@ -14,7 +14,7 @@ public class StarCraftBW_Queen_XCS_Manager {
     private StarCraftBW_QueenMatchStats mStats = new StarCraftBW_QueenMatchStats();
     private StarCraftBW_QueenDetector dDetector= new StarCraftBW_QueenDetector();
     private StarCraftBW_QueenEffector theEffector = new StarCraftBW_QueenEffector();
-    private String[] actionSet = {"attackMove","kite"};
+    private String[] actionSet = {"cast","kite"};
 
     public StarCraftBW_Queen_XCS_Manager() {
         this.xcs = new StarCraftBW_Queen_XCS(actionSet,theEffector,dDetector);

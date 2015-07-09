@@ -17,7 +17,6 @@ public class StarCraftBW_Queen_XCS extends XCS {
         String binaryStringRep = detector.getDetected();
         MatchSet mSet = this.populationSet.findMatchingClassifier(binaryStringRep);
         PredictionArray pArray = new PredictionArray(mSet);
-        //ActionSet aSet = pArray.getBestActionSet();
         ActionSet aSet = pArray.getRouletteActionSet();
         String winningAction = aSet.getWinningAction();
 
