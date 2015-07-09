@@ -82,10 +82,19 @@ public class Queen implements IMyUnit{
         Unit closestEnemy = CommonFunctions.getClosestEnemy(unit);
         Unit closestEnemyQueen = CommonFunctions.getClosestEnemyZergQueen(unit);
         Unit closestEnemyScourge = CommonFunctions.getClosestEnemyScourge(unit);
+        double distanceClosestEnemy = Double.POSITIVE_INFINITY;
+        double distanceClosestEnemyQueen = Double.POSITIVE_INFINITY;
+        double distanceClosestEnemyScourge = Double.POSITIVE_INFINITY;
 
-        double distanceClosestEnemy = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemy);
-        double distanceClosestEnemyQueen = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemyQueen);
-        double distanceClosestEnemyScourge = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemyScourge);
+        if(closestEnemy != null) {
+            distanceClosestEnemy = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemy);
+        }
+        if(closestEnemyQueen != null) {
+            distanceClosestEnemyQueen = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemyQueen);
+        }
+        if(closestEnemyScourge != null){
+            distanceClosestEnemyScourge = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemyScourge);
+        }
 
         HashSet<Unit> scourgesInCastrange = CommonFunctions.getScourgesInCastrange(unit, 9);
 
@@ -100,44 +109,61 @@ public class Queen implements IMyUnit{
         if (!isThereSomethingToReward)
             isThereSomethingToReward = true;
 
-
         if (action.equals("kite")) {
-
-            if (distanceClosestEnemy <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2) {
-                System.out.print("Distance: " + distanceClosestEnemy + "\n");
-                CommonFunctions.advancedKiteQueen(bwapi, unit, closestEnemy, StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2, 300);
+            if (true) {
+                if (distanceClosestEnemy <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2) {
+                    System.out.print("Distance: " + distanceClosestEnemy + "\n");
+                    CommonFunctions.advancedKiteQueen(bwapi, unit, closestEnemy, StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE, 300);
+                }
             }
 
             this.countKite++;
         }
+
         else if (action.equals("cast")) {
 
             if (distanceClosestEnemyQueen <= StarCraftBW_Queen_Constants.OWN_CASTRANGE_PARASITE
                     && unit.getEnergy() >= StarCraftBW_Queen_Constants.OWN_ENERGYCOST_PARASITE
-                    && parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Queen
-                    || parasitedUnit == null) {
+                    && unit.isIdle()) {
 
-                unit.useTech(TechType.TechTypes.Parasite, closestEnemyQueen);
-                parasitedUnit = closestEnemyQueen;
+                if (parasitedUnit == null){
+                    unit.useTech(TechType.TechTypes.Parasite, closestEnemyQueen);
+                    parasitedUnit = closestEnemyQueen;
+                }
+
+                else if (parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Queen) {
+                    unit.useTech(TechType.TechTypes.Parasite, closestEnemyQueen);
+                    parasitedUnit = closestEnemyQueen;
+                }
             }
 
-            if (distanceClosestEnemyScourge <= StarCraftBW_Queen_Constants.OWN_CASTRANGE_PARASITE
+            else if (distanceClosestEnemyScourge <= StarCraftBW_Queen_Constants.OWN_CASTRANGE_PARASITE
                     && unit.getEnergy() >= StarCraftBW_Queen_Constants.OWN_ENERGYCOST_PARASITE
-                    && parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Queen
-                    || parasitedUnit == null) {
+                    && unit.isIdle()) {
 
-                unit.useTech(TechType.TechTypes.Parasite, closestEnemyScourge);
-                parasitedUnit = closestEnemyScourge;
+                if (parasitedUnit == null) {
+                    unit.useTech(TechType.TechTypes.Parasite, closestEnemyScourge);
+                    parasitedUnit = closestEnemyScourge;
+                }
+
+                else if (parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Queen
+                        ||parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Scourge) {
+                    unit.useTech(TechType.TechTypes.Parasite, closestEnemyScourge);
+                    parasitedUnit = closestEnemyScourge;
+                }
             }
 
             if (distanceClosestEnemyScourge <= StarCraftBW_Queen_Constants.OWN_CASTRANGE_ENSNARE
-                    && unit.getEnergy() >= StarCraftBW_Queen_Constants.OWN_ENERGYCOST_ENSANRE){
+                    && unit.getEnergy() >= StarCraftBW_Queen_Constants.OWN_ENERGYCOST_ENSANRE
+                    && unit.isIdle()){
 
                 for (Unit scourge : scourgesInCastrange){
+                    System.out.print("Ensnare timer: " + scourge.getEnsnareTimer() + "\n");
 
                     if (scourge.getEnsnareTimer() <= 0) {
-                        unit.useTech(TechType.TechTypes.Ensnare, closestEnemyScourge);
-                        System.out.print("Ensnare timer: " + closestEnemyScourge.getEnsnareTimer() + "\n");
+                        unit.useTech(TechType.TechTypes.Ensnare, scourge);
+                        while (!scourge.isEnsnared()){
+                        }
                     }
                 }
             }
@@ -145,7 +171,9 @@ public class Queen implements IMyUnit{
             this.countCastShit++;
         }
 
-        CommonFunctions.drawLine(bwapi, unit, closestEnemy.getTargetPosition(), BWColor.Red);
+        if (closestEnemy != null) {
+            CommonFunctions.drawLine(bwapi, unit, closestEnemy.getTargetPosition(), BWColor.Red);
+        }
     }
 
     private boolean isAtPersonalDefPoint(Position defPoint){
