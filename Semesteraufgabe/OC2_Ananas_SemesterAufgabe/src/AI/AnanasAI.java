@@ -111,13 +111,13 @@ public class AnanasAI {
             if(type == UnitType.UnitTypes.Zerg_Zergling){
                 if (counter == 0){
                     counter++;
-                    GSG9_Zergling zerglingSpecial1 = new GSG9_Zergling(unit, this.bwapi,1);
+                    GSG9_Zergling zerglingSpecial1 = new GSG9_Zergling(unit, this.bwapi,0);
                     myUnits.add(zerglingSpecial1);
                    // System.out.println("ADDED SPECIAL1 ZERG");
                 }
                 else if (counter == 1){
                     counter++;
-                    GSG9_Zergling zerglingSpecial2 = new GSG9_Zergling(unit, this.bwapi,2);
+                    GSG9_Zergling zerglingSpecial2 = new GSG9_Zergling(unit, this.bwapi,1);
                     myUnits.add(zerglingSpecial2);
                     //System.out.println("ADDED SPECIAL2 ZERG");
                 }

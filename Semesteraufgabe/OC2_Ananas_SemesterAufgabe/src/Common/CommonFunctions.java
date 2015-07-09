@@ -10,6 +10,7 @@ import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.types.UnitType;
+import jnibwapi.types.UnitType.UnitTypes;
 import jnibwapi.util.BWColor;
 
 import java.util.ArrayList;
@@ -70,8 +71,8 @@ public class CommonFunctions {
 
     public static Position[] getEnemyHatcheries(JNIBWAPI bwapi){
         Position[] redHatcheries = new Position[] {new Position(516, 368), new Position(516, 2704)};
-        Position[] blueHatcheries = new Position[] {new Position(3420,368),  new Position(3420, 2704)};
-
+        Position[] blueHatcheries = new Position[] {new Position(3460,368),  new Position(3460, 2704)};
+        
         if(bwapi.getSelf().getID() == 0)
             return blueHatcheries;
         else
