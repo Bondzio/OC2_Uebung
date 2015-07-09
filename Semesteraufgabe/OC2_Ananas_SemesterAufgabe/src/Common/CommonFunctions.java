@@ -46,18 +46,16 @@ public class CommonFunctions {
 
 
     public static double getDistanceBetweenUnits(Unit one, Unit two) {
+            int myX = one.getPosition().getPX();
+            int myY = one.getPosition().getPY();
+            int enemyX = two.getPosition().getPX();
+            int enemyY = two.getPosition().getPY();
+            int diffX = myX - enemyX;
+            int diffY = myY - enemyY;
 
+            double result = Math.pow(diffX, 2) + Math.pow(diffY, 2);
 
-        int myX = one.getPosition().getPX();
-        int myY = one.getPosition().getPY();
-        int enemyX = two.getPosition().getPX();
-        int enemyY = two.getPosition().getPY();
-        int diffX = myX - enemyX;
-        int diffY = myY - enemyY;
-
-        double result = Math.pow(diffX, 2) + Math.pow(diffY, 2);
-
-        return Math.sqrt(result);
+            return Math.sqrt(result);
     }
 
 
@@ -82,13 +80,13 @@ public class CommonFunctions {
     }
 
     public static HashSet<Unit> getScourgesInCastrange(Unit unit, int castrange) {
-        HashSet<Unit> result = null;
+        HashSet<Unit> result = new HashSet<>();
         int castrangeInPixel = castrange * 32;
 
         for (Unit enemy : AnanasAI.enemyUnits) {
             double distance = getDistanceBetweenUnits(unit, enemy);
             if (enemy.getType() == UnitTypes.Zerg_Scourge) {
-                if (distance < castrangeInPixel) {
+                if (distance <= castrangeInPixel) {
                     result.add(enemy);
                 }
             }
