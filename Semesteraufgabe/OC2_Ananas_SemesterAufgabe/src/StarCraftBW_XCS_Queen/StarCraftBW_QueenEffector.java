@@ -25,11 +25,9 @@ public class StarCraftBW_QueenEffector  implements IEffector {
     }
 
     public void setStats(Unit unit, Unit target, Double distance) {
-
         this.unit = unit;
         this.target = target;
         this.distance = distance;
-
         currentHP = unit.getHitPoints();
         hpLost = 0;
 

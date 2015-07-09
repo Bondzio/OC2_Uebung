@@ -12,8 +12,12 @@ import jnibwapi.JNIBWAPI;
 import jnibwapi.types.UnitType;
 import jnibwapi.util.BWColor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.min;
 
 /**
  * Created by Rolle on 07.07.2015.
@@ -91,7 +95,7 @@ public class CommonFunctions {
         return result;
     }
 
-    private Unit getClosestFriendlyZergHatchery(Unit unit) {
+    public static Unit getClosestFriendlyZergHatchery(Unit unit) {
         Unit result = null;
         double minDistance = Double.POSITIVE_INFINITY;
 
@@ -150,6 +154,176 @@ public class CommonFunctions {
         bwapi.drawLine(unit.getPosition(), targetPosition, color, false);
     }
 
+    public static void advancedKiteQueen(JNIBWAPI bwapi, Unit unit, Unit target, int kitingDistance, int scanDistance) {
 
+        if (target != null) {
+            int tiles = scanDistance / 64;
+            Position posMy = unit.getPosition();
+            Position posEnemy = target.getPosition();
+            int myX = posMy.getPX();
+            int myY = posMy.getPY();
+            int enemyX = posEnemy.getPX();
+            int enemyY = posEnemy.getPY();
 
+            //vector from us to target
+            int evadeX = myX - enemyX;
+            int evadeY = myY - enemyY;
+
+            //normalization
+            double length = Math.sqrt(Math.pow(evadeX, 2) + Math.pow(evadeY, 2));
+            double tempX = kitingDistance / length * evadeX;
+            double tempY = kitingDistance / length * evadeY;
+            double tempScanX = (scanDistance / 2) / length * evadeX;
+            double tempScanY = (scanDistance / 2) / length * evadeY;
+            evadeX = (int)tempX;
+            evadeY = (int)tempY;
+            int scanX = (int)tempScanX;
+            int scanY = (int)tempScanY;
+
+            //store infornt position
+            Position front = new Position(myX - evadeX, myY - evadeY);
+            front = front.makeValid();
+            Position frontScan = new Position(myX - scanX, myY - scanY);
+            frontScan = frontScan.makeValid();
+
+            //position behind us
+            evadeX = myX + evadeX;
+            evadeY = myY + evadeY;
+            scanX = myX + scanX;
+            scanY = myY + scanY;
+
+            //rotate behind->us vector 90 degrees counterclockwise
+            int toRotateX = myX - evadeX;
+            int toRotateY = myY - evadeY;
+            int temp = toRotateX;
+            toRotateX = -toRotateY;
+            toRotateY = temp;
+            int toRotateScanX = myX - scanX;
+            int toRotateScanY = myY - scanY;
+            temp = toRotateScanX;
+            toRotateScanX = -toRotateScanY;
+            toRotateScanY = temp;
+
+            //store behind position
+            Position back = new Position(evadeX, evadeY);
+            back = back.makeValid();
+            Position backScan = new Position(scanX, scanY);
+            backScan = backScan.makeValid();
+
+            //store 90 counterclockwise position
+            Position left = new Position(myX + toRotateX, myY + toRotateY);
+            left = left.makeValid();
+            Position leftScan = new Position(myX + toRotateScanX, myY + toRotateScanY);
+            leftScan = leftScan.makeValid();
+
+            //store 90 clockwise position
+            Position right = new Position(myX - toRotateX, myY - toRotateY);
+            right = right.makeValid();
+            Position rightScan = new Position(myX - toRotateScanX, myY - toRotateScanY);
+            rightScan = rightScan.makeValid();
+
+            //get list of units in each area
+            ArrayList<Unit> lefts = getUnitsInRadius(bwapi, leftScan, tiles * 32);
+            ArrayList<Unit> rights = getUnitsInRadius(bwapi, rightScan, tiles * 32);
+            ArrayList<Unit> backs = getUnitsInRadius(bwapi, backScan, tiles * 32);
+            ArrayList<Unit> fronts = getUnitsInRadius(bwapi, frontScan, tiles * 32);
+
+            //store the unit counts
+            int leftCount = lefts.size();
+            int rightCount = rights.size();
+            int backCount = backs.size();
+            int frontCount = fronts.size();
+//            System.out.println("leftCount: " + leftCount);
+//            System.out.println("rightCount: " + rightCount);
+//            System.out.println("backCount: " + backCount);
+//            System.out.println("frontCount: " + frontCount);
+
+            //find area with least amount
+            int least = min(asList(leftCount, rightCount, backCount, frontCount));
+//            System.out.println("least: " + least);
+
+            //move to that area
+            if (least == leftCount && least == rightCount && least == backCount && least == frontCount) {
+                int rnd = (int) (Math.random() * 4);
+
+                if (rnd < 1 && bwapi.hasPath(unit.getPosition(), back)) {
+                    unit.move(back, false);
+//                    backCounts += 1;
+//                    System.out.println("moving back");
+                }
+                else if (rnd < 2 && rnd >= 1 && bwapi.hasPath(unit.getPosition(), left)) {
+                    unit.move(left, false);
+//                    leftCounts += 1;
+//                    System.out.println("moving left");
+                }
+                else if (rnd < 3 && rnd >= 2 && bwapi.hasPath(unit.getPosition(), right)) {
+                    unit.move(right, false);
+//                    rightCounts += 1;
+//                    System.out.println("moving right");
+                }
+                else if (bwapi.hasPath(unit.getPosition(), front)) {
+                    unit.move(front, false);
+//                    frontCounts += 1;
+//                    System.out.println("moving front");
+                }
+            }
+
+            else if (least == backCount && bwapi.hasPath(unit.getPosition(), back)) {
+                unit.move(back, false);
+//                backCounts += 1;
+//                System.out.println("moving back");
+            }
+            else if (least == rightCount && bwapi.hasPath(unit.getPosition(), right)) {
+                unit.move(right, false);
+//                rightCounts += 1;
+//                System.out.println("moving right");
+            }
+            else if (least == leftCount && bwapi.hasPath(unit.getPosition(), left)) {
+                unit.move(left, false);
+//                leftCounts += 1;
+//                System.out.println("moving left");
+            }
+            else if (least == frontCount && bwapi.hasPath(unit.getPosition(), front)) {
+                unit.move(front, false);
+//                frontCounts += 1;
+//                System.out.println("moving front");
+            }
+        }
+    }
+
+    public static ArrayList<Unit> getUnitsInRectangle(JNIBWAPI bwapi, int left, int top, int right, int bottom) {
+        ArrayList<Unit> unitFinderResults = new ArrayList<Unit>();
+
+        for (int i = left; i < right; i += 32) {
+
+            for (int j = top; j < bottom; j += 32) {
+                Position tilePosition = new Position(i / 32, j / 32, Position.PosType.BUILD);
+                tilePosition.makeValid();
+                Position topLeft = new Position(i - 16, j - 16);
+                Position bottomRight = new Position(i + 16, j + 16);
+//                bwapi.drawBox(topLeft, bottomRight, BWColor.Blue, false, false);
+
+                for (Unit unit : bwapi.getUnitsOnTile(tilePosition)) {
+                    UnitType type = unit.getType();
+
+                    if (type == UnitType.UnitTypes.Zerg_Hydralisk || type == UnitType.UnitTypes.Zerg_Scourge) {
+                        if (unit.getPlayer() != bwapi.getSelf()) {
+                            if (!unitFinderResults.contains(unit)) {
+                                unitFinderResults.add(unit);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return unitFinderResults;
+    }
+
+    public static ArrayList<Unit> getUnitsInRadius(JNIBWAPI bwapi, Position center, int radius) {
+        int x = center.getPX();
+        int y = center.getPY();
+
+        return getUnitsInRectangle(bwapi, x - radius, y - radius, x + radius, y + radius);
+    }
 }

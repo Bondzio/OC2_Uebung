@@ -4,22 +4,24 @@ import AI.AnanasAI;
 import AI.MyUnitStatus;
 import Common.CommonFunctions;
 import StarCraftBW_XCS_Queen.StarCraftBW_Queen_XCS_Manager;
+import StarCraftBW_XCS_Queen.StarCraftBW_Queen_Constants;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
-import java.util.HashSet;
+import jnibwapi.util.BWColor;
 
 /**
  * Created by Rolle on 03.07.2015.
  */
 public class Queen implements IMyUnit{
     final private JNIBWAPI bwapi;
-
     final private Unit unit;
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
+    private int countAttackMove = 0;
+    private int countKite = 0;
 
     //for GOING_TO_DEF_POINT
-    private int ackRadius = 40; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
+    private int ackRadius = 40;
 
     //for IN_DEF_MODE
     private StarCraftBW_Queen_XCS_Manager queen_xcs_manager;
@@ -42,6 +44,7 @@ public class Queen implements IMyUnit{
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
                 break;
             case IN_DEF_MODE:
+                defMode();
 //                unit.useTech(TechType.TechTypes.Ensnare);
 //                unit.useTech(TechType.TechTypes.Parasite);
                 break;
@@ -54,9 +57,7 @@ public class Queen implements IMyUnit{
     #################################################
     */
     private boolean goingToDefPointFin(){
-
         Position defPoint = AnanasAI.defancePoint;
-        //Position defPoint = AnanasAI.hatcheryToDefend.getUnit().getPosition(); // slower!
 
         CommonFunctions.simpleUnitMove(unit, defPoint);
         if(isAtPersonalDefPoint(defPoint)){
@@ -75,8 +76,8 @@ public class Queen implements IMyUnit{
     */
 
     private void defMode(){
-//        Unit target = getClosestEnemy();
-        double distance = CommonFunctions.getDistanceBetweenUnits(unit,AnanasAI.hatcheryToDefend.getUnit());
+        Unit target = CommonFunctions.getClosestEnemy(unit);
+        double distance = CommonFunctions.getDistanceBetweenUnits(unit, target);
 
         queen_xcs_manager.getDetector().setDistance(distance);
 
@@ -91,15 +92,21 @@ public class Queen implements IMyUnit{
 
 
         if (action.equals("kite")) {
-//            //kite(target);
+
+            if (distance <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2) {
+                System.out.print(StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE + "\n");
+                CommonFunctions.advancedKiteQueen(bwapi, unit, target, 150, 300);
+            }
+
 //            dummKite(target);
 //            //kiteInOppositeDir(target,distance);
-//            this.countKite++;
+            this.countKite++;
         }
         else if (action.equals("attackMove")) {
 //            attackMove(target);
-//            this.countAttackMove++;
+            this.countAttackMove++;
         }
+        CommonFunctions.drawLine(bwapi, unit, target.getTargetPosition(), BWColor.Red);
     }
 
     private boolean isAtPersonalDefPoint(Position defPoint){
