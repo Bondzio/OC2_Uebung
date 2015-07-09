@@ -8,7 +8,6 @@ import StarCraftBW_XCS_Queen.StarCraftBW_Queen_Constants;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
-import jnibwapi.types.OrderType;
 import jnibwapi.types.TechType;
 import jnibwapi.types.UnitType;
 import jnibwapi.util.BWColor;
@@ -22,13 +21,8 @@ public class Queen implements IMyUnit{
     final private JNIBWAPI bwapi;
     final private Unit unit;
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
-    private int countCastShit = 0;
-    private int countKite = 0;
     private Unit parasitedUnit = null;
     private boolean start = true;
-
-    //for GOING_TO_DEF_POINT
-    private int ackRadius = 40;
 
     //for IN_DEF_MODE
     private StarCraftBW_Queen_XCS_Manager queen_xcs_manager;
@@ -118,12 +112,10 @@ public class Queen implements IMyUnit{
 
         if (action.equals("kite")) {
 
-//            if (distanceClosestEnemy <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2 && unit.isIdle()) {
+            if (distanceClosestEnemy <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2 && unit.isIdle()) {
                 System.out.print("Distance: " + distanceClosestEnemy + "\n");
                 CommonFunctions.advancedKiteQueen(bwapi, unit, closestEnemy, StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE, 300);
-//            }
-
-            this.countKite++;
+            }
         }
 
         else if (action.equals("cast")) {
@@ -134,11 +126,13 @@ public class Queen implements IMyUnit{
 
                 if (parasitedUnit == null){
                     unit.useTech(TechType.TechTypes.Parasite, closestEnemyQueen);
+                    System.out.print("test1" + "\n");
                     parasitedUnit = closestEnemyQueen;
                 }
 
                 else if (parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Queen) {
                     unit.useTech(TechType.TechTypes.Parasite, closestEnemyQueen);
+                    System.out.print("test2" + "\n");
                     parasitedUnit = closestEnemyQueen;
                 }
             }
@@ -149,12 +143,15 @@ public class Queen implements IMyUnit{
 
                 if (parasitedUnit == null) {
                     unit.useTech(TechType.TechTypes.Parasite, closestEnemyScourge);
+                    System.out.print("test3" + "\n");
                     parasitedUnit = closestEnemyScourge;
                 }
 
                 else if (parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Queen
-                        ||parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Scourge) {
+                        || parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Scourge) {
+
                     unit.useTech(TechType.TechTypes.Parasite, closestEnemyScourge);
+                    System.out.print("test4" + "\n");
                     parasitedUnit = closestEnemyScourge;
                 }
             }
@@ -164,15 +161,13 @@ public class Queen implements IMyUnit{
                     && unit.isIdle()){
 
                 for (Unit scourge : scourgesInCastrange){
-                    System.out.print("Ensnare timer: " + scourge.getEnsnareTimer() + "\n");
 
                     if (scourge.getEnsnareTimer() <= 0) {
                         unit.useTech(TechType.TechTypes.Ensnare, scourge);
+                        System.out.print("test5" + "\n");
                     }
                 }
             }
-
-            this.countCastShit++;
         }
 
         if (closestEnemy != null) {
@@ -181,10 +176,8 @@ public class Queen implements IMyUnit{
     }
 
     private boolean isAtPersonalDefPoint(Position defPoint){
-        if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),defPoint)<=ackRadius)
-            return true;
-        else
-            return false;
+        int ackRadius = 40;
+        return CommonFunctions.getDistianceBetweenPositions(unit.getPosition(), defPoint) <= ackRadius;
     }
 
     public Unit getUnit(){
