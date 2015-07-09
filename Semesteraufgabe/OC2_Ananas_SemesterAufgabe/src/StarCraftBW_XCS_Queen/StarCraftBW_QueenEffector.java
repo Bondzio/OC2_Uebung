@@ -86,7 +86,6 @@ public class StarCraftBW_QueenEffector  implements IEffector {
             calcReward += -100;
         }
         else if (hpLost > 0 && currentActionToExecute.equals("kite")){
-
             calcReward += -200;
         }
 
