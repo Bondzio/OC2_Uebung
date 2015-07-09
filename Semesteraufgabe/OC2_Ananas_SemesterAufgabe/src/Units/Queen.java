@@ -8,7 +8,11 @@ import StarCraftBW_XCS_Queen.StarCraftBW_Queen_Constants;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
+import jnibwapi.types.TechType;
+import jnibwapi.types.UnitType;
 import jnibwapi.util.BWColor;
+
+import java.util.HashSet;
 
 /**
  * Created by Rolle on 03.07.2015.
@@ -17,10 +21,11 @@ public class Queen implements IMyUnit{
     final private JNIBWAPI bwapi;
     final private Unit unit;
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
-    private int countAttackMove = 0;
+    private int countCastShit = 0;
     private int countKite = 0;
+    private Unit parasitedUnit = null;
 
-    //for GOING_TO_RALLY_POINT
+    //for GOING_TO_DEF_POINT
     private int ackRadius = 40;
 
     //for IN_DEF_MODE
@@ -37,27 +42,25 @@ public class Queen implements IMyUnit{
     public void step() {
         switch(currentUnitStatus){
             case START:
-                currentUnitStatus = MyUnitStatus.GOING_TO_RALLY_POINT;
+                currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
                 break;
-            case GOING_TO_RALLY_POINT:
+            case GOING_TO_DEF_POINT:
                 if(goingToDefPointFin())
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
                 break;
             case IN_DEF_MODE:
-                //defMode();
-//                unit.useTech(TechType.TechTypes.Ensnare);
-//                unit.useTech(TechType.TechTypes.Parasite);
+                defMode();
                 break;
         }
     }
 
     /*
     #################################################
-    ########### For GOING_TO_RALLY_POINT ##############
+    ########### For GOING_TO_DEF_POINT ##############
     #################################################
     */
     private boolean goingToDefPointFin(){
-        Position defPoint = AnanasAI.rallyPoint;
+        Position defPoint = AnanasAI.defancePoint;
 
         CommonFunctions.simpleUnitMove(unit, defPoint);
         if(isAtPersonalDefPoint(defPoint)){
@@ -76,10 +79,17 @@ public class Queen implements IMyUnit{
     */
 
     private void defMode(){
-        Unit target = CommonFunctions.getClosestEnemy(unit);
-        double distance = CommonFunctions.getDistanceBetweenUnits(unit, target);
+        Unit closestEnemy = CommonFunctions.getClosestEnemy(unit);
+        Unit closestEnemyQueen = CommonFunctions.getClosestEnemyZergQueen(unit);
+        Unit closestEnemyScourge = CommonFunctions.getClosestEnemyScourge(unit);
 
-        queen_xcs_manager.getDetector().setDistance(distance);
+        double distanceClosestEnemy = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemy);
+        double distanceClosestEnemyQueen = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemyQueen);
+        double distanceClosestEnemyScourge = CommonFunctions.getDistanceBetweenUnits(unit, closestEnemyScourge);
+
+        HashSet<Unit> scourgesInCastrange = CommonFunctions.getScourgesInCastrange(unit, 9);
+
+        queen_xcs_manager.getDetector().setDistance(distanceClosestEnemy);
 
 //        if (isThereSomethingToReward)
 //            allHydraManager.actionExecutionFin(unit, target, distance);
@@ -93,20 +103,49 @@ public class Queen implements IMyUnit{
 
         if (action.equals("kite")) {
 
-            if (distance <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2) {
-                System.out.print(StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE + "\n");
-                CommonFunctions.advancedKiteQueen(bwapi, unit, target, 150, 300);
+            if (distanceClosestEnemy <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2) {
+                System.out.print("Distance: " + distanceClosestEnemy + "\n");
+                CommonFunctions.advancedKiteQueen(bwapi, unit, closestEnemy, StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2, 300);
             }
 
-//            dummKite(target);
-//            //kiteInOppositeDir(target,distance);
             this.countKite++;
         }
-        else if (action.equals("attackMove")) {
-//            attackMove(target);
-            this.countAttackMove++;
+        else if (action.equals("cast")) {
+
+            if (distanceClosestEnemyQueen <= StarCraftBW_Queen_Constants.OWN_CASTRANGE_PARASITE
+                    && unit.getEnergy() >= StarCraftBW_Queen_Constants.OWN_ENERGYCOST_PARASITE
+                    && parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Queen
+                    || parasitedUnit == null) {
+
+                unit.useTech(TechType.TechTypes.Parasite, closestEnemyQueen);
+                parasitedUnit = closestEnemyQueen;
+            }
+
+            if (distanceClosestEnemyScourge <= StarCraftBW_Queen_Constants.OWN_CASTRANGE_PARASITE
+                    && unit.getEnergy() >= StarCraftBW_Queen_Constants.OWN_ENERGYCOST_PARASITE
+                    && parasitedUnit.getType() != UnitType.UnitTypes.Zerg_Queen
+                    || parasitedUnit == null) {
+
+                unit.useTech(TechType.TechTypes.Parasite, closestEnemyScourge);
+                parasitedUnit = closestEnemyScourge;
+            }
+
+            if (distanceClosestEnemyScourge <= StarCraftBW_Queen_Constants.OWN_CASTRANGE_ENSNARE
+                    && unit.getEnergy() >= StarCraftBW_Queen_Constants.OWN_ENERGYCOST_ENSANRE){
+
+                for (Unit scourge : scourgesInCastrange){
+
+                    if (scourge.getEnsnareTimer() <= 0) {
+                        unit.useTech(TechType.TechTypes.Ensnare, closestEnemyScourge);
+                        System.out.print("Ensnare timer: " + closestEnemyScourge.getEnsnareTimer() + "\n");
+                    }
+                }
+            }
+
+            this.countCastShit++;
         }
-        CommonFunctions.drawLine(bwapi, unit, target.getTargetPosition(), BWColor.Red);
+
+        CommonFunctions.drawLine(bwapi, unit, closestEnemy.getTargetPosition(), BWColor.Red);
     }
 
     private boolean isAtPersonalDefPoint(Position defPoint){

@@ -11,10 +11,10 @@ public class StarCraftBW_QueenEffector  implements IEffector {
     private Unit unit;
     private Unit target;
     private Double distance;
-    private int killedUnits = 0;
-    private int currentHP=0;
+    private int currentHP = 0;
+    private int currentMP = 0;
     private int prevHP = -1;
-    private int hpLost=0;
+    private int hpLost = 0;
 
     public String getCurrentActionToExecute() {
         return currentActionToExecute;
@@ -29,6 +29,7 @@ public class StarCraftBW_QueenEffector  implements IEffector {
         this.target = target;
         this.distance = distance;
         currentHP = unit.getHitPoints();
+        currentMP = unit.getEnergy();
         hpLost = 0;
 
         if (prevHP == -1)
@@ -54,8 +55,7 @@ public class StarCraftBW_QueenEffector  implements IEffector {
 
     @Override
     public int getRewardForExecutedAction() {
-        int reward = 0;
-        reward = rewardIt();
+        int reward = rewardIt();
 
         if(reward <= 0 )
             reward = 0;
@@ -66,10 +66,10 @@ public class StarCraftBW_QueenEffector  implements IEffector {
     private int rewardIt(){
         int calcReward = 0;
 
-        if(this.distance <= StarCraftBW_Queen_Constants.OWN_WEAPONRANGE)
+        if(this.distance <= StarCraftBW_Queen_Constants.HYDRALISK_WEAPONRANGE * 2)
             calcReward += 50;
 
-        if(hpLost > 0 && currentActionToExecute.equals("attackMove")) {
+        if(hpLost > 0 && currentActionToExecute.equals("cast")) {
             calcReward += -100;
         }
         else if (hpLost > 0 && currentActionToExecute.equals("kite")){

@@ -81,13 +81,63 @@ public class CommonFunctions {
             return redHatcheries;
     }
 
+    public static HashSet<Unit> getScourgesInCastrange(Unit unit, int castrange) {
+        HashSet<Unit> result = null;
+        int castrangeInPixel = castrange * 32;
+
+        for (Unit enemy : AnanasAI.enemyUnits) {
+            double distance = getDistanceBetweenUnits(unit, enemy);
+            if (enemy.getType() == UnitTypes.Zerg_Scourge) {
+                if (distance < castrangeInPixel) {
+                    result.add(enemy);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static Unit getClosestEnemyZergQueen(Unit unit) {
+        Unit result = null;
+        double minDistance = Double.POSITIVE_INFINITY;
+
+        for (Unit enemy : AnanasAI.enemyUnits) {
+            double distance = getDistanceBetweenUnits(unit, enemy);
+            if (enemy.getType() == UnitTypes.Zerg_Queen) {
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    result = enemy;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static Unit getClosestEnemyScourge(Unit unit) {
+        Unit result = null;
+        double minDistance = Double.POSITIVE_INFINITY;
+
+        for (Unit enemy : AnanasAI.enemyUnits) {
+            double distance = getDistanceBetweenUnits(unit, enemy);
+            if (enemy.getType() == UnitTypes.Zerg_Scourge) {
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    result = enemy;
+                }
+            }
+        }
+
+        return result;
+    }
+
     public static Unit getClosestEnemyZergHatchery(Unit unit) {
         Unit result = null;
         double minDistance = Double.POSITIVE_INFINITY;
 
         for (Unit enemy : AnanasAI.enemyUnits) {
             double distance = getDistanceBetweenUnits(unit, enemy);
-            if (enemy.getType() == UnitType.UnitTypes.Zerg_Hatchery) {
+            if (enemy.getType() == UnitTypes.Zerg_Hatchery) {
                 if (distance < minDistance) {
                     minDistance = distance;
                     result = enemy;
