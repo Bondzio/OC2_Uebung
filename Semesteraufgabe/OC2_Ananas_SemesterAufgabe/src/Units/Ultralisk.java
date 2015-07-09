@@ -18,7 +18,7 @@ public class Ultralisk implements IMyUnit {
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
 
 
-    //for GOING_TO_DEF_POINT
+    //for GOING_TO_RALLY_POINT
     private Position myPersonelDefencePoint;
     private boolean initPDefenacePoint = false;
     private int myPersonelDefencePointRadius = 100; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
@@ -34,9 +34,9 @@ public class Ultralisk implements IMyUnit {
     public void step() {
         switch(currentUnitStatus){
             case START:
-                currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
+                currentUnitStatus = MyUnitStatus.GOING_TO_RALLY_POINT;
                 break;
-            case GOING_TO_DEF_POINT:
+            case GOING_TO_RALLY_POINT:
                 if(goingToDefPointFin()){
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
                 System.out.println( this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
@@ -52,7 +52,7 @@ public class Ultralisk implements IMyUnit {
 
     /*
         #################################################
-        ########### For GOING_TO_DEF_POINT ##############
+        ########### For GOING_TO_RALLY_POINT ##############
         #################################################
      */
 
@@ -61,7 +61,7 @@ public class Ultralisk implements IMyUnit {
 
         if(!initPDefenacePoint ){
             if(prepareForGoingToPersonalDefPos()) {
-                myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.defancePoint, AnanasAI.defancePointRadius);
+                myPersonelDefencePoint = CommonFunctions.getRndPosInDefCircle(AnanasAI.rallyPoint, AnanasAI.rallyPointRadius);
                 initPDefenacePoint = true;
             }
 

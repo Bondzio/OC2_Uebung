@@ -3,6 +3,7 @@ package Hydralisk_XCS;
 import FileHandler.SimpleFileHandler;
 import General_XCS.PopulationSet;
 import General_XCS.XCS_Constants;
+import Units.Hatchery;
 import Units.Hydralisk;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Unit;
@@ -14,7 +15,7 @@ public class AllHydralisk_XCS_Manager {
     private final JNIBWAPI bwapi;
     private SimpleFileHandler simpleFileHandler = new SimpleFileHandler();
     private ArrayList<Managed_Hydralisk>  managedHyd = new ArrayList<>();
-    private String[] actionSet = {"attackMove","kite"};
+    private String[] actionSet = {"attackMoveToClosestEnemy","attackMoveToClosestFlyingEnemy","moveToHatchery", "supportFriend" , "protectHatchery", "burrow"};
 
 
     //GA type
@@ -46,11 +47,10 @@ public class AllHydralisk_XCS_Manager {
         return mh.getTheEffector().getCurrentActionToExecute();
     }
 
-    public void actionExecutionFin(Unit unit, Unit target, Double distance){
-
-
-//        theEffector.setStats(unit, target, distance);
-//        xcs.rewardCurrentAction();
+    public void actionExecutionFin(Hydralisk myHydra, Unit target, Double distanceToDefPoint, Hatchery hatcheryToDefend){
+        Managed_Hydralisk mh = getSpecificManagedHydraliks(myHydra.getUnit().getID());
+        mh.getTheEffector().setStats(myHydra,target,distanceToDefPoint,hatcheryToDefend);
+        mh.getHydralisk_xcs().rewardCurrentAction();
     }
 
 

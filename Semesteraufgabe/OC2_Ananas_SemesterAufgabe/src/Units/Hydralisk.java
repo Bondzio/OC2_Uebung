@@ -4,31 +4,13 @@ import AI.AnanasAI;
 import AI.MyUnitStatus;
 import Common.CommonFunctions;
 import Hydralisk_XCS.AllHydralisk_XCS_Manager;
-import StarCraftBW_XCS.StarCraftBW_Unit_Constants;
-import StarCraftBW_XCS.StarCraftBW_XCS_Manager;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
 import jnibwapi.util.BWColor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.min;
-
-import StarCraftBW_XCS.StarCraftBW_Unit_Constants;
-import StarCraftBW_XCS.StarCraftBW_XCS_Manager;
-import jnibwapi.JNIBWAPI;
-import jnibwapi.Position;
-import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.util.BWColor;
-import java.util.ArrayList;
-import java.util.HashSet;
-import static java.util.Collections.min;
-import static java.util.Arrays.asList;
 
 /**
  * Created by Rolle on 03.07.2015.
@@ -39,13 +21,14 @@ public class Hydralisk implements IMyUnit{
 
     private MyUnitStatus currentUnitStatus = MyUnitStatus.START;
 
-    //for GOING_TO_DEF_POINT
+    //for GOING_TO_RALLY_POINT
     private int ackRadius = 65; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
 
 
     //for IN_DEF_MODE
     private AllHydralisk_XCS_Manager allHydraManager;
     private boolean isThereSomethingToReward = false;
+    private Position pointToDefend = null;
 
 
     public Hydralisk(Unit unit, JNIBWAPI bwapi,AllHydralisk_XCS_Manager allHydraManager ) {
@@ -58,9 +41,9 @@ public class Hydralisk implements IMyUnit{
     public void step() {
         switch(currentUnitStatus){
             case START:
-                currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
+                currentUnitStatus = MyUnitStatus.GOING_TO_RALLY_POINT;
                 break;
-            case GOING_TO_DEF_POINT:
+            case GOING_TO_RALLY_POINT:
                 if(!unit.isIdle())
                     break;
                 if(goingToDefPointFin()){
@@ -69,6 +52,8 @@ public class Hydralisk implements IMyUnit{
                 }
                 break;
             case IN_DEF_MODE:
+                if(pointToDefend == null)
+                    createMyDefPoint();
                 //defMode();
                 break;
         }
@@ -76,7 +61,7 @@ public class Hydralisk implements IMyUnit{
 
     /*
     #################################################
-    ########### For GOING_TO_DEF_POINT ##############
+    ########### For GOING_TO_RALLY_POINT ##############
     #################################################
     */
     private boolean goingToDefPointFin(){
@@ -86,7 +71,7 @@ public class Hydralisk implements IMyUnit{
             return false;
         }
 
-        Position defPoint = AnanasAI.defancePoint;
+        Position defPoint = AnanasAI.rallyPoint;
         //Position defPoint = AnanasAI.hatcheryToDefend.getUnit().getPosition(); // slower!
 
         CommonFunctions.simpleUnitMove(unit, defPoint);
@@ -107,19 +92,13 @@ public class Hydralisk implements IMyUnit{
     */
 
     private void defMode(){
-//        Unit target = getClosestEnemy();
-        double distance = CommonFunctions.getDistanceBetweenUnits(unit,AnanasAI.hatcheryToDefend.getUnit());
+        double distance = CommonFunctions.getDistianceBetweenPositions(unit.getPosition(), pointToDefend);
 
         allHydraManager.giveDetectorSomethingToDetected(unit.getID(), distance);
 
 
-        /*
-            TODO:   1. actionExecutionFin impln
-                    2. Save Zeugs Machen
-
-         */
-//        if (isThereSomethingToReward)
-//            allHydraManager.actionExecutionFin(unit, target, distance);
+        if (isThereSomethingToReward)
+            allHydraManager.actionExecutionFin(this,unit.getTarget(),distance,AnanasAI.hatcheryToDefend);
 
 
         String action = allHydraManager.getNextPredictedAction(unit.getID());
@@ -128,23 +107,120 @@ public class Hydralisk implements IMyUnit{
             isThereSomethingToReward = true;
 
 
-        if (action.equals("kite")) {
-//            //kite(target);
-//            dummKite(target);
-//            //kiteInOppositeDir(target,distance);
-//            this.countKite++;
+
+
+        if(unit.isBurrowed()){
+            unit.unburrow();
+            isThereSomethingToReward = false;
+            return;
         }
-        else if (action.equals("attackMove")) {
-//            attackMove(target);
-//            this.countAttackMove++;
+
+        if (action.equals("attackMoveToClosestEnemy")) {
+            attackMoveToClosestEnemy();
+        }
+        else if (action.equals("attackMoveToClosestFlyingEnemy")) {
+            attackMoveToClosestFlyingEnemy();
+        }
+        else if (action.equals("moveToDefPoint")) {
+           moveToPos(pointToDefend);
+        }
+        else if (action.equals("supportFriend")) {
+            supportFriend();
+        }
+        else if (action.equals("protectDefPoint")) {
+            protectDefPoint();
+        }
+        else if (action.equals("burrow")) {
+            unit.burrow();
         }
     }
+
+    private void attackMoveToClosestEnemy(){
+        Unit cloesestEnemy = CommonFunctions.getClosestEnemy(unit);
+        if(cloesestEnemy != null)
+            attackMove(cloesestEnemy);
+    }
+
+    private void attackMoveToClosestFlyingEnemy(){
+        Unit cloesestFlyingEnemy = null;
+        double minDistance = Double.POSITIVE_INFINITY;
+
+        for(Unit enemy: AnanasAI.enemyUnits){
+            if(enemy.getType() == UnitType.UnitTypes.Zerg_Queen || enemy.getType() == UnitType.UnitTypes.Zerg_Scourge ){
+                double distance = CommonFunctions.getDistanceBetweenUnits(unit, enemy);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    cloesestFlyingEnemy = enemy;
+                }
+            }
+        }
+
+        if(cloesestFlyingEnemy != null)
+            attackMove(cloesestFlyingEnemy);
+    }
+
+    private void supportFriend(){
+        Unit closestFriendlyUnit = null;
+        double minDistance = Double.POSITIVE_INFINITY;
+
+        for(IMyUnit friend: AnanasAI.myUnits){
+            Unit friendAsUnit = friend.getUnit();
+            if(friendAsUnit.getType() == UnitType.UnitTypes.Zerg_Queen || friendAsUnit.getType() == UnitType.UnitTypes.Zerg_Scourge ){
+                continue;
+            }
+            else{
+                double distance = CommonFunctions.getDistanceBetweenUnits(unit, friendAsUnit);
+                if (distance < minDistance && friendAsUnit.getTarget() != null) {
+                    minDistance = distance;
+                    closestFriendlyUnit = friendAsUnit;
+                }
+            }
+        }
+
+        if(closestFriendlyUnit != null)
+            attackMove(closestFriendlyUnit.getTarget());
+    }
+
+    private void protectDefPoint(){
+        Unit clossestEnemyToDefPoint = null;
+        double minDistance = Double.POSITIVE_INFINITY;
+
+        for(Unit enemy: AnanasAI.enemyUnits){
+            if(enemy.getType() == UnitType.UnitTypes.Zerg_Queen || enemy.getType() == UnitType.UnitTypes.Zerg_Scourge ){
+                continue;
+            }
+            else{
+                double distance = CommonFunctions.getDistianceBetweenPositions(enemy.getPosition(), pointToDefend);
+                if (distance < minDistance && enemy.isAttacking()) {
+                    minDistance = distance;
+                    clossestEnemyToDefPoint = enemy;
+                }
+            }
+        }
+
+        if(clossestEnemyToDefPoint != null)
+            attackMove(clossestEnemyToDefPoint);
+    }
+
+    private void attackMove(Unit target) {
+        unit.attack(target, false);
+    }
+
+    private void moveToPos(Position position) {
+        if(!isAtPersonalDefPoint(position))
+            unit.move(position, false);
+    }
+
 
     private boolean isAtPersonalDefPoint(Position defPoint){
         if(CommonFunctions.getDistianceBetweenPositions(unit.getPosition(),defPoint)<=ackRadius)
             return true;
         else
             return false;
+    }
+
+    private void createMyDefPoint(){
+        this.pointToDefend = AnanasAI.hatcheryToDefend.getUnit().getPosition();
     }
 
     public Unit getUnit(){

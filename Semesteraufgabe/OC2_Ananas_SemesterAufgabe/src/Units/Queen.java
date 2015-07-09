@@ -20,7 +20,7 @@ public class Queen implements IMyUnit{
     private int countAttackMove = 0;
     private int countKite = 0;
 
-    //for GOING_TO_DEF_POINT
+    //for GOING_TO_RALLY_POINT
     private int ackRadius = 40;
 
     //for IN_DEF_MODE
@@ -37,14 +37,14 @@ public class Queen implements IMyUnit{
     public void step() {
         switch(currentUnitStatus){
             case START:
-                currentUnitStatus = MyUnitStatus.GOING_TO_DEF_POINT;
+                currentUnitStatus = MyUnitStatus.GOING_TO_RALLY_POINT;
                 break;
-            case GOING_TO_DEF_POINT:
+            case GOING_TO_RALLY_POINT:
                 if(goingToDefPointFin())
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
                 break;
             case IN_DEF_MODE:
-                defMode();
+                //defMode();
 //                unit.useTech(TechType.TechTypes.Ensnare);
 //                unit.useTech(TechType.TechTypes.Parasite);
                 break;
@@ -53,11 +53,11 @@ public class Queen implements IMyUnit{
 
     /*
     #################################################
-    ########### For GOING_TO_DEF_POINT ##############
+    ########### For GOING_TO_RALLY_POINT ##############
     #################################################
     */
     private boolean goingToDefPointFin(){
-        Position defPoint = AnanasAI.defancePoint;
+        Position defPoint = AnanasAI.rallyPoint;
 
         CommonFunctions.simpleUnitMove(unit, defPoint);
         if(isAtPersonalDefPoint(defPoint)){

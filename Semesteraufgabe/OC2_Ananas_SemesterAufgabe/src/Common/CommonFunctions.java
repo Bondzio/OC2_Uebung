@@ -46,6 +46,8 @@ public class CommonFunctions {
 
 
     public static double getDistanceBetweenUnits(Unit one, Unit two) {
+
+
         int myX = one.getPosition().getPX();
         int myY = one.getPosition().getPY();
         int enemyX = two.getPosition().getPX();

@@ -45,7 +45,7 @@ public class AI_Starter implements BWAPIEventListener, Runnable {
 //       		}
 //    	}
 
-        try {
+//        try {
         	//vulture.step(LEARNING_GA[gaSelector],stop_learning);
               this.ananasAI.doStepAll();
             //System.out.println("ID IS:" + bwapi.getSelf().getID());
@@ -54,10 +54,10 @@ public class AI_Starter implements BWAPIEventListener, Runnable {
                 System.out.println("Frame: " + frame);
             }
             frame++;
-
-        }catch (NullPointerException np){
-            System.out.println("Game is restarting...");
-        }
+//
+//        }catch (NullPointerException np){
+//            System.out.println("Game is restarting...");
+//        }
     }
 
     @Override

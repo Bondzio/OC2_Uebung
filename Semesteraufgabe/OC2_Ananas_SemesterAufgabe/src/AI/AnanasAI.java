@@ -6,13 +6,12 @@ import StarCraftBW_XCS_Queen.StarCraftBW_Queen_XCS_Manager;
 import Units.*;
 import bolding.ParamSet;
 import bolding.RuleMachine;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -36,11 +35,12 @@ public class AnanasAI {
 
 
     //Defance Mod Params
-    public static Position defancePoint;
-    public static int defancePointRadius = 190;
+    public static Position rallyPoint;
+    public static int rallyPointRadius = 190;
     public static Position middleOfMap = new Position(2048,1536);
     private int vectorReducingFactor = 9;
     public static Hatchery hatcheryToDefend;
+    public static Position defencePoint;
 
 
 
@@ -58,8 +58,9 @@ public class AnanasAI {
         counter = 0;
         currentFrame = 0;
 
-        defancePoint = null;
-        defancePointRadius = 190;
+        rallyPoint = null;
+
+        defencePoint = null;
         //middleOfMap = new Position(2048,1536);
         vectorReducingFactor = 9;
         hatcheryToDefend = null;
@@ -72,8 +73,11 @@ public class AnanasAI {
 
     public void doStepAll(){
         currentFrame++;
-        if(defancePoint == null)
-            initDefancePoint();
+        if(rallyPoint == null)
+            initRallyPoint();
+
+        if(defencePoint == null)
+            initDefencePoint();
 
         for (IMyUnit u : myUnits) {
             u.step();
@@ -85,7 +89,7 @@ public class AnanasAI {
 
 
 
-    private void initDefancePoint(){
+    private void initRallyPoint(){
         for (IMyUnit u : myUnits) {
             if(u instanceof Hatchery){
                 if(u.getUnit().getPosition().getPY() <= 500){
@@ -96,7 +100,19 @@ public class AnanasAI {
         }
 
         double[] vec = CommonFunctions.calculateVector(middleOfMap.getPX(),middleOfMap.getPY(),hatcheryToDefend.getUnit().getPosition().getPX(),hatcheryToDefend.getUnit().getPosition().getPY());
-        defancePoint = new Position(hatcheryToDefend.getUnit().getPosition().getPX() + (int) vec[0]/vectorReducingFactor,hatcheryToDefend.getUnit().getPosition().getPY() + (int) vec[1]/vectorReducingFactor);
+        rallyPoint = new Position(hatcheryToDefend.getUnit().getPosition().getPX() + (int) vec[0]/vectorReducingFactor,hatcheryToDefend.getUnit().getPosition().getPY() + (int) vec[1]/vectorReducingFactor);
+    }
+
+    private void initDefencePoint(){
+        for (IMyUnit u : myUnits) {
+            if(u instanceof Hatchery){
+                if(u.getUnit().getPosition().getPY() <= 500){
+                    hatcheryToDefend = (Hatchery) u;
+                    break;
+                }
+            }
+        }
+        defencePoint = new Position(hatcheryToDefend.getUnit().getPosition().getPX(),hatcheryToDefend.getUnit().getPosition().getPY());
     }
 
 
@@ -164,7 +180,11 @@ public class AnanasAI {
         for (IMyUnit u : myUnits) {
 
             if (u.getUnit().getID() == unitID) {
-                rmUnit = u.getUnit();
+                if(u.getUnit().getID() == hatcheryToDefend.getUnit().getID()){
+                    System.out.println("Hatchery to Defend has been destroyed!!!!!!!!!!!!!!!!!!! SHAME!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                }
+                else
+                    rmUnit = u.getUnit();
                 break;
             }
         }
