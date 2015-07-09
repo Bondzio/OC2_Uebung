@@ -73,7 +73,7 @@ public class SimpleFileHandler {
         return null;
     }
 
-    public void saveClassifierSet(PopulationSet populationSet) {
+    public void savePopulationSet(PopulationSet populationSet) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         String jString = gson.toJson(populationSet);

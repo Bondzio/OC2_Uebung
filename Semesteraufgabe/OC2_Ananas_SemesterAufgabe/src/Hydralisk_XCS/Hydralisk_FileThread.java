@@ -55,7 +55,7 @@ public class Hydralisk_FileThread extends Thread{
 //        System.out.println("FileThread:  has been stopped");
         // do it once
 //        try {
-//            saveClassifierSet();
+//            savePopulationSet();
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }

@@ -2,7 +2,6 @@ package Hydralisk_XCS;
 
 import FileHandler.SimpleFileHandler;
 import General_XCS.Classifier;
-import General_XCS.ClassifierSet;
 import General_XCS.PopulationSet;
 import General_XCS.XCS_Constants;
 import Units.Hatchery;
@@ -110,7 +109,7 @@ public class AllHydralisk_XCS_Manager {
             pSet = pSetToSave;
         }
         System.out.println("ALL HADRA MANG: pSet to Save Size " + pSet.getSet().size());
-        simpleFileHandler.saveClassifierSet(pSet);
+        simpleFileHandler.savePopulationSet(pSet);
     }
 
 

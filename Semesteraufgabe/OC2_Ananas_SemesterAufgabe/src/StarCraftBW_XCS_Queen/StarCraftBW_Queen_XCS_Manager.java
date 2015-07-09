@@ -1,5 +1,6 @@
 package StarCraftBW_XCS_Queen;
 
+import FileHandler.SimpleFileHandler;
 import General_XCS.PopulationSet;
 import General_XCS.XCS_Constants;
 import jnibwapi.Unit;
@@ -9,7 +10,7 @@ import jnibwapi.Unit;
  */
 public class StarCraftBW_Queen_XCS_Manager {
 
-    private StarCraftBW_QueenFileThread fileThread = new StarCraftBW_QueenFileThread();
+    private SimpleFileHandler simpleFileHandler = new SimpleFileHandler(null,null,"Queen_XCS_PopulationSet");
     private StarCraftBW_Queen_XCS xcs;
     private StarCraftBW_QueenMatchStats mStats = new StarCraftBW_QueenMatchStats();
     private StarCraftBW_QueenDetector dDetector= new StarCraftBW_QueenDetector();
@@ -18,7 +19,6 @@ public class StarCraftBW_Queen_XCS_Manager {
 
     public StarCraftBW_Queen_XCS_Manager() {
         this.xcs = new StarCraftBW_Queen_XCS(actionSet,theEffector,dDetector);
-        fileThread.start();
     }
 
     public String getNextPredictedAction(){
@@ -47,51 +47,26 @@ public class StarCraftBW_Queen_XCS_Manager {
         return this.theEffector;
     }
 
-    public void makeNewMatchStat(int frames, int hp, int kills, int countAttackMove, int countKite) {
-        this.mStats.makeNewMatchStat(frames,hp,kills,countAttackMove,countKite);
-    }
+
 
     public void saveProgress(){
-        try {
-            fileThread.putClassifierSetToSave(xcs.getPopulationSet());
-            fileThread.putMatchStatsToSave(this.mStats);
-
-        } catch (InterruptedException e) {
-            System.err.println("XCS_Manager: SAVING INTERUPTED");
-        }
+        simpleFileHandler.savePopulationSet(xcs.getPopulationSet());
     }
 
     public void loadOldProgress(){
         loadOldPopulationSet();
-        loadOldMatchStats();
     }
 
     private void loadOldPopulationSet(){
-        PopulationSet newPSet = fileThread.getSavedPopulationSet();
+        PopulationSet newPSet = simpleFileHandler.laodPopulationSet();
 
         if (newPSet == null)
             return;
 
         else if(newPSet.getSet().size() > 0)
             xcs.setPopulationSet(newPSet);
+
+        setGA_Type();
     }
 
-    private void loadOldMatchStats(){
-        StarCraftBW_QueenMatchStats newMStats = fileThread.getSavedMatchStats();
-
-        if (newMStats == null)
-            return;
-
-        else if(newMStats.getMatchStats().size() > 0)
-            this.mStats = newMStats;
-    }
-
-    private void saveOnlyOnce(){
-        saveProgress();
-        fileThread.stopMe();
-    }
-
-    public void cleanUp(){
-        saveOnlyOnce();
-    }
 }

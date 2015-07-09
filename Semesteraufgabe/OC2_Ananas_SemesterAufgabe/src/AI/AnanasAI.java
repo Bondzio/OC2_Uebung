@@ -107,6 +107,7 @@ public class AnanasAI {
 
     private void loadProgress(){
         this.allHydralisk_xcs_manager.loadProcess();
+        this.queen_xcs_manager.loadOldProgress();
     }
 
     private void initRallyPoint(){
@@ -236,6 +237,7 @@ public class AnanasAI {
 
     private void saveProgressForNextMatch(){
         allHydralisk_xcs_manager.saveProgress();
+        queen_xcs_manager.saveProgress();
     }
 
 
