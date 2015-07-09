@@ -43,10 +43,8 @@ public class GSG9_Zergling implements IMyUnit{
         Position[] hatcheries = CommonFunctions.getEnemyHatcheries(bwapi);
         
         if (mission == 0 || mission == 1) {
-        	if(unit.isUnderAttack() || isDangerousUnitInRange()){
+        	if(unit.isUnderAttack() || isDangerousUnitInRange())
         		unit.burrow();
-        		System.out.println("burrow");
-        	}
         	
         	else if (unit.isIdle() && !isDangerousUnitInRange()) {
 
