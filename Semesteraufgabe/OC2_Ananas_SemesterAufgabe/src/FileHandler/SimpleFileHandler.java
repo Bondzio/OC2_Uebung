@@ -79,11 +79,12 @@ public class SimpleFileHandler {
         String jString = gson.toJson(pSetCol);
         try{
             PrintWriter writer = new PrintWriter(filePath + fileName_Bolding_Saves);
-            System.out.println("FileHandler.SimpleFileHandler: File "+filePath + fileName_Bolding_Saves+" loaded");
+            System.out.println("SimpleFileHandler: File "+ filePath + fileName_Bolding_Saves+" saved");
             writer.println(jString);
             writer.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("SimpleFileHandler: could not save file " + filePath + fileName_Bolding_Saves);
+            //e.printStackTrace();
         }
     }
 
@@ -93,10 +94,10 @@ public class SimpleFileHandler {
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath + fileName_Bolding_Saves));
             ParamSetCollection pSetCol = gson.fromJson(br, ParamSetCollection.class);
-            System.out.println("FileHandler.SimpleFileHandler: File "+filePath + fileName_Bolding_Saves+" loaded");
+            System.out.println("SimpleFileHandler: File "+filePath + fileName_Bolding_Saves+" loaded");
             return pSetCol;
         } catch (FileNotFoundException e) {
-            System.out.println("FileHandler.SimpleFileHandler: no file found under path: " + filePath + fileName_Bolding_Saves);
+            System.out.println("SimpleFileHandler: no file found under path: " + filePath + fileName_Bolding_Saves);
             //e.printStackTrace();
         }
         return null;
@@ -110,9 +111,10 @@ public class SimpleFileHandler {
             PrintWriter writer = new PrintWriter(filePath + fileName_XCS_PopulationSet);
             writer.println(jString);
             writer.close();
-            System.out.println("FileHandler.SimpleFileHandler: File "+filePath + fileName_XCS_PopulationSet+" loaded");
+            System.out.println("SimpleFileHandler: File "+filePath + fileName_XCS_PopulationSet+" saved");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("SimpleFileHandler: could not save file " + filePath + fileName_XCS_PopulationSet);
+            //e.printStackTrace();
         }
 
     }

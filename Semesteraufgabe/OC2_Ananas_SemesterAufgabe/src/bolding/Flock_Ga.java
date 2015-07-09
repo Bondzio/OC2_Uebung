@@ -173,10 +173,12 @@ public class Flock_Ga {
         if(chance < 0.5)
             retValue = currentValue + r.nextInt(10);
         else
-            retValue = r.nextInt(currentValue - lowestLimit + 1) + lowestLimit;
+            //retValue = r.nextInt(currentValue - lowestLimit + 1) + lowestLimit;
+            retValue = currentValue - r.nextInt(10);
 
         if(retValue < lowestLimit){
-            System.out.println("Flock_GA: mutation value was not in defined limit!");
+            //System.out.println("Flock_GA: mutation value was not in defined limit!");
+            currentValue = lowestLimit;
             return currentValue;
         }
 

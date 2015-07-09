@@ -4,6 +4,7 @@ import Common.CommonFunctions;
 import Hydralisk_XCS.AllHydralisk_XCS_Manager;
 import StarCraftBW_XCS_Queen.StarCraftBW_Queen_XCS_Manager;
 import Units.*;
+import bolding.BoldingManager;
 import bolding.ParamSet;
 import bolding.RuleMachine;
 import com.sun.org.apache.xpath.internal.SourceTree;
@@ -22,7 +23,7 @@ public class AnanasAI {
 
     public static HashSet<Unit> enemyUnits;
     public static HashSet<IMyUnit> myUnits;
-    public static RuleMachine ruleMachine;
+    public static BoldingManager boldingManager;
 
     private boolean matchStart;
 
@@ -67,7 +68,7 @@ public class AnanasAI {
         hatcheryToDefend = null;
         matchStart = true;
 
-        this.ruleMachine = new RuleMachine(new ParamSet(1,0.3,0.3,30,3,4,1));
+        this.boldingManager = new BoldingManager();
         this.allHydralisk_xcs_manager = new AllHydralisk_XCS_Manager(this.bwapi);
         this.queen_xcs_manager = new StarCraftBW_Queen_XCS_Manager();
     }
@@ -163,7 +164,7 @@ public class AnanasAI {
                     //System.out.println("ADDED SPECIAL2 ZERG");
                 }
                 else {
-                    Zergling zergling = new Zergling(unit, this.bwapi, this.ruleMachine);
+                    Zergling zergling = new Zergling(unit, this.bwapi, this.boldingManager.getRuleMachine());
                     myUnits.add(zergling);
                     //System.out.println("ADDED ZERG");
                 }
@@ -237,7 +238,16 @@ public class AnanasAI {
     private void saveProgressForNextMatch(){
         allHydralisk_xcs_manager.saveProgress();
         queen_xcs_manager.saveProgress();
+        boldingManager.gameFin(calcRewardForBolding());
     }
 
+    private int calcRewardForBolding(){
+        int hp_left = 0;
+        for (IMyUnit myUnit : myUnits){
+            if((myUnit instanceof Zergling) || (myUnit instanceof Ultralisk))
+                hp_left += myUnit.getUnit().getHitPoints();
+        }
+        return hp_left;
+    }
 
 }
