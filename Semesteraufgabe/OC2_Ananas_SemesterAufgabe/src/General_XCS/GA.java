@@ -84,10 +84,15 @@ public class GA {
         // copy only with the same action
         ArrayList<Classifier> copyOfBase = new ArrayList<Classifier>();
 
+
         for (Classifier cl : base_classifier_ArrayList){
             if(cl.getAction().equals(action))
                 copyOfBase.add(cl);
         }
+
+        if(copyOfBase.size() == 0)
+            System.out.println("fuck");
+
         //so we get two parents
         for(int i = 0; i < 2; i ++){
 

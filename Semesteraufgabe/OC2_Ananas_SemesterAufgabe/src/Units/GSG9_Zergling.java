@@ -32,7 +32,7 @@ public class GSG9_Zergling implements IMyUnit{
 
     public void step() {
         Position targetPosition = unit.getTargetPosition();
-        bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
+        //bwapi.drawLine(unit.getPosition(), targetPosition, BWColor.Green, false);
 
 
         specialMissions(mission);

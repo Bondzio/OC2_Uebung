@@ -37,6 +37,9 @@ public class Queen implements IMyUnit{
 
     @Override
     public void step() {
+        if(AnanasAI.currentFrame % 2 == 0)
+            return;
+
         switch(currentUnitStatus){
             case START:
                 currentUnitStatus = MyUnitStatus.GOING_TO_RALLY_POINT;
@@ -174,7 +177,7 @@ public class Queen implements IMyUnit{
         }
 
         if (closestEnemy != null) {
-            CommonFunctions.drawLine(bwapi, unit, closestEnemy.getTargetPosition(), BWColor.Red);
+            //CommonFunctions.drawLine(bwapi, unit, closestEnemy.getTargetPosition(), BWColor.Red);
         }
     }
 

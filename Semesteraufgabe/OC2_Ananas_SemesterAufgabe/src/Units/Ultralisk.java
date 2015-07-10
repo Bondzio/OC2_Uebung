@@ -40,11 +40,16 @@ public class Ultralisk implements IMyUnit {
 
 
     public void step() {
+        if(AnanasAI.currentFrame % 2 == 0)
+            return;
+
         switch(currentUnitStatus){
             case START:
                 currentUnitStatus = MyUnitStatus.GOING_TO_RALLY_POINT;
                 break;
             case GOING_TO_RALLY_POINT:
+                if(!unit.isIdle())
+                    return;
                 if(goingToDefPointFin()){
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
                 //System.out.println( this.getClass().getName() + " entert def at Frame: " + AnanasAI.currentFrame);
@@ -123,7 +128,7 @@ public class Ultralisk implements IMyUnit {
 	    			AnanasAI.enemyToAttack = nearEnemy;
 	    		}
 		}
-		if(AnanasAI.enemyToAttack != null && AnanasAI.enemyToAttack.getDistance(AnanasAI.defencePoint) < 500 ){
+		if(AnanasAI.enemyToAttack != null && AnanasAI.enemyToAttack.getDistance(AnanasAI.defencePoint) < 270 ){
 			swarmMoveToTarget(AnanasAI.enemyToAttack);
 		}else if (!isAtPersonalDefPoint()){
 			unit.attack(AnanasAI.defencePoint, false);
@@ -137,7 +142,7 @@ public class Ultralisk implements IMyUnit {
     	unitsUnderAttack.clear();
     	
     	for(IMyUnit ally : AnanasAI.myUnits){
-    		if(ally.getUnit().isUnderAttack() && unit.getDistance(ally.getUnit()) < 600){
+    		if(ally.getUnit().isUnderAttack() && unit.getDistance(ally.getUnit()) < 300){
     			unitsUnderAttack.add(ally);
     			unitUnderAttack = true;
     		}
@@ -177,7 +182,7 @@ public class Ultralisk implements IMyUnit {
     public void swarmMoveToPosition(Position target){
         units.clear();
         for(IMyUnit myUnit: AnanasAI.myUnits){
-            if(myUnit instanceof Zergling)
+            if( (myUnit instanceof Zergling) || (myUnit instanceof Ultralisk))
                 units.add(myUnit.getUnit());
         }
 

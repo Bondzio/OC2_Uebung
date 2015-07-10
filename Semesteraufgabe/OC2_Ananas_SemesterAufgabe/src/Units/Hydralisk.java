@@ -68,7 +68,7 @@ public class Hydralisk implements IMyUnit{
     #################################################
     */
     private boolean goingToDefPointFin(){
-        drawMyLine();
+        //drawMyLine();
 
         if(unit.getID() % 2 == 0 && AnanasAI.currentFrame <= 10){
             return false;

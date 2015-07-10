@@ -54,15 +54,17 @@ public class Zergling implements IMyUnit{
 
     @Override
     public void step() {
+        if(AnanasAI.currentFrame % 2 == 0)
+            return;
 
         switch(currentUnitStatus){
             case START:
                 currentUnitStatus = MyUnitStatus.GOING_TO_RALLY_POINT;
                 break;
             case GOING_TO_RALLY_POINT:
-                //drawMyLine();
-//                if(!unit.isIdle())
-//                    break;
+
+                if(!unit.isIdle())
+                    return;
                 if(goingToDefPointFin()){
                     unit.burrow();
                     if(unit.isBurrowed()) {
@@ -88,9 +90,11 @@ public class Zergling implements IMyUnit{
     private boolean goingToDefPointFin(){
 
         if(unit.getID() % 2 == 0 && AnanasAI.currentFrame <= 100){
-            phase = "goToMyPersonalRallyPoint";
+            //phase = "goToMyPersonalRallyPoint";
             return false;
         }
+
+
 
         Position target = null;
         switch (phase){
@@ -206,7 +210,7 @@ public class Zergling implements IMyUnit{
 		    			AnanasAI.enemyToAttack = nearEnemy;
 		    		}
 	    	}
-	    	if(AnanasAI.enemyToAttack != null && AnanasAI.enemyToAttack.getDistance(AnanasAI.defencePoint) < 500 ){
+	    	if(AnanasAI.enemyToAttack != null && AnanasAI.enemyToAttack.getDistance(AnanasAI.defencePoint) < 270 ){
 	    		if(unit.isBurrowed())
 	    			unit.unburrow();
 	    		else
@@ -226,7 +230,7 @@ public class Zergling implements IMyUnit{
     	unitsUnderAttack.clear();
     	
     	for(IMyUnit ally : AnanasAI.myUnits){
-    		if(ally.getUnit().isUnderAttack() && unit.getDistance(ally.getUnit()) < 600){
+    		if(ally.getUnit().isUnderAttack() && unit.getDistance(ally.getUnit()) < 300){
     			unitsUnderAttack.add(ally);
     			unitUnderAttack = true;
     		}
@@ -277,7 +281,7 @@ public class Zergling implements IMyUnit{
         //System.out.println("Z ID:" + unit.getID() + " UnitsSize:" + units.size() + " Vec:" + Arrays.toString(final_vector));
         Position tragetPosition = new Position((int) final_vector[0],(int) final_vector[1]);
         //tragetPosition.makeValid();
-        CommonFunctions.simpleUnitMove(unit,tragetPosition);
+        CommonFunctions.simpleUnitMove(unit, tragetPosition);
     }
 
 

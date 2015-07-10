@@ -12,6 +12,7 @@ import jnibwapi.Unit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 public class AllHydralisk_XCS_Manager {
 
@@ -21,7 +22,7 @@ public class AllHydralisk_XCS_Manager {
     private String[] actionSet = {"attackMoveToClosestEnemy","attackMoveToClosestFlyingEnemy","moveToDefPoint", "supportFriend" , "protectHatchery", "burrow"};
     private PopulationSet loadedPopSetForAllHydras = null;
 
-    private int maxPopulationSize = 10000;
+    private int maxPopulationSize = 7100;
 
 
     //GA type
@@ -68,52 +69,107 @@ public class AllHydralisk_XCS_Manager {
 
 
     public void saveProgress(){
-        PopulationSet pSet = null;
+//        PopulationSet pSet = null;
+//        for(Managed_Hydralisk mH : managedHyd){
+//            if(pSet == null)
+//                pSet = mH.getHydralisk_xcs().getPopulationSet();
+//            else {
+//                PopulationSet tmp = mH.getHydralisk_xcs().getPopulationSet();
+//                for(Classifier classifier: tmp.getSet())
+//                    pSet.addClassifierToPopulationSet(classifier);
+//            }
+//        }
+
+        HashMap<String,HashMap<String,ArrayList<Classifier>>> leMap = new HashMap<>();
         for(Managed_Hydralisk mH : managedHyd){
-            if(pSet == null)
-                pSet = mH.getHydralisk_xcs().getPopulationSet();
-            else {
-                PopulationSet tmp = mH.getHydralisk_xcs().getPopulationSet();
-                for(Classifier classifier: tmp.getSet())
-                    pSet.addClassifierToPopulationSet(classifier);
+            for(Classifier c : mH.getHydralisk_xcs().getPopulationSet().getSet()){
+                String con = c.getCondition();
+                String action = c.getAction();
+                if(leMap.containsKey(con)){
+
+                    if(leMap.get(con).containsKey(action)){
+                        leMap.get(con).get(action).add(c);
+                    }
+                    else {
+                        ArrayList<Classifier> tmpArrayList = new ArrayList<>();
+                        tmpArrayList.add(c);
+                        leMap.get(con).put(action, tmpArrayList);
+                    }
+                }
+                else{
+                    HashMap<String,ArrayList<Classifier>> tmpMap = new HashMap<>();
+                    ArrayList<Classifier> tmpArrayList = new ArrayList<>();
+                    tmpArrayList.add(c);
+                    tmpMap.put(action,tmpArrayList);
+                    leMap.put(con,tmpMap);
+                }
+            }
+        }
+
+        PopulationSet pSetToSave = new PopulationSet(actionSet);
+        for(String key : leMap.keySet()){
+            for(String action: leMap.get(key).keySet()){
+                ArrayList<Classifier> arrayList = leMap.get(key).get(action);
+                Collections.sort(arrayList, new Comparator<Classifier>() {
+                    @Override
+                    public int compare(Classifier o1, Classifier o2) {
+                        double diff = o1.getFitness() - o2.getFitness();
+                        if (diff < 0.0)
+                            return -1;
+                        else if (diff == 0.0)
+                            return 0;
+                        else
+                            return +1;
+
+                    }
+                });
+                if(arrayList.size() >=2 ) {
+                    pSetToSave.addClassifierToPopulationSet(arrayList.get(arrayList.size() - 2));
+                    pSetToSave.addClassifierToPopulationSet(arrayList.get(arrayList.size() - 1));
+                }
+                else{
+                    pSetToSave.addClassifierToPopulationSet(arrayList.get(arrayList.size() - 1));
+                }
             }
         }
 
 
-        if(pSet.getSet().size() >= maxPopulationSize){
-            ArrayList<Classifier> pSetAsArrayList = pSet.getSet();
 
-            Collections.sort(pSetAsArrayList, new Comparator<Classifier>() {
-                @Override
-                public int compare(Classifier o1, Classifier o2) {
-                    double diff = o1.getFitness() - o2.getFitness();
-                    if (diff < 0.0)
-                        return -1;
-                    else if (diff == 0.0)
-                        return 0;
-                    else
-                        return +1;
 
-                }
-            });
+//        if(pSet.getSet().size() >= maxPopulationSize){
+//            ArrayList<Classifier> pSetAsArrayList = pSet.getSet();
+//
+//            Collections.sort(pSetAsArrayList, new Comparator<Classifier>() {
+//                @Override
+//                public int compare(Classifier o1, Classifier o2) {
+//                    double diff = o1.getFitness() - o2.getFitness();
+//                    if (diff < 0.0)
+//                        return -1;
+//                    else if (diff == 0.0)
+//                        return 0;
+//                    else
+//                        return +1;
+//
+//                }
+//            });
+//
+//            double elementsToDelete = pSetAsArrayList.size() - maxPopulationSize; // delete 20% so we got room for new ones
+//            double sizeAfter = pSetAsArrayList.size() - elementsToDelete;
+//            elementsToDelete += sizeAfter * 0.1;
+//
+//            for(int i = 0; i < elementsToDelete; i++)
+//                pSetAsArrayList.remove(0);
+//
+//            System.out.println("ALL HADRA MANG: removed some elements old: " + pSet.getSet().size()+" new: " + pSetAsArrayList.size());
+//            PopulationSet pSetToSave = new PopulationSet(actionSet);
+//            for(Classifier classifier: pSetAsArrayList)
+//                pSetToSave.addClassifierToPopulationSet(classifier);
+//
+//            pSet = pSetToSave;
+//        }
 
-            double elementsToDelete = pSetAsArrayList.size() - maxPopulationSize; // delete 20% so we got room for new ones
-            double sizeAfter = pSetAsArrayList.size() - elementsToDelete;
-            elementsToDelete += sizeAfter * 0.1;
-
-            for(int i = 0; i < elementsToDelete; i++)
-                pSetAsArrayList.remove(0);
-
-            System.out.println("ALL HADRA MANG: removed some elements old: " + pSet.getSet().size()+" new: " + pSetAsArrayList.size());
-            PopulationSet pSetToSave = new PopulationSet(actionSet);
-            for(Classifier classifier: pSetAsArrayList)
-                pSetToSave.addClassifierToPopulationSet(classifier);
-
-            pSet = pSetToSave;
-        }
-
-        System.out.println("ALL HADRA MANG: pSet to Save Size " + pSet.getSet().size());
-        simpleFileHandler.savePopulationSet(pSet);
+        System.out.println("ALL HADRA MANG: pSet to Save Size " + pSetToSave.getSet().size());
+        simpleFileHandler.savePopulationSet(pSetToSave);
     }
 
 
