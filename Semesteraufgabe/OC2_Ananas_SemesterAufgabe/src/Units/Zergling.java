@@ -7,16 +7,11 @@ import bolding.RuleMachine;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
-import jnibwapi.types.UnitType;
-import jnibwapi.types.UnitType.UnitTypes;
-import jnibwapi.util.BWColor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-/**
- * Created by Rolle on 03.07.2015.
- */
+
 public class Zergling implements IMyUnit{
     final private JNIBWAPI bwapi;
     private final  Unit unit;
@@ -75,6 +70,8 @@ public class Zergling implements IMyUnit{
 
                 break;
             case IN_DEF_MODE:
+            	if(AnanasAI.currentFrame % 2 == 0)
+                    return;
                 defMode();
                 break;
         }
@@ -153,7 +150,7 @@ public class Zergling implements IMyUnit{
                 switch (phase){
                     case "start":
                     case "goToTmpPoint":
-                        CommonFunctions.simpleUnitMove(unit,target);
+                    	CommonFunctions.simpleUnitMove(unit,target);
                         break;
                     case "goToMyPersonalRallyPoint":
                         swarmMoveToPosition(target);
@@ -203,7 +200,7 @@ public class Zergling implements IMyUnit{
     
     private void defMode(){
     	
-    	if(unit.isIdle()){    		
+//    	if(unit.isIdle()){    		
 	    	if(isUnitUnderAttack() || isEnemyUnitInRange()){
 	    		if (nearEnemy != null)
 		    		if(unit.getDistance(nearEnemy) < unit.getDistance(AnanasAI.enemyToAttack) && CommonFunctions.isEnemyAttackable(nearEnemy)){
@@ -218,7 +215,7 @@ public class Zergling implements IMyUnit{
 	    	}else{
 	    		unit.burrow();
 	    	}
-    	}
+//    	}
     }
 
 
