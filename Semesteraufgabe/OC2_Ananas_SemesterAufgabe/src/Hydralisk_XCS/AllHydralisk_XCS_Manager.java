@@ -21,7 +21,7 @@ public class AllHydralisk_XCS_Manager {
     private String[] actionSet = {"attackMoveToClosestEnemy","attackMoveToClosestFlyingEnemy","moveToDefPoint", "supportFriend" , "protectHatchery", "burrow"};
     private PopulationSet loadedPopSetForAllHydras = null;
 
-    private int maxPopulationSize = 35000;
+    private int maxPopulationSize = 10000;
 
 
     //GA type
@@ -80,7 +80,7 @@ public class AllHydralisk_XCS_Manager {
         }
 
 
-        if(pSet.getSet().size() >= 35000){
+        if(pSet.getSet().size() >= maxPopulationSize){
             ArrayList<Classifier> pSetAsArrayList = pSet.getSet();
 
             Collections.sort(pSetAsArrayList, new Comparator<Classifier>() {
@@ -97,24 +97,28 @@ public class AllHydralisk_XCS_Manager {
                 }
             });
 
-            double elementsToDelete = maxPopulationSize - maxPopulationSize * 0.2; // delete 20% so we got room for new ones
+            double elementsToDelete = pSetAsArrayList.size() - maxPopulationSize; // delete 20% so we got room for new ones
+            double sizeAfter = pSetAsArrayList.size() - elementsToDelete;
+            elementsToDelete += sizeAfter * 0.1;
+
             for(int i = 0; i < elementsToDelete; i++)
                 pSetAsArrayList.remove(0);
 
-            System.out.println("ALL HADRA MANG: removed some elements" );
+            System.out.println("ALL HADRA MANG: removed some elements old: " + pSet.getSet().size()+" new: " + pSetAsArrayList.size());
             PopulationSet pSetToSave = new PopulationSet(actionSet);
             for(Classifier classifier: pSetAsArrayList)
                 pSetToSave.addClassifierToPopulationSet(classifier);
 
             pSet = pSetToSave;
         }
+
         System.out.println("ALL HADRA MANG: pSet to Save Size " + pSet.getSet().size());
         simpleFileHandler.savePopulationSet(pSet);
     }
 
 
     public void loadProcess(){
-        PopulationSet loadedPopSetForAllHydras = simpleFileHandler.laodPopulationSet();
+        loadedPopSetForAllHydras = simpleFileHandler.laodPopulationSet();
     }
 
 
@@ -150,7 +154,10 @@ public class AllHydralisk_XCS_Manager {
             this.dDetector = new Hydralisk_DistanceDetector();
             this.theEffector = new Hydralisk_Effector();
             this.hydralisk_xcs = new The_Hydralisk_XCS(actionSet,theEffector,dDetector);
-            this.hydralisk_xcs.setPopulationSet(pSet);
+            PopulationSet myPset = getHydralisk_xcs().getPopulationSet();
+            for(Classifier c : pSet.getSet())
+                myPset.addClassifierToPopulationSet(c);
+
             this.managedUnitID = unitId;
 
             setGA_Type();
@@ -161,7 +168,7 @@ public class AllHydralisk_XCS_Manager {
             pSet.setParent_select_method_type(XCS_Constants.GEN_ALGO_PARENT_ROULET);
             pSet.setCrossover_method_type(XCS_Constants.GEN_ALGO_CROSSOVER_RANDOM_ONE_POINT);
             pSet.setMutation_method_type(XCS_Constants.GEN_ALGO_MUTATION_RANDOM_ONE_POS);
-            pSet.setGa_classifier_creation_threshold(35000);
+            pSet.setGa_classifier_creation_threshold(maxPopulationSize);
             pSet.setGa_cooldown_time(15);
         }
 
