@@ -179,7 +179,7 @@ public class AnanasAI {
                 myUnits.add(hydralisk);
             }
             else if(type == UnitType.UnitTypes.Zerg_Ultralisk){
-                Ultralisk ultralisk = new Ultralisk(unit,this.bwapi);
+                Ultralisk ultralisk = new Ultralisk(unit,this.bwapi, this.boldingManager.getRuleMachine());
                 myUnits.add(ultralisk);
             }
             else if(type == UnitType.UnitTypes.Zerg_Queen){

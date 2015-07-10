@@ -1,5 +1,9 @@
 package Units;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import bolding.RuleMachine;
 import AI.AnanasAI;
 import AI.MyUnitStatus;
 import Common.CommonFunctions;
@@ -23,11 +27,15 @@ public class Ultralisk implements IMyUnit {
     private boolean initPDefenacePoint = false;
     private int myPersonelDefencePointRadius = 100; // if a unit is not able to reach its personel def point, it will accept a pos in a Cyrcle around the point with this radius
     private boolean initTmpPoint = false;
+    private HashSet<Unit> units = new HashSet<>();
+    private Unit nearEnemy = null;
+    private ArrayList<IMyUnit> unitsUnderAttack = new ArrayList<IMyUnit>();
+    private final RuleMachine ruleMachine;
 
-    public Ultralisk(Unit unit, JNIBWAPI bwapi) {
+    public Ultralisk(Unit unit, JNIBWAPI bwapi, RuleMachine ruleMachine) {
         this.unit = unit;
         this.bwapi = bwapi;
-
+        this.ruleMachine = ruleMachine;
     }
 
 
@@ -108,9 +116,82 @@ public class Ultralisk implements IMyUnit {
     */
 
     private void defMode(){
-
+    	if(unit.isIdle()){    
+		if(isUnitUnderAttack() || isEnemyUnitInRange()){
+			if (nearEnemy != null)
+	    		if(unit.getDistance(nearEnemy) < unit.getDistance(AnanasAI.enemyToAttack) && CommonFunctions.isEnemyAttackable(nearEnemy)){
+	    			AnanasAI.enemyToAttack = nearEnemy;
+	    		}
+		}
+		if(AnanasAI.enemyToAttack != null && AnanasAI.enemyToAttack.getDistance(AnanasAI.defencePoint) < 500 ){
+			swarmMoveToTarget(AnanasAI.enemyToAttack);
+		}else if (!isAtPersonalDefPoint()){
+			unit.attack(AnanasAI.defencePoint, false);
+		}
+    	}
     }
 
+    // Returns true, if an ally Unit is under attack
+    private boolean isUnitUnderAttack(){
+    	boolean unitUnderAttack = false;
+    	unitsUnderAttack.clear();
+    	
+    	for(IMyUnit ally : AnanasAI.myUnits){
+    		if(ally.getUnit().isUnderAttack() && unit.getDistance(ally.getUnit()) < 600){
+    			unitsUnderAttack.add(ally);
+    			unitUnderAttack = true;
+    		}
+    	}
+    	return unitUnderAttack;
+    }
+    
+    // Returns true, if an Enemy is in Range of the current Unit
+    private boolean isEnemyUnitInRange(){
+    	nearEnemy = null;
+    	boolean enemyUnitInRange = false;
+    	Unit nearest = null;
+    	double minDistance = Double.POSITIVE_INFINITY;
+    	
+    	for(Unit enemy : bwapi.getEnemyUnits()){
+    		double distance = enemy.getDistance(AnanasAI.defencePoint);
+    		
+    		if(distance < 600){
+    			enemyUnitInRange = true;
+                 if (distance < minDistance) {
+                     minDistance = distance;
+                     nearest = enemy;
+                 }
+    		}
+    	}
+    	nearEnemy = nearest;
+    	return enemyUnitInRange;
+    }
+    
+
+    public void swarmMoveToTarget(Unit target){
+        swarmMoveToPosition(target.getPosition());
+    }
+
+
+
+    public void swarmMoveToPosition(Position target){
+        units.clear();
+        for(IMyUnit myUnit: AnanasAI.myUnits){
+            if(myUnit instanceof Zergling)
+                units.add(myUnit.getUnit());
+        }
+
+
+        double[] final_vector = ruleMachine.calcFlockVectorToPos(unit,units,new int[]{target.getPX(),target.getPY()});
+        //double[] final_vector = {1000,1000};
+
+        //System.out.println("Z ID:" + unit.getID() + " UnitsSize:" + units.size() + " Vec:" + Arrays.toString(final_vector));
+        Position tragetPosition = new Position((int) final_vector[0],(int) final_vector[1]);
+        //tragetPosition.makeValid();
+        CommonFunctions.simpleUnitMove(unit,tragetPosition);
+    }
+
+    
 
     /*
         #################################################

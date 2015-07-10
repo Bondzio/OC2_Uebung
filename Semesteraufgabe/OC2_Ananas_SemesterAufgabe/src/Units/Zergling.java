@@ -198,12 +198,11 @@ public class Zergling implements IMyUnit{
 
     
     private void defMode(){
-
     	
     	if(unit.isIdle()){    		
 	    	if(isUnitUnderAttack() || isEnemyUnitInRange()){
 	    		if (nearEnemy != null)
-		    		if(unit.getDistance(nearEnemy) < unit.getDistance(AnanasAI.enemyToAttack) && isEnemyAttackable(nearEnemy)){
+		    		if(unit.getDistance(nearEnemy) < unit.getDistance(AnanasAI.enemyToAttack) && CommonFunctions.isEnemyAttackable(nearEnemy)){
 		    			AnanasAI.enemyToAttack = nearEnemy;
 		    		}
 	    	}
@@ -218,22 +217,7 @@ public class Zergling implements IMyUnit{
     	}
     }
 
-    
-    private boolean isEnemyAttackable(Unit enemy){
-    	boolean attackable = false;
-    	
-    	ArrayList<UnitType> attackableEnemys = new ArrayList<UnitType>();
-    	attackableEnemys.add(UnitTypes.Zerg_Zergling);
-    	attackableEnemys.add(UnitTypes.Zerg_Ultralisk);
-    	attackableEnemys.add(UnitTypes.Zerg_Hydralisk);
-    
-    	for(UnitType ut : attackableEnemys){
-    		if(ut.equals(enemy.getType())){
-    			attackable = true;
-    		}
-    	}
-    	return attackable;
-    }
+
     
 
     // Returns true, if an ally Unit is under attack

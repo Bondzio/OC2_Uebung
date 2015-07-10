@@ -82,6 +82,25 @@ public class CommonFunctions {
     		unitToMove.attack(destination,false);
     }
 
+    
+    
+    public static boolean isEnemyAttackable(Unit enemy){
+    	boolean attackable = false;
+    	
+    	ArrayList<UnitType> attackableEnemys = new ArrayList<UnitType>();
+    	attackableEnemys.add(UnitTypes.Zerg_Zergling);
+    	attackableEnemys.add(UnitTypes.Zerg_Ultralisk);
+    	attackableEnemys.add(UnitTypes.Zerg_Hydralisk);
+    
+    	for(UnitType ut : attackableEnemys){
+    		if(ut.equals(enemy.getType())){
+    			attackable = true;
+    		}
+    	}
+    	return attackable;
+    }
+    
+    
     public static Position[] getEnemyHatcheries(JNIBWAPI bwapi){
         Position[] redHatcheries = new Position[] {new Position(516, 368), new Position(516, 2704)};
         Position[] blueHatcheries = new Position[] {new Position(3460,368),  new Position(3460, 2704)};
