@@ -43,6 +43,7 @@ public class AnanasAI {
     private int vectorReducingFactor = 9;
     public static Hatchery hatcheryToDefend;
     public static Position defencePoint;
+    public static Unit enemyToAttack = null;
 
 
 
@@ -80,6 +81,10 @@ public class AnanasAI {
 
         if(matchStart)
             matchStart();
+        
+        if(enemyToAttack != null && enemyToAttack.getHitPoints() <= 0){
+        	enemyToAttack = null;
+        }
 
         for (IMyUnit u : myUnits) {
             u.step();
@@ -176,7 +181,7 @@ public class AnanasAI {
                 myUnits.add(hydralisk);
             }
             else if(type == UnitType.UnitTypes.Zerg_Ultralisk){
-                Ultralisk ultralisk = new Ultralisk(unit,this.bwapi);
+                Ultralisk ultralisk = new Ultralisk(unit,this.bwapi, this.boldingManager.getRuleMachine());
                 myUnits.add(ultralisk);
             }
             else if(type == UnitType.UnitTypes.Zerg_Queen){

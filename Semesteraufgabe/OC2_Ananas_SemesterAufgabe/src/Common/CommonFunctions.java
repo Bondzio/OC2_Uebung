@@ -28,11 +28,23 @@ public class CommonFunctions {
     public static Random r = new Random();
     private static HashSet<Unit> units = new HashSet<>();
 
-    public static Unit getClosestEnemy(Unit friendly) {
+    public static int getParasitedEnemysCount(JNIBWAPI bwapi) {
+        int result = 0;
+
+        for (Unit enemy : bwapi.getEnemyUnits()) {
+            if (enemy.isParasited()){
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+    public static Unit getClosestEnemy(JNIBWAPI bwapi, Unit friendly) {
         Unit result = null;
         double minDistance = Double.POSITIVE_INFINITY;
 
-        for (Unit enemy : AnanasAI.enemyUnits) {
+        for (Unit enemy : bwapi.getEnemyUnits()) {
             double distance = getDistanceBetweenUnits(friendly, enemy);
 
             if (distance < minDistance) {
@@ -66,9 +78,29 @@ public class CommonFunctions {
 
 
     public static void simpleUnitMove(Unit unitToMove, Position destination){
-        unitToMove.move(destination,false);
+    	if(unitToMove.isIdle())
+    		unitToMove.attack(destination,false);
     }
 
+    
+    
+    public static boolean isEnemyAttackable(Unit enemy){
+    	boolean attackable = false;
+    	
+    	ArrayList<UnitType> attackableEnemys = new ArrayList<UnitType>();
+    	attackableEnemys.add(UnitTypes.Zerg_Zergling);
+    	attackableEnemys.add(UnitTypes.Zerg_Ultralisk);
+    	attackableEnemys.add(UnitTypes.Zerg_Hydralisk);
+    
+    	for(UnitType ut : attackableEnemys){
+    		if(ut.equals(enemy.getType())){
+    			attackable = true;
+    		}
+    	}
+    	return attackable;
+    }
+    
+    
     public static Position[] getEnemyHatcheries(JNIBWAPI bwapi){
         Position[] redHatcheries = new Position[] {new Position(516, 368), new Position(516, 2704)};
         Position[] blueHatcheries = new Position[] {new Position(3460,368),  new Position(3460, 2704)};
@@ -79,11 +111,11 @@ public class CommonFunctions {
             return redHatcheries;
     }
 
-    public static HashSet<Unit> getScourgesInCastrange(Unit unit, int castrange) {
+    public static HashSet<Unit> getScourgesInCastrange(JNIBWAPI bwapi, Unit unit, int castrange) {
         HashSet<Unit> result = new HashSet<>();
         int castrangeInPixel = castrange * 32;
 
-        for (Unit enemy : AnanasAI.enemyUnits) {
+        for (Unit enemy : bwapi.getEnemyUnits()) {
             double distance = getDistanceBetweenUnits(unit, enemy);
             if (enemy.getType() == UnitTypes.Zerg_Scourge) {
                 if (distance <= castrangeInPixel) {

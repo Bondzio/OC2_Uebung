@@ -138,7 +138,7 @@ public class Hydralisk implements IMyUnit{
     }
 
     private void attackMoveToClosestEnemy(){
-        Unit cloesestEnemy = CommonFunctions.getClosestEnemy(unit);
+        Unit cloesestEnemy = CommonFunctions.getClosestEnemy(bwapi, unit);
         if(cloesestEnemy != null)
             attackMove(cloesestEnemy);
     }
