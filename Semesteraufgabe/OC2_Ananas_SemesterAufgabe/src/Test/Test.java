@@ -38,5 +38,7 @@ public class Test {
             System.out.println(c.getId() +":\t\t" + c.getFitness());
 
 
+        System.out.println("########################");
+        System.out.println("Size was: " + pSet.getSet().size());
     }
 }

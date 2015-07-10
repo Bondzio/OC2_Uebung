@@ -111,7 +111,6 @@ public class Hydralisk implements IMyUnit{
 
 
 
-
         if(unit.isBurrowed()){
             unit.unburrow();
             isThereSomethingToReward = false;

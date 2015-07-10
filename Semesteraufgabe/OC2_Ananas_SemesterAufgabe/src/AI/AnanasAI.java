@@ -71,6 +71,8 @@ public class AnanasAI {
         this.boldingManager = new BoldingManager();
         this.allHydralisk_xcs_manager = new AllHydralisk_XCS_Manager(this.bwapi);
         this.queen_xcs_manager = new StarCraftBW_Queen_XCS_Manager();
+
+        loadProgress();
     }
 
     public void doStepAll(){
@@ -101,7 +103,7 @@ public class AnanasAI {
             initDefencePoint();
 
 
-        loadProgress();
+
 
         matchStart = false;
     }
