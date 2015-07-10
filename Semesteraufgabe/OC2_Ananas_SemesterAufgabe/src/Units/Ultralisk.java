@@ -51,6 +51,8 @@ public class Ultralisk implements IMyUnit {
                 }
                 break;
             case IN_DEF_MODE:
+            	if(AnanasAI.currentFrame % 2 == 0)
+                    return;
                 defMode();
                 break;
         }
@@ -78,7 +80,7 @@ public class Ultralisk implements IMyUnit {
             if (isAtPersonalDefPoint()) {
                 return true;
             } else {
-                CommonFunctions.simpleUnitMove(unit, myPersonelDefencePoint);
+            	CommonFunctions.simpleUnitMove(unit, myPersonelDefencePoint);
             }
         }
         return false;
@@ -96,7 +98,7 @@ public class Ultralisk implements IMyUnit {
             return true;
         }
         else{
-            CommonFunctions.simpleUnitMove(unit,myPersonelDefencePoint);
+        	CommonFunctions.simpleUnitMove(unit,myPersonelDefencePoint);
             return false;
         }
     }

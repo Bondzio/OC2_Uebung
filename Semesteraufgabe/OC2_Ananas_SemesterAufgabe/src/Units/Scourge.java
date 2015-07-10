@@ -1,10 +1,14 @@
 package Units;
 
+import java.util.ArrayList;
+
 import AI.AnanasAI;
 import AI.MyUnitStatus;
 import Common.CommonFunctions;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Unit;
+import jnibwapi.types.UnitType;
+import jnibwapi.types.UnitType.UnitTypes;
 
 /**
  * Created by Rolle on 03.07.2015.
@@ -38,15 +42,52 @@ public class Scourge implements IMyUnit {
                     currentUnitStatus = MyUnitStatus.IN_DEF_MODE;
                 break;
             case IN_DEF_MODE:
-
+            	defMode();
                 break;
         }
     }
 
 
-    private boolean goingToDefPointFin(){
+    private void defMode() {
+		Unit unitToAttack = null;
+		double minDistance = Double.POSITIVE_INFINITY;
+		
+//    	if(unit.isIdle()){
+    		for(Unit enemy : bwapi.getEnemyUnits()){
+    			if(isEnemyAttackable(enemy)){
+    				double distance = unit.getDistance(enemy);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        unitToAttack = enemy;
+                    }    				
+    			}
+    		}
+    		if(unitToAttack != null)
+    			unit.attack(unitToAttack, false);
+    		else
+    			unit.attack(AnanasAI.defencePoint, false);
+//		}
+		
+	}
 
-        CommonFunctions.simpleUnitMove(unit, AnanasAI.hatcheryToDefend.getUnit().getPosition());
+    
+    private boolean isEnemyAttackable(Unit enemy){
+    	boolean attackable = false;
+    	
+    	ArrayList<UnitType> attackableEnemys = new ArrayList<UnitType>();
+    	attackableEnemys.add(UnitTypes.Zerg_Scourge);
+    	attackableEnemys.add(UnitTypes.Zerg_Queen);
+    
+    	for(UnitType ut : attackableEnemys){
+    		if(ut.equals(enemy.getType())){
+    			attackable = true;
+    		}
+    	}
+    	return attackable;
+    }
+
+	private boolean goingToDefPointFin(){
+		CommonFunctions.simpleUnitMove(unit, AnanasAI.hatcheryToDefend.getUnit().getPosition());
 
         if(isAtPersonalDefPoint()){
             return true;
